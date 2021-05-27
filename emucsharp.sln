@@ -5,6 +5,29 @@ VisualStudioVersion = 16.0.31313.79
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cpulib_65xx", "cpulib_65xx\cpulib_65xx.csproj", "{FA131546-95A9-4894-99B1-C1897F4E1996}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test_asm", "test_asm", "{64E6F592-E350-4A39-BE54-4FAB2CF14197}"
+	ProjectSection(SolutionItems) = preProject
+		test_asm\Makefile = test_asm\Makefile
+		test_asm\test-rom0.asm = test_asm\test-rom0.asm
+		test_asm\test-rom0.cfg = test_asm\test-rom0.cfg
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dorman", "dorman", "{B04B9E0C-3E63-4D6F-B4C0-6AFFA04C1057}"
+	ProjectSection(SolutionItems) = preProject
+		test_asm\dorman\6502_decimal_test.a65 = test_asm\dorman\6502_decimal_test.a65
+		test_asm\dorman\6502_functional_test.a65 = test_asm\dorman\6502_functional_test.a65
+		test_asm\dorman\6502_interrupt_test.a65 = test_asm\dorman\6502_interrupt_test.a65
+		test_asm\dorman\65C02_extended_opcodes_test.a65c = test_asm\dorman\65C02_extended_opcodes_test.a65c
+		test_asm\dorman\dorman.cfg = test_asm\dorman\dorman.cfg
+		test_asm\dorman\license.txt = test_asm\dorman\license.txt
+		test_asm\dorman\Makefile = test_asm\dorman\Makefile
+		test_asm\dorman\readme.dom.txt = test_asm\dorman\readme.dom.txt
+		test_asm\dorman\readme.txt = test_asm\dorman\readme.txt
+		test_asm\dorman\report.i65 = test_asm\dorman\report.i65
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "test_cpu_1", "tests\test_cpu_1\test_cpu_1.csproj", "{56068E1B-C29A-4863-9C98-F39103542929}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,9 +38,17 @@ Global
 		{FA131546-95A9-4894-99B1-C1897F4E1996}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FA131546-95A9-4894-99B1-C1897F4E1996}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FA131546-95A9-4894-99B1-C1897F4E1996}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56068E1B-C29A-4863-9C98-F39103542929}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56068E1B-C29A-4863-9C98-F39103542929}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56068E1B-C29A-4863-9C98-F39103542929}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56068E1B-C29A-4863-9C98-F39103542929}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B04B9E0C-3E63-4D6F-B4C0-6AFFA04C1057} = {64E6F592-E350-4A39-BE54-4FAB2CF14197}
+		{56068E1B-C29A-4863-9C98-F39103542929} = {64E6F592-E350-4A39-BE54-4FAB2CF14197}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {81005CD8-F00E-4356-84F1-AA4BD48092E4}

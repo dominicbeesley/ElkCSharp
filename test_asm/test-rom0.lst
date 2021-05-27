@@ -1,0 +1,51 @@
+ca65 V2.18 - Git 81b97937
+Main file   : test-rom0.asm
+Current file: test-rom0.asm
+
+000000r 1               ; (c) Dossytronics 2017
+000000r 1               ; test harness ROM for VHDL testbench for MEMC mk2
+000000r 1               ; makes a 4k ROM
+000000r 1               
+000000r 1               
+000000r 1               vec_nmi		:=	$D00
+000000r 1               
+000000r 1               		.ZEROPAGE
+000000r 1  xx xx        ZP_PTR:		.RES 2
+000002r 1               
+000002r 1               		.CODE
+000000r 1               
+000000r 1               
+000000r 1               
+000000r 1               
+000000r 1               
+000000r 1               
+000000r 1               mos_handle_res:
+000000r 1  A2 10        		ldx	#$10
+000002r 1  BD FF 20     		lda	$20FF,X
+000005r 1  BD E0 20     		lda	$20E0,X
+000008r 1               
+000008r 1  24 0A        		bit	10
+00000Ar 1               
+00000Ar 1               
+00000Ar 1  A2 FF        		ldx	#$FF
+00000Cr 1  9A           		txs
+00000Dr 1               
+00000Dr 1  A9 40        		lda	#$40
+00000Fr 1  8D 00 0D     		sta	vec_nmi
+000012r 1               
+000012r 1  8A           here:		txa
+000013r 1  E8           		inx
+000014r 1  D0 FC        		bne	here
+000016r 1  C8           		iny
+000017r 1  D0 F9        		bne	here
+000019r 1  4C rr rr     		jmp 	here
+00001Cr 1               
+00001Cr 1               mos_handle_irq:
+00001Cr 1  40           		rti
+00001Dr 1               
+00001Dr 1               		.SEGMENT "VECTORS"
+000000r 1  00 0D        hanmi:  .addr   vec_nmi
+000002r 1  rr rr        hares:  .addr   mos_handle_res
+000004r 1  rr rr        hairq:  .addr   mos_handle_irq
+000006r 1               
+000006r 1               		.END

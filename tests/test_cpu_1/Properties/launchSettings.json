@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "test_cpu_1": {
+      "commandName": "Project",
+      "commandLineArgs": "D:\\work\\vs2017\\scratch\\emuc#\\emucsharp\\test_asm\\test-rom0.mos"
+    }
+  }
+}
