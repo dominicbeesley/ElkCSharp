@@ -176,8 +176,8 @@ sub do_o_lst() {
 				$t =~ /\b(read|write)\b/ && die "nested reads/writes";
 
 				my @seq = (
-						{ type => 'op', text => "ADDR = (ushort)($a);" },
-						{ type => 'op', text => "RNW = true;" },
+						{ type => 'op', text => "_addr = (ushort)($a);" },
+						{ type => 'op', text => "_rnw = true;" },
 						{ type => 'cyc', text => "READ" }
 					);
 				
@@ -202,9 +202,9 @@ sub do_o_lst() {
 				$t =~ /^\s*$/ || die "writes must be on own line";
 
 				my @seq = (
-					{ type => 'op', text => "ADDR = (ushort)($a);" },
-					{ type => 'op', text => "DAT = $d;" },
-					{ type => 'op', text => "RNW = false;" },
+					{ type => 'op', text => "_addr = (ushort)($a);" },
+					{ type => 'op', text => "_dat = $d;" },
+					{ type => 'op', text => "_rnw = false;" },
 					{ type => 'cyc', text => "WRITE" }
 				);
 

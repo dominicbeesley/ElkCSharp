@@ -1,4 +1,4 @@
-//TODO: fixup all uses of TMP2 where actually only 8 bits are needed (look for TMP=read?)
+//TODO: fixup all uses of _tmp2 where actually only 8 bits are needed (look for _tmp=read?)
 
 
 # license:BSD-3-Clause
@@ -8,1969 +8,1969 @@
 #   documented opcodes
 
 adc_aba
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	TMP = read(TMP);
-	do_adc((byte)TMP);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	_tmp = read(_tmp);
+	do_adc((byte)_tmp);
 	fetch();
 
 adc_abx
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	if(page_changing(TMP, X)) {
-		read(set_l(TMP,(byte)(TMP+X)));
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	if(page_changing(_tmp, _x)) {
+		read(set_l(_tmp,(byte)(_tmp+_x)));
 	}
-	TMP += X;
-	TMP = read(TMP);
-	do_adc((byte)TMP);
+	_tmp += _x;
+	_tmp = read(_tmp);
+	do_adc((byte)_tmp);
 	fetch();
 
 adc_aby
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	if(page_changing(TMP, Y)) {
-		read(set_l(TMP,(byte)(TMP+Y)));
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	if(page_changing(_tmp, _y)) {
+		read(set_l(_tmp,(byte)(_tmp+_y)));
 	}
-	TMP += Y;
-	TMP = read(TMP);
-	do_adc((byte)TMP);
+	_tmp += _y;
+	_tmp = read(_tmp);
+	do_adc((byte)_tmp);
 	fetch();
 
 adc_idx
-	TMP2 = read(PC++);
-	read(TMP2);
-	TMP2 += X;
-	TMP = read(TMP2 & 0xff);
-	TMP = set_h(TMP, read((TMP2+1) & 0xff));
-	do_adc(read(TMP));
+	_tmp2 = read(_pc++);
+	read(_tmp2);
+	_tmp2 += _x;
+	_tmp = read(_tmp2 & 0xff);
+	_tmp = set_h(_tmp, read((_tmp2+1) & 0xff));
+	do_adc(read(_tmp));
 	fetch();
 
 adc_idy
-	TMP2 = read(PC++);
-	TMP = read(TMP2);
-	TMP = set_h(TMP, read((TMP2+1) & 0xff));
-	if(page_changing(TMP, Y)) {
-		read(set_l(TMP,(byte)(TMP+Y)));
+	_tmp2 = read(_pc++);
+	_tmp = read(_tmp2);
+	_tmp = set_h(_tmp, read((_tmp2+1) & 0xff));
+	if(page_changing(_tmp, _y)) {
+		read(set_l(_tmp,(byte)(_tmp+_y)));
 	}
-	do_adc(read(TMP+Y));
+	do_adc(read(_tmp+_y));
 	fetch();
 
 adc_imm
-	TMP = read(PC++);
-	do_adc((byte)TMP);
+	_tmp = read(_pc++);
+	do_adc((byte)_tmp);
 	fetch();
 
 adc_zpg
-	TMP = read(PC++);
-	TMP = read(TMP);
-	do_adc((byte)TMP);
+	_tmp = read(_pc++);
+	_tmp = read(_tmp);
+	do_adc((byte)_tmp);
 	fetch();
 
 adc_zpx
-	TMP = read(PC++);
-	read(TMP);
-	TMP = read((byte)(TMP+X));
-	do_adc((byte)TMP);
+	_tmp = read(_pc++);
+	read(_tmp);
+	_tmp = read((byte)(_tmp+_x));
+	do_adc((byte)_tmp);
 	fetch();
 
 and_aba
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	A &= read(TMP);
-	set_nz(A);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	_a &= read(_tmp);
+	set_nz(_a);
 	fetch();
 
 and_abx
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	if(page_changing(TMP, X)) {
-		read(set_l(TMP,(byte)(TMP+X)));
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	if(page_changing(_tmp, _x)) {
+		read(set_l(_tmp,(byte)(_tmp+_x)));
 	}
-	TMP += X;
-	A &= read(TMP);
-	set_nz(A);
+	_tmp += _x;
+	_a &= read(_tmp);
+	set_nz(_a);
 	fetch();
 
 and_aby
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	if(page_changing(TMP, Y)) {
-		read(set_l(TMP,(byte)(TMP+Y)));
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	if(page_changing(_tmp, _y)) {
+		read(set_l(_tmp,(byte)(_tmp+_y)));
 	}
-	TMP += Y;
-	A &= read(TMP);
-	set_nz(A);
+	_tmp += _y;
+	_a &= read(_tmp);
+	set_nz(_a);
 	fetch();
 
 and_imm
-	A &= read(PC++);
-	set_nz(A);
+	_a &= read(_pc++);
+	set_nz(_a);
 	fetch();
 
 and_idx
-	TMP2 = read(PC++);
-	read(TMP2);
-	TMP2 += X;
-	TMP = read(TMP2 & 0xff);
-	TMP = set_h(TMP, read((TMP2+1) & 0xff));
-	A &= read(TMP);
-	set_nz(A);
+	_tmp2 = read(_pc++);
+	read(_tmp2);
+	_tmp2 += _x;
+	_tmp = read(_tmp2 & 0xff);
+	_tmp = set_h(_tmp, read((_tmp2+1) & 0xff));
+	_a &= read(_tmp);
+	set_nz(_a);
 	fetch();
 
 and_idy
-	TMP2 = read(PC++);
-	TMP = read(TMP2);
-	TMP = set_h(TMP, read((TMP2+1) & 0xff));
-	if(page_changing(TMP, Y)) {
-		read(set_l(TMP,(byte)(TMP+Y)));
+	_tmp2 = read(_pc++);
+	_tmp = read(_tmp2);
+	_tmp = set_h(_tmp, read((_tmp2+1) & 0xff));
+	if(page_changing(_tmp, _y)) {
+		read(set_l(_tmp,(byte)(_tmp+_y)));
 	}
-	A &= read(TMP+Y);
-	set_nz(A);
+	_a &= read(_tmp+_y);
+	set_nz(_a);
 	fetch();
 
 and_zpg
-	TMP = read(PC++);
-	A &= read(TMP);
-	set_nz(A);
+	_tmp = read(_pc++);
+	_a &= read(_tmp);
+	set_nz(_a);
 	fetch();
 
 and_zpx
-	TMP = read(PC++);
-	read(TMP);
-	A &= read((byte)(TMP+X));
-	set_nz(A);
+	_tmp = read(_pc++);
+	read(_tmp);
+	_a &= read((byte)(_tmp+_x));
+	set_nz(_a);
 	fetch();
 
 asl_aba
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2 = do_asl(TMP2);
-	write(TMP, TMP2);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2 = do_asl(_tmp2);
+	write(_tmp, _tmp2);
 	fetch();
 
 asl_abx
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	read(set_l(TMP,(byte)(TMP+X)));
-	TMP += X;
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2 = do_asl(TMP2);
-	write(TMP, TMP2);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	read(set_l(_tmp,(byte)(_tmp+_x)));
+	_tmp += _x;
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2 = do_asl(_tmp2);
+	write(_tmp, _tmp2);
 	fetch();
 
 asl_acc
-	read(PC);
-	A = do_asl(A);
+	read(_pc);
+	_a = do_asl(_a);
 	fetch();
 
 asl_zpg
-	TMP = read(PC++);
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2 = do_asl(TMP2);
-	write(TMP, TMP2);
+	_tmp = read(_pc++);
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2 = do_asl(_tmp2);
+	write(_tmp, _tmp2);
 	fetch();
 
 asl_zpx
-	TMP = read(PC++);
-	read(TMP);
-	TMP = (byte)(TMP+X);
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2 = do_asl(TMP2);
-	write(TMP, TMP2);
+	_tmp = read(_pc++);
+	read(_tmp);
+	_tmp = (byte)(_tmp+_x);
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2 = do_asl(_tmp2);
+	write(_tmp, _tmp2);
 	fetch();
 
 bcc_rel
-	TMP = read(PC++);
-	if((P & F_C) == 0) {
-		read(PC);
-		if(page_changing(PC, (sbyte)(TMP))) {
-			read(set_l(PC,(byte)(PC+(sbyte)(TMP))));
+	_tmp = read(_pc++);
+	if((_p & F_C) == 0) {
+		read(_pc);
+		if(page_changing(_pc, (sbyte)(_tmp))) {
+			read(set_l(_pc,(byte)(_pc+(sbyte)(_tmp))));
 		}
-		PC = (ushort)(PC + (sbyte)(TMP));
+		_pc = (ushort)(_pc + (sbyte)(_tmp));
 	}
 	fetch();
 
 bcs_rel
-	TMP = read(PC++);
-	if((P & F_C) != 0) {
-		read(PC);
-		if(page_changing(PC, (sbyte)(TMP))) {
-			read(set_l(PC,(byte)(PC+(sbyte)(TMP))));
+	_tmp = read(_pc++);
+	if((_p & F_C) != 0) {
+		read(_pc);
+		if(page_changing(_pc, (sbyte)(_tmp))) {
+			read(set_l(_pc,(byte)(_pc+(sbyte)(_tmp))));
 		}
-		PC = (ushort)(PC + (sbyte)(TMP));
+		_pc = (ushort)(_pc + (sbyte)(_tmp));
 	}
 	fetch();
 
 beq_rel
-	TMP = read(PC++);
-	if((P & F_Z) != 0) {
-		read(PC);
-		if(page_changing(PC, (sbyte)(TMP))) {
-			read(set_l(PC,(byte)(PC+(sbyte)(TMP))));
+	_tmp = read(_pc++);
+	if((_p & F_Z) != 0) {
+		read(_pc);
+		if(page_changing(_pc, (sbyte)(_tmp))) {
+			read(set_l(_pc,(byte)(_pc+(sbyte)(_tmp))));
 		}
-		PC = (ushort)(PC + (sbyte)(TMP));
+		_pc = (ushort)(_pc + (sbyte)(_tmp));
 	}
 	fetch();
 
 bit_aba
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	do_bit(read(TMP));
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	do_bit(read(_tmp));
 	fetch();
 
 bit_zpg
-	TMP = read(PC++);
-	do_bit(read(TMP));
+	_tmp = read(_pc++);
+	do_bit(read(_tmp));
 	fetch();
 
 bmi_rel
-	TMP = read(PC++);
-	if((P & F_N) != 0) {
-		read(PC);
-		if(page_changing(PC, (sbyte)(TMP))) {
-			read(set_l(PC,(byte)(PC+(sbyte)(TMP))));
+	_tmp = read(_pc++);
+	if((_p & F_N) != 0) {
+		read(_pc);
+		if(page_changing(_pc, (sbyte)(_tmp))) {
+			read(set_l(_pc,(byte)(_pc+(sbyte)(_tmp))));
 		}
-		PC = (ushort)(PC + (sbyte)(TMP));
+		_pc = (ushort)(_pc + (sbyte)(_tmp));
 	}
 	fetch();
 
 bne_rel
-	TMP = read(PC++);
-	if((P & F_Z) == 0) {
-		read(PC);
-		if(page_changing(PC, (sbyte)(TMP))) {
-			read(set_l(PC,(byte)(PC+(sbyte)(TMP))));
+	_tmp = read(_pc++);
+	if((_p & F_Z) == 0) {
+		read(_pc);
+		if(page_changing(_pc, (sbyte)(_tmp))) {
+			read(set_l(_pc,(byte)(_pc+(sbyte)(_tmp))));
 		}
-		PC = (ushort)(PC + (sbyte)(TMP));
+		_pc = (ushort)(_pc + (sbyte)(_tmp));
 	}
 	fetch();
 
 bpl_rel
-	TMP = read(PC++);
-	if((P & F_N) == 0) {
-		read(PC);
-		if(page_changing(PC, (sbyte)(TMP))) {
-			read(set_l(PC,(byte)(PC+(sbyte)(TMP))));
+	_tmp = read(_pc++);
+	if((_p & F_N) == 0) {
+		read(_pc);
+		if(page_changing(_pc, (sbyte)(_tmp))) {
+			read(set_l(_pc,(byte)(_pc+(sbyte)(_tmp))));
 		}
-		PC = (ushort)(PC + (sbyte)(TMP));
+		_pc = (ushort)(_pc + (sbyte)(_tmp));
 	}
 	fetch();
 
 brk_imp
 	// The 6502 bug when a nmi occurs in a brk is reproduced (case !irq_taken && nmi_state)
-	read(PC);
+	read(_pc);
 	if(!irq_taken) {
-		PC++;
+		_pc++;
 	}
-	write(SP, (byte)(PC >> 8));
+	write(_sp, (byte)(_pc >> 8));
 	dec_SP();
-	write(SP, (byte)PC);
+	write(_sp, (byte)_pc);
 	dec_SP();
-	write(SP, (byte)(irq_taken ? P & (F_B ^ 0xFF) : P));
+	write(_sp, (byte)(irq_taken ? _p & (F_B ^ 0xFF) : _p));
 	dec_SP();
 	if(nmi_state) {
-		PC = read(0xfffa);
-		PC = set_h(PC, read(0xfffb));
+		_pc = read(0xfffa);
+		_pc = set_h(_pc, read(0xfffb));
 		nmi_state = false;
 	} else {
-		PC = read(0xfffe);
-		PC = set_h(PC, read(0xffff));
+		_pc = read(0xfffe);
+		_pc = set_h(_pc, read(0xffff));
 	}
 	irq_taken = false;
-	P |= F_I; // Do *not* move after the fetch
+	_p |= F_I; // Do *not* move after the fetch
 	fetch();
 
 bvc_rel
-	TMP = read(PC++);
-	if((P & F_V) == 0) {
-		read(PC);
-		if(page_changing(PC, (sbyte)(TMP))) {
-			read(set_l(PC,(byte)(PC+(sbyte)(TMP))));
+	_tmp = read(_pc++);
+	if((_p & F_V) == 0) {
+		read(_pc);
+		if(page_changing(_pc, (sbyte)(_tmp))) {
+			read(set_l(_pc,(byte)(_pc+(sbyte)(_tmp))));
 		}
-		PC = (ushort)(PC + (sbyte)(TMP));
+		_pc = (ushort)(_pc + (sbyte)(_tmp));
 	}
 	fetch();
 
 bvs_rel
-	TMP = read(PC++);
-	if((P & F_V) != 0) {
-		read(PC);
-		if(page_changing(PC, (sbyte)(TMP))) {
-			read(set_l(PC,(byte)(PC+(sbyte)(TMP))));
+	_tmp = read(_pc++);
+	if((_p & F_V) != 0) {
+		read(_pc);
+		if(page_changing(_pc, (sbyte)(_tmp))) {
+			read(set_l(_pc,(byte)(_pc+(sbyte)(_tmp))));
 		}
-		PC = (ushort)(PC + (sbyte)(TMP));
+		_pc = (ushort)(_pc + (sbyte)(_tmp));
 	}
 	fetch();
 
 clc_imp
-	read(PC);
-	P &= F_C ^ 0xFF;
+	read(_pc);
+	_p &= F_C ^ 0xFF;
 	fetch();
 
 cld_imp
-	read(PC);
-	P &= F_D ^ 0xFF;
+	read(_pc);
+	_p &= F_D ^ 0xFF;
 	fetch();
 
 cli_imp
-	read(PC);
+	read(_pc);
 	prefetch();
-	P &= F_I ^ 0xFF; // Do *not* move it before the fetch
+	_p &= F_I ^ 0xFF; // Do *not* move it before the fetch
 	postfetch();
 
 clv_imp
-	read(PC);
-	P &= F_V ^ 0xFF;
+	read(_pc);
+	_p &= F_V ^ 0xFF;
 	fetch();
 
 cmp_aba
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	TMP = read(TMP);
-	do_cmp(A, (byte)TMP);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	_tmp = read(_tmp);
+	do_cmp(_a, (byte)_tmp);
 	fetch();
 
 cmp_abx
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	if(page_changing(TMP, X)) {
-		read(set_l(TMP,(byte)(TMP+X)));
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	if(page_changing(_tmp, _x)) {
+		read(set_l(_tmp,(byte)(_tmp+_x)));
 	}
-	TMP += X;
-	TMP = read(TMP);
-	do_cmp(A, (byte)TMP);
+	_tmp += _x;
+	_tmp = read(_tmp);
+	do_cmp(_a, (byte)_tmp);
 	fetch();
 
 cmp_aby
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	if(page_changing(TMP, Y)) {
-		read(set_l(TMP,(byte)(TMP+Y)));
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	if(page_changing(_tmp, _y)) {
+		read(set_l(_tmp,(byte)(_tmp+_y)));
 	}
-	TMP += Y;
-	TMP = read(TMP);
-	do_cmp(A, (byte)TMP);
+	_tmp += _y;
+	_tmp = read(_tmp);
+	do_cmp(_a, (byte)_tmp);
 	fetch();
 
 cmp_idx
-	TMP2 = read(PC++);
-	read(TMP2);
-	TMP2 += X;
-	TMP = read(TMP2 & 0xff);
-	TMP = set_h(TMP, read((TMP2+1) & 0xff));
-	do_cmp(A, read(TMP));
+	_tmp2 = read(_pc++);
+	read(_tmp2);
+	_tmp2 += _x;
+	_tmp = read(_tmp2 & 0xff);
+	_tmp = set_h(_tmp, read((_tmp2+1) & 0xff));
+	do_cmp(_a, read(_tmp));
 	fetch();
 
 cmp_idy
-	TMP2 = read(PC++);
-	TMP = read(TMP2);
-	TMP = set_h(TMP, read((TMP2+1) & 0xff));
-	if(page_changing(TMP, Y)) {
-		read(set_l(TMP,(byte)(TMP+Y)));
+	_tmp2 = read(_pc++);
+	_tmp = read(_tmp2);
+	_tmp = set_h(_tmp, read((_tmp2+1) & 0xff));
+	if(page_changing(_tmp, _y)) {
+		read(set_l(_tmp,(byte)(_tmp+_y)));
 	}
-	do_cmp(A, read(TMP+Y));
+	do_cmp(_a, read(_tmp+_y));
 	fetch();
 
 cmp_imm
-	TMP = read(PC++);
-	do_cmp(A, (byte)TMP);
+	_tmp = read(_pc++);
+	do_cmp(_a, (byte)_tmp);
 	fetch();
 
 cmp_zpg
-	TMP = read(PC++);
-	TMP = read(TMP);
-	do_cmp(A, (byte)TMP);
+	_tmp = read(_pc++);
+	_tmp = read(_tmp);
+	do_cmp(_a, (byte)_tmp);
 	fetch();
 
 cmp_zpx
-	TMP = read(PC++);
-	read(TMP);
-	TMP = read((byte)(TMP+X));
-	do_cmp(A, (byte)TMP);
+	_tmp = read(_pc++);
+	read(_tmp);
+	_tmp = read((byte)(_tmp+_x));
+	do_cmp(_a, (byte)_tmp);
 	fetch();
 
 cpx_aba
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	TMP = read(TMP);
-	do_cmp(X, (byte)TMP);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	_tmp = read(_tmp);
+	do_cmp(_x, (byte)_tmp);
 	fetch();
 
 cpx_imm
-	TMP = read(PC++);
-	do_cmp(X, (byte)TMP);
+	_tmp = read(_pc++);
+	do_cmp(_x, (byte)_tmp);
 	fetch();
 
 cpx_zpg
-	TMP = read(PC++);
-	TMP = read(TMP);
-	do_cmp(X, (byte)TMP);
+	_tmp = read(_pc++);
+	_tmp = read(_tmp);
+	do_cmp(_x, (byte)_tmp);
 	fetch();
 
 cpy_aba
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	TMP = read(TMP);
-	do_cmp(Y, (byte)TMP);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	_tmp = read(_tmp);
+	do_cmp(_y, (byte)_tmp);
 	fetch();
 
 cpy_imm
-	TMP = read(PC++);
-	do_cmp(Y, (byte)TMP);
+	_tmp = read(_pc++);
+	do_cmp(_y, (byte)_tmp);
 	fetch();
 
 cpy_zpg
-	TMP = read(PC++);
-	TMP = read(TMP);
-	do_cmp(Y, (byte)TMP);
+	_tmp = read(_pc++);
+	_tmp = read(_tmp);
+	do_cmp(_y, (byte)_tmp);
 	fetch();
 
 dec_aba
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2--;
-	set_nz(TMP2);
-	write(TMP, TMP2);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2--;
+	set_nz(_tmp2);
+	write(_tmp, _tmp2);
 	fetch();
 
 dec_abx
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	read(set_l(TMP,(byte)(TMP+X)));
-	TMP += X;
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2--;
-	set_nz(TMP2);
-	write(TMP, TMP2);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	read(set_l(_tmp,(byte)(_tmp+_x)));
+	_tmp += _x;
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2--;
+	set_nz(_tmp2);
+	write(_tmp, _tmp2);
 	fetch();
 
 dec_zpg
-	TMP = read(PC++);
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2--;
-	set_nz(TMP2);
-	write(TMP, TMP2);
+	_tmp = read(_pc++);
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2--;
+	set_nz(_tmp2);
+	write(_tmp, _tmp2);
 	fetch();
 
 dec_zpx
-	TMP = read(PC++);
-	read(TMP);
-	TMP = (byte)(TMP+X);
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2--;
-	set_nz(TMP2);
-	write(TMP, TMP2);
+	_tmp = read(_pc++);
+	read(_tmp);
+	_tmp = (byte)(_tmp+_x);
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2--;
+	set_nz(_tmp2);
+	write(_tmp, _tmp2);
 	fetch();
 
 dex_imp
-	read(PC);
-	X--;
-	set_nz(X);
+	read(_pc);
+	_x--;
+	set_nz(_x);
 	fetch();
 
 dey_imp
-	read(PC);
-	Y--;
-	set_nz(Y);
+	read(_pc);
+	_y--;
+	set_nz(_y);
 	fetch();
 
 eor_aba
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	A ^= read(TMP);
-	set_nz(A);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	_a ^= read(_tmp);
+	set_nz(_a);
 	fetch();
 
 eor_abx
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	if(page_changing(TMP, X)) {
-		read(set_l(TMP,(byte)(TMP+X)));
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	if(page_changing(_tmp, _x)) {
+		read(set_l(_tmp,(byte)(_tmp+_x)));
 	}
-	TMP += X;
-	A ^= read(TMP);
-	set_nz(A);
+	_tmp += _x;
+	_a ^= read(_tmp);
+	set_nz(_a);
 	fetch();
 
 eor_aby
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	if(page_changing(TMP, Y)) {
-		read(set_l(TMP,(byte)(TMP+Y)));
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	if(page_changing(_tmp, _y)) {
+		read(set_l(_tmp,(byte)(_tmp+_y)));
 	}
-	TMP += Y;
-	A ^= read(TMP);
-	set_nz(A);
+	_tmp += _y;
+	_a ^= read(_tmp);
+	set_nz(_a);
 	fetch();
 
 eor_idx
-	TMP2 = read(PC++);
-	read(TMP2);
-	TMP2 += X;
-	TMP = read(TMP2 & 0xff);
-	TMP = set_h(TMP, read((TMP2+1) & 0xff));
-	A ^= read(TMP);
-	set_nz(A);
+	_tmp2 = read(_pc++);
+	read(_tmp2);
+	_tmp2 += _x;
+	_tmp = read(_tmp2 & 0xff);
+	_tmp = set_h(_tmp, read((_tmp2+1) & 0xff));
+	_a ^= read(_tmp);
+	set_nz(_a);
 	fetch();
 
 eor_idy
-	TMP2 = read(PC++);
-	TMP = read(TMP2);
-	TMP = set_h(TMP, read((TMP2+1) & 0xff));
-	if(page_changing(TMP, Y)) {
-		read(set_l(TMP,(byte)(TMP+Y)));
+	_tmp2 = read(_pc++);
+	_tmp = read(_tmp2);
+	_tmp = set_h(_tmp, read((_tmp2+1) & 0xff));
+	if(page_changing(_tmp, _y)) {
+		read(set_l(_tmp,(byte)(_tmp+_y)));
 	}
-	A ^= read(TMP+Y);
-	set_nz(A);
+	_a ^= read(_tmp+_y);
+	set_nz(_a);
 	fetch();
 
 eor_imm
-	A ^= read(PC++);
-	set_nz(A);
+	_a ^= read(_pc++);
+	set_nz(_a);
 	fetch();
 
 eor_zpg
-	TMP = read(PC++);
-	A ^= read(TMP);
-	set_nz(A);
+	_tmp = read(_pc++);
+	_a ^= read(_tmp);
+	set_nz(_a);
 	fetch();
 
 eor_zpx
-	TMP = read(PC++);
-	read(TMP);
-	A ^= read((byte)(TMP+X));
-	set_nz(A);
+	_tmp = read(_pc++);
+	read(_tmp);
+	_a ^= read((byte)(_tmp+_x));
+	set_nz(_a);
 	fetch();
 
 inc_aba
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2++;
-	set_nz(TMP2);
-	write(TMP, TMP2);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2++;
+	set_nz(_tmp2);
+	write(_tmp, _tmp2);
 	fetch();
 
 inc_abx
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	read(set_l(TMP,(byte)(TMP+X)));
-	TMP += X;
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2++;
-	set_nz(TMP2);
-	write(TMP, TMP2);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	read(set_l(_tmp,(byte)(_tmp+_x)));
+	_tmp += _x;
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2++;
+	set_nz(_tmp2);
+	write(_tmp, _tmp2);
 	fetch();
 
 inc_zpg
-	TMP = read(PC++);
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2++;
-	set_nz(TMP2);
-	write(TMP, TMP2);
+	_tmp = read(_pc++);
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2++;
+	set_nz(_tmp2);
+	write(_tmp, _tmp2);
 	fetch();
 
 inc_zpx
-	TMP = read(PC++);
-	read(TMP);
-	TMP = (byte)(TMP+X);
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2++;
-	set_nz(TMP2);
-	write(TMP, TMP2);
+	_tmp = read(_pc++);
+	read(_tmp);
+	_tmp = (byte)(_tmp+_x);
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2++;
+	set_nz(_tmp2);
+	write(_tmp, _tmp2);
 	fetch();
 
 inx_imp
-	read(PC);
-	X++;
-	set_nz(X);
+	read(_pc);
+	_x++;
+	set_nz(_x);
 	fetch();
 
 iny_imp
-	read(PC);
-	Y++;
-	set_nz(Y);
+	read(_pc);
+	_y++;
+	set_nz(_y);
 	fetch();
 
 jmp_adr
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	PC = TMP;
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	_pc = _tmp;
 	fetch();
 
 jmp_ind
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	PC = read(TMP);
-	PC = set_h(PC, read(set_l(TMP,(byte)(TMP+1))));
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	_pc = read(_tmp);
+	_pc = set_h(_pc, read(set_l(_tmp,(byte)(_tmp+1))));
 	fetch();
 
 jsr_adr
-	TMP = read(PC++);
-	read(SP);
-	write(SP, (byte)(PC>>8));
+	_tmp = read(_pc++);
+	read(_sp);
+	write(_sp, (byte)(_pc>>8));
 	dec_SP();
-	write(SP, (byte)PC);
+	write(_sp, (byte)_pc);
 	dec_SP();
-	TMP = set_h(TMP, read(PC++));
-	PC = TMP;
+	_tmp = set_h(_tmp, read(_pc++));
+	_pc = _tmp;
 	fetch();
 
 lda_aba
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	A = read(TMP);
-	set_nz(A);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	_a = read(_tmp);
+	set_nz(_a);
 	fetch();
 
 lda_abx
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	if(page_changing(TMP, X)) {
-		read(set_l(TMP,(byte)(TMP+X)));
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	if(page_changing(_tmp, _x)) {
+		read(set_l(_tmp,(byte)(_tmp+_x)));
 	}
-	A = read(TMP + X);
-	set_nz(A);
+	_a = read(_tmp + _x);
+	set_nz(_a);
 	fetch();
 
 lda_aby
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	if(page_changing(TMP, Y)) {
-		read(set_l(TMP,(byte)(TMP+Y)));
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	if(page_changing(_tmp, _y)) {
+		read(set_l(_tmp,(byte)(_tmp+_y)));
 	}
-	A = read(TMP + Y);
-	set_nz(A);
+	_a = read(_tmp + _y);
+	set_nz(_a);
 	fetch();
 
 lda_idx
-	TMP2 = read(PC++);
-	read(TMP2);
-	TMP2 += X;
-	TMP = read(TMP2 & 0xff);
-	TMP = set_h(TMP, read((TMP2+1) & 0xff));
-	A = read(TMP);
-	set_nz(A);
+	_tmp2 = read(_pc++);
+	read(_tmp2);
+	_tmp2 += _x;
+	_tmp = read(_tmp2 & 0xff);
+	_tmp = set_h(_tmp, read((_tmp2+1) & 0xff));
+	_a = read(_tmp);
+	set_nz(_a);
 	fetch();
 
 lda_idy
-	TMP2 = read(PC++);
-	TMP = read(TMP2);
-	TMP = set_h(TMP, read((TMP2+1) & 0xff));
-	if(page_changing(TMP, Y)) {
-		read(set_l(TMP,(byte)(TMP+Y)));
+	_tmp2 = read(_pc++);
+	_tmp = read(_tmp2);
+	_tmp = set_h(_tmp, read((_tmp2+1) & 0xff));
+	if(page_changing(_tmp, _y)) {
+		read(set_l(_tmp,(byte)(_tmp+_y)));
 	}
-	A = read(TMP+Y);
-	set_nz(A);
+	_a = read(_tmp+_y);
+	set_nz(_a);
 	fetch();
 
 lda_imm
-	A = read(PC++);
-	set_nz(A);
+	_a = read(_pc++);
+	set_nz(_a);
 	fetch();
 
 lda_zpg
-	TMP = read(PC++);
-	A = read(TMP);
-	set_nz(A);
+	_tmp = read(_pc++);
+	_a = read(_tmp);
+	set_nz(_a);
 	fetch();
 
 lda_zpx
-	TMP = read(PC++);
-	read(TMP);
-	A = read((byte)(TMP+X));
-	set_nz(A);
+	_tmp = read(_pc++);
+	read(_tmp);
+	_a = read((byte)(_tmp+_x));
+	set_nz(_a);
 	fetch();
 
 ldx_aba
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	X = read(TMP);
-	set_nz(X);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	_x = read(_tmp);
+	set_nz(_x);
 	fetch();
 
 ldx_aby
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	if(page_changing(TMP, Y)) {
-		read(set_l(TMP,(byte)(TMP+Y)));
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	if(page_changing(_tmp, _y)) {
+		read(set_l(_tmp,(byte)(_tmp+_y)));
 	}
-	X = read(TMP + Y);
-	set_nz(X);
+	_x = read(_tmp + _y);
+	set_nz(_x);
 	fetch();
 
 ldx_imm
-	X = read(PC++);
-	set_nz(X);
+	_x = read(_pc++);
+	set_nz(_x);
 	fetch();
 
 ldx_zpg
-	TMP = read(PC++);
-	X = read(TMP);
-	set_nz(X);
+	_tmp = read(_pc++);
+	_x = read(_tmp);
+	set_nz(_x);
 	fetch();
 
 ldx_zpy
-	TMP = read(PC++);
-	read(TMP);
-	X = read((byte)(TMP+Y));
-	set_nz(X);
+	_tmp = read(_pc++);
+	read(_tmp);
+	_x = read((byte)(_tmp+_y));
+	set_nz(_x);
 	fetch();
 
 ldy_aba
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	Y = read(TMP);
-	set_nz(Y);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	_y = read(_tmp);
+	set_nz(_y);
 	fetch();
 
 ldy_abx
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	if(page_changing(TMP, X)) {
-		read(set_l(TMP,(byte)(TMP+X)));
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	if(page_changing(_tmp, _x)) {
+		read(set_l(_tmp,(byte)(_tmp+_x)));
 	}
-	TMP += X;
-	Y = read(TMP);
-	set_nz(Y);
+	_tmp += _x;
+	_y = read(_tmp);
+	set_nz(_y);
 	fetch();
 
 ldy_imm
-	Y = read(PC++);
-	set_nz(Y);
+	_y = read(_pc++);
+	set_nz(_y);
 	fetch();
 
 ldy_zpg
-	TMP = read(PC++);
-	Y = read(TMP);
-	set_nz(Y);
+	_tmp = read(_pc++);
+	_y = read(_tmp);
+	set_nz(_y);
 	fetch();
 
 ldy_zpx
-	TMP = read(PC++);
-	read(TMP);
-	Y = read((byte)(TMP+X));
-	set_nz(Y);
+	_tmp = read(_pc++);
+	read(_tmp);
+	_y = read((byte)(_tmp+_x));
+	set_nz(_y);
 	fetch();
 
 lsr_aba
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2 = do_lsr(TMP2);
-	write(TMP, TMP2);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2 = do_lsr(_tmp2);
+	write(_tmp, _tmp2);
 	fetch();
 
 lsr_abx
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	read(set_l(TMP,(byte)(TMP+X)));
-	TMP += X;
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2 = do_lsr(TMP2);
-	write(TMP, TMP2);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	read(set_l(_tmp,(byte)(_tmp+_x)));
+	_tmp += _x;
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2 = do_lsr(_tmp2);
+	write(_tmp, _tmp2);
 	fetch();
 
 lsr_acc
-	read(PC);
-	A = do_lsr(A);
+	read(_pc);
+	_a = do_lsr(_a);
 	fetch();
 
 lsr_zpg
-	TMP = read(PC++);
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2 = do_lsr(TMP2);
-	write(TMP, TMP2);
+	_tmp = read(_pc++);
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2 = do_lsr(_tmp2);
+	write(_tmp, _tmp2);
 	fetch();
 
 lsr_zpx
-	TMP = read(PC++);
-	read(TMP);
-	TMP = (byte)(TMP+X);
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2 = do_lsr(TMP2);
-	write(TMP, TMP2);
+	_tmp = read(_pc++);
+	read(_tmp);
+	_tmp = (byte)(_tmp+_x);
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2 = do_lsr(_tmp2);
+	write(_tmp, _tmp2);
 	fetch();
 
 nop_imp
-	read(PC);
+	read(_pc);
 	fetch();
 
 ora_aba
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	A |= read(TMP);
-	set_nz(A);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	_a |= read(_tmp);
+	set_nz(_a);
 	fetch();
 
 ora_abx
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	if(page_changing(TMP, X)) {
-		read(set_l(TMP,(byte)(TMP+X)));
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	if(page_changing(_tmp, _x)) {
+		read(set_l(_tmp,(byte)(_tmp+_x)));
 	}
-	TMP += X;
-	A |= read(TMP);
-	set_nz(A);
+	_tmp += _x;
+	_a |= read(_tmp);
+	set_nz(_a);
 	fetch();
 
 ora_aby
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	if(page_changing(TMP, Y)) {
-		read(set_l(TMP,(byte)(TMP+Y)));
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	if(page_changing(_tmp, _y)) {
+		read(set_l(_tmp,(byte)(_tmp+_y)));
 	}
-	TMP += Y;
-	A |= read(TMP);
-	set_nz(A);
+	_tmp += _y;
+	_a |= read(_tmp);
+	set_nz(_a);
 	fetch();
 
 ora_imm
-	A |= read(PC++);
-	set_nz(A);
+	_a |= read(_pc++);
+	set_nz(_a);
 	fetch();
 
 ora_idx
-	TMP2 = read(PC++);
-	read(TMP2);
-	TMP2 += X;
-	TMP = read(TMP2 & 0xff);
-	TMP = set_h(TMP, read((TMP2+1) & 0xff));
-	A |= read(TMP);
-	set_nz(A);
+	_tmp2 = read(_pc++);
+	read(_tmp2);
+	_tmp2 += _x;
+	_tmp = read(_tmp2 & 0xff);
+	_tmp = set_h(_tmp, read((_tmp2+1) & 0xff));
+	_a |= read(_tmp);
+	set_nz(_a);
 	fetch();
 
 ora_idy
-	TMP2 = read(PC++);
-	TMP = read(TMP2);
-	TMP = set_h(TMP, read((TMP2+1) & 0xff));
-	if(page_changing(TMP, Y)) {
-		read(set_l(TMP,(byte)(TMP+Y)));
+	_tmp2 = read(_pc++);
+	_tmp = read(_tmp2);
+	_tmp = set_h(_tmp, read((_tmp2+1) & 0xff));
+	if(page_changing(_tmp, _y)) {
+		read(set_l(_tmp,(byte)(_tmp+_y)));
 	}
-	A |= read(TMP+Y);
-	set_nz(A);
+	_a |= read(_tmp+_y);
+	set_nz(_a);
 	fetch();
 
 ora_zpg
-	TMP = read(PC++);
-	A |= read(TMP);
-	set_nz(A);
+	_tmp = read(_pc++);
+	_a |= read(_tmp);
+	set_nz(_a);
 	fetch();
 
 ora_zpx
-	TMP = read(PC++);
-	read(TMP);
-	A |= read((byte)(TMP+X));
-	set_nz(A);
+	_tmp = read(_pc++);
+	read(_tmp);
+	_a |= read((byte)(_tmp+_x));
+	set_nz(_a);
 	fetch();
 
 pha_imp
-	read(PC);
-	write(SP, A);
+	read(_pc);
+	write(_sp, _a);
 	dec_SP();
 	fetch();
 
 php_imp
-	read(PC);
-	write(SP, P);
+	read(_pc);
+	write(_sp, _p);
 	dec_SP();
 	fetch();
 
 pla_imp
-	read(PC);
-	read(SP);
+	read(_pc);
+	read(_sp);
 	inc_SP();
-	A = read(SP);
-	set_nz(A);
+	_a = read(_sp);
+	set_nz(_a);
 	fetch();
 
 plp_imp
-	read(PC);
-	read(SP);
+	read(_pc);
+	read(_sp);
 	inc_SP();
-	TMP = (byte)(read(SP) | (F_B|F_E));
+	_tmp = (byte)(read(_sp) | (F_B|F_E));
 	prefetch();
-	P = (byte)TMP; // Do *not* move it before the fetch
+	_p = (byte)_tmp; // Do *not* move it before the fetch
 	postfetch();
 
 rol_aba
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2 = do_rol(TMP2);
-	write(TMP, TMP2);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2 = do_rol(_tmp2);
+	write(_tmp, _tmp2);
 	fetch();
 
 rol_abx
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	read(set_l(TMP,(byte)(TMP+X)));
-	TMP += X;
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2 = do_rol(TMP2);
-	write(TMP, TMP2);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	read(set_l(_tmp,(byte)(_tmp+_x)));
+	_tmp += _x;
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2 = do_rol(_tmp2);
+	write(_tmp, _tmp2);
 	fetch();
 
 rol_acc
-	read(PC);
-	A = do_rol(A);
+	read(_pc);
+	_a = do_rol(_a);
 	fetch();
 
 rol_zpg
-	TMP = read(PC++);
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2 = do_rol(TMP2);
-	write(TMP, TMP2);
+	_tmp = read(_pc++);
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2 = do_rol(_tmp2);
+	write(_tmp, _tmp2);
 	fetch();
 
 rol_zpx
-	TMP = read(PC++);
-	read(TMP);
-	TMP = (byte)(TMP+X);
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2 = do_rol(TMP2);
-	write(TMP, TMP2);
+	_tmp = read(_pc++);
+	read(_tmp);
+	_tmp = (byte)(_tmp+_x);
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2 = do_rol(_tmp2);
+	write(_tmp, _tmp2);
 	fetch();
 
 ror_aba
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2 = do_ror(TMP2);
-	write(TMP, TMP2);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2 = do_ror(_tmp2);
+	write(_tmp, _tmp2);
 	fetch();
 
 ror_abx
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	read(set_l(TMP,(byte)(TMP+X)));
-	TMP += X;
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2 = do_ror(TMP2);
-	write(TMP, TMP2);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	read(set_l(_tmp,(byte)(_tmp+_x)));
+	_tmp += _x;
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2 = do_ror(_tmp2);
+	write(_tmp, _tmp2);
 	fetch();
 
 ror_acc
-	read(PC);
-	A = do_ror(A);
+	read(_pc);
+	_a = do_ror(_a);
 	fetch();
 
 ror_zpg
-	TMP = read(PC++);
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2 = do_ror(TMP2);
-	write(TMP, TMP2);
+	_tmp = read(_pc++);
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2 = do_ror(_tmp2);
+	write(_tmp, _tmp2);
 	fetch();
 
 ror_zpx
-	TMP = read(PC++);
-	read(TMP);
-	TMP = (byte)(TMP+X);
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2 = do_ror(TMP2);
-	write(TMP, TMP2);
+	_tmp = read(_pc++);
+	read(_tmp);
+	_tmp = (byte)(_tmp+_x);
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2 = do_ror(_tmp2);
+	write(_tmp, _tmp2);
 	fetch();
 
 rti_imp
-	read(PC);
-	read(SP);
+	read(_pc);
+	read(_sp);
 	inc_SP();
-	P = (byte)(read(SP) | (F_B|F_E));
+	_p = (byte)(read(_sp) | (F_B|F_E));
 	inc_SP();
-	PC = read(SP);
+	_pc = read(_sp);
 	inc_SP();
-	PC = set_h(PC, read(SP));
+	_pc = set_h(_pc, read(_sp));
 	fetch();
 
 rts_imp
-	read(PC);
-	read(SP);
+	read(_pc);
+	read(_sp);
 	inc_SP();
-	PC = read(SP);
+	_pc = read(_sp);
 	inc_SP();
-	PC = set_h(PC, read(SP));
-	read(PC++);
+	_pc = set_h(_pc, read(_sp));
+	read(_pc++);
 	fetch();
 
 sbc_aba
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	TMP2 = read(TMP);
-	do_sbc(TMP2);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	_tmp2 = read(_tmp);
+	do_sbc(_tmp2);
 	fetch();
 
 sbc_abx
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	if(page_changing(TMP, X)) {
-		read(set_l(TMP,(byte)(TMP+X)));
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	if(page_changing(_tmp, _x)) {
+		read(set_l(_tmp,(byte)(_tmp+_x)));
 	}
-	TMP += X;
-	TMP2 = read(TMP);
-	do_sbc(TMP2);
+	_tmp += _x;
+	_tmp2 = read(_tmp);
+	do_sbc(_tmp2);
 	fetch();
 
 sbc_aby
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	if(page_changing(TMP, Y)) {
-		read(set_l(TMP,(byte)(TMP+Y)));
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	if(page_changing(_tmp, _y)) {
+		read(set_l(_tmp,(byte)(_tmp+_y)));
 	}
-	TMP += Y;
-	TMP2 = read(TMP);
-	do_sbc(TMP2);
+	_tmp += _y;
+	_tmp2 = read(_tmp);
+	do_sbc(_tmp2);
 	fetch();
 
 sbc_idx
-	TMP2 = read(PC++);
-	read(TMP2);
-	TMP2 += X;
-	TMP = read(TMP2 & 0xff);
-	TMP = set_h(TMP, read((TMP2+1) & 0xff));
-	do_sbc(read(TMP));
+	_tmp2 = read(_pc++);
+	read(_tmp2);
+	_tmp2 += _x;
+	_tmp = read(_tmp2 & 0xff);
+	_tmp = set_h(_tmp, read((_tmp2+1) & 0xff));
+	do_sbc(read(_tmp));
 	fetch();
 
 sbc_idy
-	TMP2 = read(PC++);
-	TMP = read(TMP2);
-	TMP = set_h(TMP, read((TMP2+1) & 0xff));
-	if(page_changing(TMP, Y)) {
-		read(set_l(TMP,(byte)(TMP+Y)));
+	_tmp2 = read(_pc++);
+	_tmp = read(_tmp2);
+	_tmp = set_h(_tmp, read((_tmp2+1) & 0xff));
+	if(page_changing(_tmp, _y)) {
+		read(set_l(_tmp,(byte)(_tmp+_y)));
 	}
-	do_sbc(read(TMP+Y));
+	do_sbc(read(_tmp+_y));
 	fetch();
 
 sbc_imm
-	TMP2 = read(PC++);
-	do_sbc(TMP2);
+	_tmp2 = read(_pc++);
+	do_sbc(_tmp2);
 	fetch();
 
 sbc_zpg
-	TMP = read(PC++);
-	TMP2 = read(TMP);
-	do_sbc(TMP2);
+	_tmp = read(_pc++);
+	_tmp2 = read(_tmp);
+	do_sbc(_tmp2);
 	fetch();
 
 sbc_zpx
-	TMP = read(PC++);
-	read(TMP);
-	TMP2 = read((byte)(TMP+X));
-	do_sbc(TMP2);
+	_tmp = read(_pc++);
+	read(_tmp);
+	_tmp2 = read((byte)(_tmp+_x));
+	do_sbc(_tmp2);
 	fetch();
 
 sec_imp
-	read(PC);
-	P |= F_C;
+	read(_pc);
+	_p |= F_C;
 	fetch();
 
 sed_imp
-	read(PC);
-	P |= F_D;
+	read(_pc);
+	_p |= F_D;
 	fetch();
 
 sei_imp
-	read(PC);
+	read(_pc);
 	prefetch();
-	P |= F_I; // Do *not* move it before the fetch
+	_p |= F_I; // Do *not* move it before the fetch
 	postfetch();
 
 sta_aba
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	write(TMP, A);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	write(_tmp, _a);
 	fetch();
 
 sta_abx
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	read(set_l(TMP,(byte)(TMP+X)));
-	write(TMP+X, A);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	read(set_l(_tmp,(byte)(_tmp+_x)));
+	write(_tmp+_x, _a);
 	fetch();
 
 sta_aby
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	read(set_l(TMP,(byte)(TMP+Y)));
-	write(TMP+Y, A);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	read(set_l(_tmp,(byte)(_tmp+_y)));
+	write(_tmp+_y, _a);
 	fetch();
 
 sta_idx
-	TMP2 = read(PC++);
-	read(TMP2);
-	TMP2 += X;
-	TMP = read(TMP2 & 0xff);
-	TMP = set_h(TMP, read((TMP2+1) & 0xff));
-	write(TMP, A);
+	_tmp2 = read(_pc++);
+	read(_tmp2);
+	_tmp2 += _x;
+	_tmp = read(_tmp2 & 0xff);
+	_tmp = set_h(_tmp, read((_tmp2+1) & 0xff));
+	write(_tmp, _a);
 	fetch();
 
 sta_idy
-	TMP2 = read(PC++);
-	TMP = read(TMP2);
-	TMP = set_h(TMP, read((TMP2+1) & 0xff));
-	read(set_l(TMP,(byte)(TMP+Y)));
-	write(TMP+Y, A);
+	_tmp2 = read(_pc++);
+	_tmp = read(_tmp2);
+	_tmp = set_h(_tmp, read((_tmp2+1) & 0xff));
+	read(set_l(_tmp,(byte)(_tmp+_y)));
+	write(_tmp+_y, _a);
 	fetch();
 
 sta_zpg
-	TMP = read(PC++);
-	write(TMP, A);
+	_tmp = read(_pc++);
+	write(_tmp, _a);
 	fetch();
 
 sta_zpx
-	TMP = read(PC++);
-	read(TMP);
-	write((byte)(TMP+X), A);
+	_tmp = read(_pc++);
+	read(_tmp);
+	write((byte)(_tmp+_x), _a);
 	fetch();
 
 stx_aba
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	write(TMP, X);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	write(_tmp, _x);
 	fetch();
 
 stx_zpg
-	TMP = read(PC++);
-	write(TMP, X);
+	_tmp = read(_pc++);
+	write(_tmp, _x);
 	fetch();
 
 stx_zpy
-	TMP = read(PC++);
-	read(TMP);
-	write((byte)(TMP+Y), X);
+	_tmp = read(_pc++);
+	read(_tmp);
+	write((byte)(_tmp+_y), _x);
 	fetch();
 
 sty_aba
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	write(TMP, Y);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	write(_tmp, _y);
 	fetch();
 
 sty_zpg
-	TMP = read(PC++);
-	write(TMP, Y);
+	_tmp = read(_pc++);
+	write(_tmp, _y);
 	fetch();
 
 sty_zpx
-	TMP = read(PC++);
-	read(TMP);
-	write((byte)(TMP+X), Y);
+	_tmp = read(_pc++);
+	read(_tmp);
+	write((byte)(_tmp+_x), _y);
 	fetch();
 
 tax_imp
-	read(PC);
-	X = A;
-	set_nz(X);
+	read(_pc);
+	_x = _a;
+	set_nz(_x);
 	fetch();
 
 tay_imp
-	read(PC);
-	Y = A;
-	set_nz(Y);
+	read(_pc);
+	_y = _a;
+	set_nz(_y);
 	fetch();
 
 tsx_imp
-	read(PC);
-	X = (byte)SP;
-	set_nz(X);
+	read(_pc);
+	_x = (byte)_sp;
+	set_nz(_x);
 	fetch();
 
 txa_imp
-	read(PC);
-	A = X;
-	set_nz(A);
+	read(_pc);
+	_a = _x;
+	set_nz(_a);
 	fetch();
 
 txs_imp
-	read(PC);
-	SP = set_l(SP,(byte)(X));
+	read(_pc);
+	_sp = set_l(_sp,(byte)(_x));
 	fetch();
 
 tya_imp
-	read(PC);
-	A = Y;
-	set_nz(A);
+	read(_pc);
+	_a = _y;
+	set_nz(_a);
 	fetch();
 
 #   exceptions
 reset
-	TMP=read(PC);
-	TMP=read(PC);
-	TMP=read(SP); dec_SP();
-	TMP=read(SP); dec_SP();
-	TMP=read(SP); dec_SP();
-	P |= F_I; PC = read(0xfffc);
-	PC = set_h(PC, read(0xfffd));
+	_tmp=read(_pc);
+	_tmp=read(_pc);
+	_tmp=read(_sp); dec_SP();
+	_tmp=read(_sp); dec_SP();
+	_tmp=read(_sp); dec_SP();
+	_p |= F_I; _pc = read(0xfffc);
+	_pc = set_h(_pc, read(0xfffd));
 	fetch();
 
 
 #   undocumented reliable instructions
 dcp_aba
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2--;
-	write(TMP, TMP2);
-	do_cmp(A, TMP2);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2--;
+	write(_tmp, _tmp2);
+	do_cmp(_a, _tmp2);
 	fetch();
 
 dcp_abx
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	read(set_l(TMP,(byte)(TMP+X)));
-	TMP += X;
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2--;
-	write(TMP, TMP2);
-	do_cmp(A, TMP2);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	read(set_l(_tmp,(byte)(_tmp+_x)));
+	_tmp += _x;
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2--;
+	write(_tmp, _tmp2);
+	do_cmp(_a, _tmp2);
 	fetch();
 
 dcp_aby
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	read(set_l(TMP,(byte)(TMP+Y)));
-	TMP += Y;
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2--;
-	write(TMP, TMP2);
-	do_cmp(A, TMP2);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	read(set_l(_tmp,(byte)(_tmp+_y)));
+	_tmp += _y;
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2--;
+	write(_tmp, _tmp2);
+	do_cmp(_a, _tmp2);
 	fetch();
 
 dcp_idx
-	TMP2 = read(PC++);
-	read(TMP2);
-	TMP2 += X;
-	TMP = read(TMP2 & 0xff);
-	TMP = set_h(TMP, read((TMP2+1) & 0xff));
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2--;
-	write(TMP, TMP2);
-	do_cmp(A, TMP2);
+	_tmp2 = read(_pc++);
+	read(_tmp2);
+	_tmp2 += _x;
+	_tmp = read(_tmp2 & 0xff);
+	_tmp = set_h(_tmp, read((_tmp2+1) & 0xff));
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2--;
+	write(_tmp, _tmp2);
+	do_cmp(_a, _tmp2);
 	fetch();
 
 dcp_idy
-	TMP2 = read(PC++);
-	TMP = read(TMP2);
-	TMP = set_h(TMP, read((TMP2+1) & 0xff));
-	read(set_l(TMP,(byte)(TMP+Y)));
-	TMP += Y;
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2--;
-	write(TMP, TMP2);
-	do_cmp(A, TMP2);
+	_tmp2 = read(_pc++);
+	_tmp = read(_tmp2);
+	_tmp = set_h(_tmp, read((_tmp2+1) & 0xff));
+	read(set_l(_tmp,(byte)(_tmp+_y)));
+	_tmp += _y;
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2--;
+	write(_tmp, _tmp2);
+	do_cmp(_a, _tmp2);
 	fetch();
 
 dcp_zpg
-	TMP = read(PC++);
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2--;
-	write(TMP, TMP2);
-	do_cmp(A, TMP2);
+	_tmp = read(_pc++);
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2--;
+	write(_tmp, _tmp2);
+	do_cmp(_a, _tmp2);
 	fetch();
 
 dcp_zpx
-	TMP = read(PC++);
-	read(TMP);
-	TMP = (byte)(TMP+X);
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2--;
-	write(TMP, TMP2);
-	do_cmp(A, TMP2);
+	_tmp = read(_pc++);
+	read(_tmp);
+	_tmp = (byte)(_tmp+_x);
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2--;
+	write(_tmp, _tmp2);
+	do_cmp(_a, _tmp2);
 	fetch();
 
 isb_aba
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2++;
-	write(TMP, TMP2);
-	do_sbc(TMP2);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2++;
+	write(_tmp, _tmp2);
+	do_sbc(_tmp2);
 	fetch();
 
 isb_abx
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	read(set_l(TMP,(byte)(TMP+X)));
-	TMP += X;
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2++;
-	write(TMP, TMP2);
-	do_sbc(TMP2);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	read(set_l(_tmp,(byte)(_tmp+_x)));
+	_tmp += _x;
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2++;
+	write(_tmp, _tmp2);
+	do_sbc(_tmp2);
 	fetch();
 
 isb_aby
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	read(set_l(TMP,(byte)(TMP+Y)));
-	TMP += Y;
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2++;
-	write(TMP, TMP2);
-	do_sbc(TMP2);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	read(set_l(_tmp,(byte)(_tmp+_y)));
+	_tmp += _y;
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2++;
+	write(_tmp, _tmp2);
+	do_sbc(_tmp2);
 	fetch();
 
 isb_idx
-	TMP2 = read(PC++);
-	read(TMP2);
-	TMP2 += X;
-	TMP = read(TMP2 & 0xff);
-	TMP = set_h(TMP, read((TMP2+1) & 0xff));
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2++;
-	write(TMP, TMP2);
-	do_sbc(TMP2);
+	_tmp2 = read(_pc++);
+	read(_tmp2);
+	_tmp2 += _x;
+	_tmp = read(_tmp2 & 0xff);
+	_tmp = set_h(_tmp, read((_tmp2+1) & 0xff));
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2++;
+	write(_tmp, _tmp2);
+	do_sbc(_tmp2);
 	fetch();
 
 isb_idy
-	TMP2 = read(PC++);
-	TMP = read(TMP2);
-	TMP = set_h(TMP, read((TMP2+1) & 0xff));
-	read(set_l(TMP,(byte)(TMP+Y)));
-	TMP += Y;
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2++;
-	write(TMP, TMP2);
-	do_sbc(TMP2);
+	_tmp2 = read(_pc++);
+	_tmp = read(_tmp2);
+	_tmp = set_h(_tmp, read((_tmp2+1) & 0xff));
+	read(set_l(_tmp,(byte)(_tmp+_y)));
+	_tmp += _y;
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2++;
+	write(_tmp, _tmp2);
+	do_sbc(_tmp2);
 	fetch();
 
 isb_zpg
-	TMP = read(PC++);
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2++;
-	write(TMP, TMP2);
-	do_sbc(TMP2);
+	_tmp = read(_pc++);
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2++;
+	write(_tmp, _tmp2);
+	do_sbc(_tmp2);
 	fetch();
 
 isb_zpx
-	TMP = read(PC++);
-	read(TMP);
-	TMP = (byte)(TMP+X);
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2++;
-	write(TMP, TMP2);
-	do_sbc(TMP2);
+	_tmp = read(_pc++);
+	read(_tmp);
+	_tmp = (byte)(_tmp+_x);
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2++;
+	write(_tmp, _tmp2);
+	do_sbc(_tmp2);
 	fetch();
 
 lax_aba
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	A = X = read(TMP);
-	set_nz(A);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	_a = _x = read(_tmp);
+	set_nz(_a);
 	fetch();
 
 lax_aby
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	if(page_changing(TMP, Y)) {
-		read(set_l(TMP,(byte)(TMP+Y)));
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	if(page_changing(_tmp, _y)) {
+		read(set_l(_tmp,(byte)(_tmp+_y)));
 	}
-	A = X = read(TMP+Y);
-	set_nz(A);
+	_a = _x = read(_tmp+_y);
+	set_nz(_a);
 	fetch();
 
 lax_idx
-	TMP2 = read(PC++);
-	read(TMP2);
-	TMP2 += X;
-	TMP = read(TMP2 & 0xff);
-	TMP = set_h(TMP, read((TMP2+1) & 0xff));
-	A = X = read(TMP);
-	set_nz(A);
+	_tmp2 = read(_pc++);
+	read(_tmp2);
+	_tmp2 += _x;
+	_tmp = read(_tmp2 & 0xff);
+	_tmp = set_h(_tmp, read((_tmp2+1) & 0xff));
+	_a = _x = read(_tmp);
+	set_nz(_a);
 	fetch();
 
 lax_idy
-	TMP2 = read(PC++);
-	TMP = read(TMP2);
-	TMP = set_h(TMP, read((TMP2+1) & 0xff));
-	if(page_changing(TMP, Y)) {
-		read(set_l(TMP,(byte)(TMP+Y)));
+	_tmp2 = read(_pc++);
+	_tmp = read(_tmp2);
+	_tmp = set_h(_tmp, read((_tmp2+1) & 0xff));
+	if(page_changing(_tmp, _y)) {
+		read(set_l(_tmp,(byte)(_tmp+_y)));
 	}
-	A = X = read(TMP+Y);
-	set_nz(A);
+	_a = _x = read(_tmp+_y);
+	set_nz(_a);
 	fetch();
 
 lax_zpg
-	TMP = read(PC++);
-	A = X = read(TMP);
-	set_nz(A);
+	_tmp = read(_pc++);
+	_a = _x = read(_tmp);
+	set_nz(_a);
 	fetch();
 
 lax_zpy
-	TMP = read(PC++);
-	read(TMP);
-	TMP = (byte)(TMP+Y);
-	A = X = read(TMP);
-	set_nz(A);
+	_tmp = read(_pc++);
+	read(_tmp);
+	_tmp = (byte)(_tmp+_y);
+	_a = _x = read(_tmp);
+	set_nz(_a);
 	fetch();
 
 rla_aba
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2 = do_rol(TMP2);
-	write(TMP, TMP2);
-	A &= TMP2;
-	set_nz(A);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2 = do_rol(_tmp2);
+	write(_tmp, _tmp2);
+	_a &= _tmp2;
+	set_nz(_a);
 	fetch();
 
 rla_abx
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	read(set_l(TMP,(byte)(TMP+X)));
-	TMP += X;
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2 = do_rol(TMP2);
-	write(TMP, TMP2);
-	A &= TMP2;
-	set_nz(A);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	read(set_l(_tmp,(byte)(_tmp+_x)));
+	_tmp += _x;
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2 = do_rol(_tmp2);
+	write(_tmp, _tmp2);
+	_a &= _tmp2;
+	set_nz(_a);
 	fetch();
 
 rla_aby
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	read(set_l(TMP,(byte)(TMP+Y)));
-	TMP += Y;
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2 = do_rol(TMP2);
-	write(TMP, TMP2);
-	A &= TMP2;
-	set_nz(A);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	read(set_l(_tmp,(byte)(_tmp+_y)));
+	_tmp += _y;
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2 = do_rol(_tmp2);
+	write(_tmp, _tmp2);
+	_a &= _tmp2;
+	set_nz(_a);
 	fetch();
 
 rla_idx
-	TMP2 = read(PC++);
-	read(TMP2);
-	TMP2 += X;
-	TMP = read(TMP2 & 0xff);
-	TMP = set_h(TMP, read((TMP2+1) & 0xff));
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2 = do_rol(TMP2);
-	write(TMP, TMP2);
-	A &= TMP2;
-	set_nz(A);
+	_tmp2 = read(_pc++);
+	read(_tmp2);
+	_tmp2 += _x;
+	_tmp = read(_tmp2 & 0xff);
+	_tmp = set_h(_tmp, read((_tmp2+1) & 0xff));
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2 = do_rol(_tmp2);
+	write(_tmp, _tmp2);
+	_a &= _tmp2;
+	set_nz(_a);
 	fetch();
 
 rla_idy
-	TMP2 = read(PC++);
-	TMP = read(TMP2);
-	TMP = set_h(TMP, read((TMP2+1) & 0xff));
-	read(set_l(TMP,(byte)(TMP+Y)));
-	TMP += Y;
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2 = do_rol(TMP2);
-	write(TMP, TMP2);
-	A &= TMP2;
-	set_nz(A);
+	_tmp2 = read(_pc++);
+	_tmp = read(_tmp2);
+	_tmp = set_h(_tmp, read((_tmp2+1) & 0xff));
+	read(set_l(_tmp,(byte)(_tmp+_y)));
+	_tmp += _y;
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2 = do_rol(_tmp2);
+	write(_tmp, _tmp2);
+	_a &= _tmp2;
+	set_nz(_a);
 	fetch();
 
 rla_zpg
-	TMP = read(PC++);
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2 = do_rol(TMP2);
-	write(TMP, TMP2);
-	A &= TMP2;
-	set_nz(A);
+	_tmp = read(_pc++);
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2 = do_rol(_tmp2);
+	write(_tmp, _tmp2);
+	_a &= _tmp2;
+	set_nz(_a);
 	fetch();
 
 rla_zpx
-	TMP = read(PC++);
-	read(TMP);
-	TMP = (byte)(TMP+X);
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2 = do_rol(TMP2);
-	write(TMP, TMP2);
-	A &= TMP2;
-	set_nz(A);
+	_tmp = read(_pc++);
+	read(_tmp);
+	_tmp = (byte)(_tmp+_x);
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2 = do_rol(_tmp2);
+	write(_tmp, _tmp2);
+	_a &= _tmp2;
+	set_nz(_a);
 	fetch();
 
 rra_aba
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2 = do_ror(TMP2);
-	write(TMP, TMP2);
-	do_adc(TMP2);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2 = do_ror(_tmp2);
+	write(_tmp, _tmp2);
+	do_adc(_tmp2);
 	fetch();
 
 rra_abx
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	read(set_l(TMP,(byte)(TMP+X)));
-	TMP += X;
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2 = do_ror(TMP2);
-	write(TMP, TMP2);
-	do_adc(TMP2);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	read(set_l(_tmp,(byte)(_tmp+_x)));
+	_tmp += _x;
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2 = do_ror(_tmp2);
+	write(_tmp, _tmp2);
+	do_adc(_tmp2);
 	fetch();
 
 rra_aby
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	read(set_l(TMP,(byte)(TMP+Y)));
-	TMP += Y;
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2 = do_ror(TMP2);
-	write(TMP, TMP2);
-	do_adc(TMP2);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	read(set_l(_tmp,(byte)(_tmp+_y)));
+	_tmp += _y;
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2 = do_ror(_tmp2);
+	write(_tmp, _tmp2);
+	do_adc(_tmp2);
 	fetch();
 
 rra_idx
-	TMP2 = read(PC++);
-	read(TMP2);
-	TMP2 += X;
-	TMP = read(TMP2 & 0xff);
-	TMP = set_h(TMP, read((TMP2+1) & 0xff));
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2 = do_ror(TMP2);
-	write(TMP, TMP2);
-	do_adc(TMP2);
+	_tmp2 = read(_pc++);
+	read(_tmp2);
+	_tmp2 += _x;
+	_tmp = read(_tmp2 & 0xff);
+	_tmp = set_h(_tmp, read((_tmp2+1) & 0xff));
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2 = do_ror(_tmp2);
+	write(_tmp, _tmp2);
+	do_adc(_tmp2);
 	fetch();
 
 rra_idy
-	TMP2 = read(PC++);
-	TMP = read(TMP2);
-	TMP = set_h(TMP, read((TMP2+1) & 0xff));
-	read(set_l(TMP,(byte)(TMP+Y)));
-	TMP += Y;
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2 = do_ror(TMP2);
-	write(TMP, TMP2);
-	do_adc(TMP2);
+	_tmp2 = read(_pc++);
+	_tmp = read(_tmp2);
+	_tmp = set_h(_tmp, read((_tmp2+1) & 0xff));
+	read(set_l(_tmp,(byte)(_tmp+_y)));
+	_tmp += _y;
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2 = do_ror(_tmp2);
+	write(_tmp, _tmp2);
+	do_adc(_tmp2);
 	fetch();
 
 rra_zpg
-	TMP = read(PC++);
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2 = do_ror(TMP2);
-	write(TMP, TMP2);
-	do_adc(TMP2);
+	_tmp = read(_pc++);
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2 = do_ror(_tmp2);
+	write(_tmp, _tmp2);
+	do_adc(_tmp2);
 	fetch();
 
 rra_zpx
-	TMP = read(PC++);
-	read(TMP);
-	TMP = (byte)(TMP+X);
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2 = do_ror(TMP2);
-	write(TMP, TMP2);
-	do_adc(TMP2);
+	_tmp = read(_pc++);
+	read(_tmp);
+	_tmp = (byte)(_tmp+_x);
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2 = do_ror(_tmp2);
+	write(_tmp, _tmp2);
+	do_adc(_tmp2);
 	fetch();
 
 sax_aba
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	TMP2 = (byte)(A & X);
-	write(TMP, TMP2);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	_tmp2 = (byte)(_a & _x);
+	write(_tmp, _tmp2);
 	fetch();
 
 sax_idx
-	TMP2 = read(PC++);
-	read(TMP2);
-	TMP2 += X;
-	TMP = read(TMP2 & 0xff);
-	TMP = set_h(TMP, read((TMP2+1) & 0xff));
-	TMP2 = (byte)(A & X);
-	write(TMP, TMP2);
+	_tmp2 = read(_pc++);
+	read(_tmp2);
+	_tmp2 += _x;
+	_tmp = read(_tmp2 & 0xff);
+	_tmp = set_h(_tmp, read((_tmp2+1) & 0xff));
+	_tmp2 = (byte)(_a & _x);
+	write(_tmp, _tmp2);
 	fetch();
 
 sax_zpg
-	TMP = read(PC++);
-	TMP2 = (byte)(A & X);
-	write(TMP, TMP2);
+	_tmp = read(_pc++);
+	_tmp2 = (byte)(_a & _x);
+	write(_tmp, _tmp2);
 	fetch();
 
 sax_zpy
-	TMP = read(PC++);
-	read(TMP);
-	TMP = (byte)(TMP+Y);
-	TMP2 = (byte)(A & X);
-	write(TMP, TMP2);
+	_tmp = read(_pc++);
+	read(_tmp);
+	_tmp = (byte)(_tmp+_y);
+	_tmp2 = (byte)(_a & _x);
+	write(_tmp, _tmp2);
 	fetch();
 
 sbx_imm
-	TMP2 = read(PC++);
-	X &= A;
-	if(X < TMP2) {
-		P &= F_C ^ 0xFF;
+	_tmp2 = read(_pc++);
+	_x &= _a;
+	if(_x < _tmp2) {
+		_p &= F_C ^ 0xFF;
 	} else {
-		P |= F_C;
+		_p |= F_C;
 	}
-	X -= TMP2;
-	set_nz(X);
+	_x -= _tmp2;
+	set_nz(_x);
 	fetch();
 
 sha_aby
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	read(set_l(TMP,(byte)(TMP+Y)));
-	TMP2 = (byte)(A & X & ((TMP >> 8)+1));
-	if(page_changing(TMP, Y)) {
-		TMP = set_h((ushort)(TMP+Y), TMP2);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	read(set_l(_tmp,(byte)(_tmp+_y)));
+	_tmp2 = (byte)(_a & _x & ((_tmp >> 8)+1));
+	if(page_changing(_tmp, _y)) {
+		_tmp = set_h((ushort)(_tmp+_y), _tmp2);
 	} else {
-		TMP += Y;
+		_tmp += _y;
 	}
-	write(TMP, TMP2);
+	write(_tmp, _tmp2);
 	fetch();
 
 sha_idy
-	TMP2 = read(PC++);
-	TMP = read(TMP2);
-	TMP = set_h(TMP, read((TMP2+1) & 0xff));
-	read(set_l(TMP,(byte)(TMP+Y)));
-	TMP2 =(byte)(A & X & ((TMP >> 8)+1));
-	if(page_changing(TMP, Y)) {
-		TMP = set_h((ushort)(TMP+Y), TMP2);
+	_tmp2 = read(_pc++);
+	_tmp = read(_tmp2);
+	_tmp = set_h(_tmp, read((_tmp2+1) & 0xff));
+	read(set_l(_tmp,(byte)(_tmp+_y)));
+	_tmp2 =(byte)(_a & _x & ((_tmp >> 8)+1));
+	if(page_changing(_tmp, _y)) {
+		_tmp = set_h((ushort)(_tmp+_y), _tmp2);
 	} else {
-		TMP += Y;
+		_tmp += _y;
 	}
-	write(TMP, TMP2);
+	write(_tmp, _tmp2);
 	fetch();
 
 shs_aby
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	read(set_l(TMP,(byte)(TMP+Y)));
-	SP = set_l(SP,(byte)(A & X));
-	TMP2 =(byte)(A & X & ((TMP >> 8)+1));
-	if(page_changing(TMP, Y)) {
-		TMP = set_h((ushort)(TMP+Y), TMP2);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	read(set_l(_tmp,(byte)(_tmp+_y)));
+	_sp = set_l(_sp,(byte)(_a & _x));
+	_tmp2 =(byte)(_a & _x & ((_tmp >> 8)+1));
+	if(page_changing(_tmp, _y)) {
+		_tmp = set_h((ushort)(_tmp+_y), _tmp2);
 	} else {
-		TMP += Y;
+		_tmp += _y;
 	}
-	write(TMP, TMP2);
+	write(_tmp, _tmp2);
 	fetch();
 
 shx_aby
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	read(set_l(TMP,(byte)(TMP+Y)));
-	TMP2 =(byte)(X & ((TMP >> 8)+1));
-	if(page_changing(TMP, Y)) {
-		TMP = set_h((ushort)(TMP+Y), TMP2);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	read(set_l(_tmp,(byte)(_tmp+_y)));
+	_tmp2 =(byte)(_x & ((_tmp >> 8)+1));
+	if(page_changing(_tmp, _y)) {
+		_tmp = set_h((ushort)(_tmp+_y), _tmp2);
 	} else {
-		TMP += Y;
+		_tmp += _y;
 	}
-	write(TMP, TMP2);
+	write(_tmp, _tmp2);
 	fetch();
 
 shy_abx
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	read(set_l(TMP,(byte)(TMP+X)));
-	TMP2 =(byte)(Y & ((TMP >> 8)+1));
-	if(page_changing(TMP, X)) {
-		TMP = set_h((ushort)(TMP+X), TMP2);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	read(set_l(_tmp,(byte)(_tmp+_x)));
+	_tmp2 =(byte)(_y & ((_tmp >> 8)+1));
+	if(page_changing(_tmp, _x)) {
+		_tmp = set_h((ushort)(_tmp+_x), _tmp2);
 	} else {
-		TMP += X;
+		_tmp += _x;
 	}
-	write(TMP, TMP2);
+	write(_tmp, _tmp2);
 	fetch();
 
 slo_aba
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2 = do_asl(TMP2);
-	write(TMP, TMP2);
-	A |= TMP2;
-	set_nz(A);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2 = do_asl(_tmp2);
+	write(_tmp, _tmp2);
+	_a |= _tmp2;
+	set_nz(_a);
 	fetch();
 
 slo_abx
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	read(set_l(TMP,(byte)(TMP+X)));
-	TMP += X;
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2 = do_asl(TMP2);
-	write(TMP, TMP2);
-	A |= TMP2;
-	set_nz(A);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	read(set_l(_tmp,(byte)(_tmp+_x)));
+	_tmp += _x;
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2 = do_asl(_tmp2);
+	write(_tmp, _tmp2);
+	_a |= _tmp2;
+	set_nz(_a);
 	fetch();
 
 slo_aby
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	read(set_l(TMP,(byte)(TMP+Y)));
-	TMP += Y;
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2 = do_asl(TMP2);
-	write(TMP, TMP2);
-	A |= TMP2;
-	set_nz(A);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	read(set_l(_tmp,(byte)(_tmp+_y)));
+	_tmp += _y;
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2 = do_asl(_tmp2);
+	write(_tmp, _tmp2);
+	_a |= _tmp2;
+	set_nz(_a);
 	fetch();
 
 slo_idx
-	TMP2 = read(PC++);
-	read(TMP2);
-	TMP2 += X;
-	TMP = read(TMP2 & 0xff);
-	TMP = set_h(TMP, read((TMP2+1) & 0xff));
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2 = do_asl(TMP2);
-	write(TMP, TMP2);
-	A |= TMP2;
-	set_nz(A);
+	_tmp2 = read(_pc++);
+	read(_tmp2);
+	_tmp2 += _x;
+	_tmp = read(_tmp2 & 0xff);
+	_tmp = set_h(_tmp, read((_tmp2+1) & 0xff));
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2 = do_asl(_tmp2);
+	write(_tmp, _tmp2);
+	_a |= _tmp2;
+	set_nz(_a);
 	fetch();
 
 slo_idy
-	TMP2 = read(PC++);
-	TMP = read(TMP2);
-	TMP = set_h(TMP, read((TMP2+1) & 0xff));
-	read(set_l(TMP,(byte)(TMP+Y)));
-	TMP += Y;
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2 = do_asl(TMP2);
-	write(TMP, TMP2);
-	A |= TMP2;
-	set_nz(A);
+	_tmp2 = read(_pc++);
+	_tmp = read(_tmp2);
+	_tmp = set_h(_tmp, read((_tmp2+1) & 0xff));
+	read(set_l(_tmp,(byte)(_tmp+_y)));
+	_tmp += _y;
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2 = do_asl(_tmp2);
+	write(_tmp, _tmp2);
+	_a |= _tmp2;
+	set_nz(_a);
 	fetch();
 
 slo_zpg
-	TMP = read(PC++);
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2 = do_asl(TMP2);
-	write(TMP, TMP2);
-	A |= TMP2;
-	set_nz(A);
+	_tmp = read(_pc++);
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2 = do_asl(_tmp2);
+	write(_tmp, _tmp2);
+	_a |= _tmp2;
+	set_nz(_a);
 	fetch();
 
 slo_zpx
-	TMP = read(PC++);
-	read(TMP);
-	TMP = (byte)(TMP+X);
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2 = do_asl(TMP2);
-	write(TMP, TMP2);
-	A |= TMP2;
-	set_nz(A);
+	_tmp = read(_pc++);
+	read(_tmp);
+	_tmp = (byte)(_tmp+_x);
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2 = do_asl(_tmp2);
+	write(_tmp, _tmp2);
+	_a |= _tmp2;
+	set_nz(_a);
 	fetch();
 
 sre_aba
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2 = do_lsr(TMP2);
-	write(TMP, TMP2);
-	A ^= TMP2;
-	set_nz(A);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2 = do_lsr(_tmp2);
+	write(_tmp, _tmp2);
+	_a ^= _tmp2;
+	set_nz(_a);
 	fetch();
 
 sre_abx
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	read(set_l(TMP,(byte)(TMP+X)));
-	TMP += X;
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2 = do_lsr(TMP2);
-	write(TMP, TMP2);
-	A ^= TMP2;
-	set_nz(A);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	read(set_l(_tmp,(byte)(_tmp+_x)));
+	_tmp += _x;
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2 = do_lsr(_tmp2);
+	write(_tmp, _tmp2);
+	_a ^= _tmp2;
+	set_nz(_a);
 	fetch();
 
 sre_aby
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	read(set_l(TMP,(byte)(TMP+Y)));
-	TMP += Y;
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2 = do_lsr(TMP2);
-	write(TMP, TMP2);
-	A ^= TMP2;
-	set_nz(A);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	read(set_l(_tmp,(byte)(_tmp+_y)));
+	_tmp += _y;
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2 = do_lsr(_tmp2);
+	write(_tmp, _tmp2);
+	_a ^= _tmp2;
+	set_nz(_a);
 	fetch();
 
 sre_idx
-	TMP2 = read(PC++);
-	read(TMP2);
-	TMP2 += X;
-	TMP = read(TMP2 & 0xff);
-	TMP = set_h(TMP, read((TMP2+1) & 0xff));
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2 = do_lsr(TMP2);
-	write(TMP, TMP2);
-	A ^= TMP2;
-	set_nz(A);
+	_tmp2 = read(_pc++);
+	read(_tmp2);
+	_tmp2 += _x;
+	_tmp = read(_tmp2 & 0xff);
+	_tmp = set_h(_tmp, read((_tmp2+1) & 0xff));
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2 = do_lsr(_tmp2);
+	write(_tmp, _tmp2);
+	_a ^= _tmp2;
+	set_nz(_a);
 	fetch();
 
 sre_idy
-	TMP2 = read(PC++);
-	TMP = read(TMP2);
-	TMP = set_h(TMP, read((TMP2+1) & 0xff));
-	read(set_l(TMP,(byte)(TMP+Y)));
-	TMP += Y;
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2 = do_lsr(TMP2);
-	write(TMP, TMP2);
-	A ^= TMP2;
-	set_nz(A);
+	_tmp2 = read(_pc++);
+	_tmp = read(_tmp2);
+	_tmp = set_h(_tmp, read((_tmp2+1) & 0xff));
+	read(set_l(_tmp,(byte)(_tmp+_y)));
+	_tmp += _y;
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2 = do_lsr(_tmp2);
+	write(_tmp, _tmp2);
+	_a ^= _tmp2;
+	set_nz(_a);
 	fetch();
 
 sre_zpg
-	TMP = read(PC++);
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2 = do_lsr(TMP2);
-	write(TMP, TMP2);
-	A ^= TMP2;
-	set_nz(A);
+	_tmp = read(_pc++);
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2 = do_lsr(_tmp2);
+	write(_tmp, _tmp2);
+	_a ^= _tmp2;
+	set_nz(_a);
 	fetch();
 
 sre_zpx
-	TMP = read(PC++);
-	read(TMP);
-	TMP = (byte)(TMP+X);
-	TMP2 = read(TMP);
-	write(TMP, TMP2);
-	TMP2 = do_lsr(TMP2);
-	write(TMP, TMP2);
-	A ^= TMP2;
-	set_nz(A);
+	_tmp = read(_pc++);
+	read(_tmp);
+	_tmp = (byte)(_tmp+_x);
+	_tmp2 = read(_tmp);
+	write(_tmp, _tmp2);
+	_tmp2 = do_lsr(_tmp2);
+	write(_tmp, _tmp2);
+	_a ^= _tmp2;
+	set_nz(_a);
 	fetch();
 
 # undocumented unreliable instructions
 anc_imm
-	A &= read(PC++);
-	set_nz(A);
-	if((A & 0x80) != 0) {
-		P |= F_C;
+	_a &= read(_pc++);
+	set_nz(_a);
+	if((_a & 0x80) != 0) {
+		_p |= F_C;
 	} else {
-		P &= F_C ^ 0xFF;
+		_p &= F_C ^ 0xFF;
 	}
 	fetch();
 
 ane_imm
-	TMP2 = read(PC++);
-	A &= (byte)(TMP2 & X);
-	set_nz(A);
+	_tmp2 = read(_pc++);
+	_a &= (byte)(_tmp2 & _x);
+	set_nz(_a);
 	fetch();
 
 asr_imm
-	A &= read(PC++);
-	A = do_lsr(A);
+	_a &= read(_pc++);
+	_a = do_lsr(_a);
 	fetch();
 
 arr_imm
-	A &= read(PC++);
+	_a &= read(_pc++);
 	do_arr();
 	fetch();
 
 las_aby
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	if(page_changing(TMP, Y)) {
-		read(set_l(TMP,(byte)(TMP+Y)));
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	if(page_changing(_tmp, _y)) {
+		read(set_l(_tmp,(byte)(_tmp+_y)));
 	}
-	TMP2 = read(TMP+Y);
-	A = (byte)(TMP2 | 0x51);
-	X = 0xff;
-	set_nz(TMP2);
+	_tmp2 = read(_tmp+_y);
+	_a = (byte)(_tmp2 | 0x51);
+	_x = 0xff;
+	set_nz(_tmp2);
 	fetch();
 
 lxa_imm
-	A = X = read(PC++);
-	set_nz(A);
+	_a = _x = read(_pc++);
+	set_nz(_a);
 	fetch();
 
 # nop variants
 nop_aba
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	read(TMP);
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	read(_tmp);
 	fetch();
 
 nop_abx
-	TMP = read(PC++);
-	TMP = set_h(TMP, read(PC++));
-	if(page_changing(TMP, X)) {
-		read(set_l(TMP,(byte)(TMP+X)));
+	_tmp = read(_pc++);
+	_tmp = set_h(_tmp, read(_pc++));
+	if(page_changing(_tmp, _x)) {
+		read(set_l(_tmp,(byte)(_tmp+_x)));
 	}
-	read(TMP + X);
+	read(_tmp + _x);
 	fetch();
 
 nop_imm
-	read(PC++);
+	read(_pc++);
 	fetch();
 
 nop_zpg
-	TMP = read(PC++);
-	read(TMP);
+	_tmp = read(_pc++);
+	read(_tmp);
 	fetch();
 
 nop_zpx
-	TMP = read(PC++);
-	read(TMP);
-	read((byte)(TMP+X));
+	_tmp = read(_pc++);
+	read(_tmp);
+	read((byte)(_tmp+_x));
 	fetch();
 
 # system killers
 kil_non
-	read(PC++);
+	read(_pc++);
 	read(0xffff);
 	read(0xfffe);
 	read(0xfffe);

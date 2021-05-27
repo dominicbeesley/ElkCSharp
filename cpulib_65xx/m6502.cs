@@ -57,55 +57,70 @@ namespace cpulib_65xx {
 		/// </summary>
 		protected StatFn PrefetchNextFn { get; set; }
 
+		private ushort _pc;
 		/// <summary>
 		/// program counter
 		/// </summary>
-		public ushort PC { get; set; }
-		
+		public ushort PC { get => _pc; set => _pc = value; }
+
+		private ushort _sp;
 		/// <summary>
 		/// stack pointer (always 100 - 1FF)
 		/// </summary>
-		public ushort SP { get; set; }
-		
+		/// 
+		public ushort SP { get => _sp; set => _sp = value; }
+
+		private ushort _tmp;
+
 		/// <summary>
 		/// temporary internal values
 		/// </summary>
-		protected ushort TMP { get; set; }
+		protected ushort TMP { get => _tmp; set => _tmp = value; }
 
+
+		private byte _tmp2;
 		/// <summary>
 		/// another temporary internal value, 8 bits this time
 		/// </summary>
-		protected byte TMP2 { get; set; }
+		protected byte TMP2 { get => _tmp2; set => _tmp2 = value; }
 
+		private byte _a;
 		/// <summary>
 		/// Accumulator
 		/// </summary>
-		public byte A { get; set; }
+		public byte A { get => _a; set => _a = value; }
 
+		private byte _x;
 		/// <summary>
 		/// X index register
 		/// </summary>
-		public byte X { get; set; }
+		public byte X { get => _x; set => _x = value; }
 
+		private byte _y;
 		/// <summary>
 		/// Y index register
 		/// </summary>
-		public byte Y { get; set; }
+		public byte Y { get => _y; set => _y = value; }
 
+
+		private byte _p;
 		/// <summary>
 		/// Processor status
 		/// </summary>
-		public byte P { get; set; }
+		public byte P { get => _p; set => _p = value; }
 
+		private byte _ir;
 		/// <summary>
 		/// Prefetched instruction register
 		/// </summary>
-		protected byte IR { get; set; }
+		protected byte IR { get => _ir; set => _ir = value; }
 
+
+		private ushort _forceJMPaddr;
 		/// <summary>
 		/// special var for forced jmp
 		/// </summary>
-		protected ushort forceJMPaddr { get; set; }
+		protected ushort forceJMPaddr { get => _forceJMPaddr; set => _forceJMPaddr = value; }
 
 
 		bool	  skip_ints_next;			  /* Do not check for interrupts on this fetch*/
@@ -225,44 +240,44 @@ namespace cpulib_65xx {
 
 		void do_adc_d(byte val)
 		{
-			byte c = ((P & F_C) != 0) ? (byte)1 : (byte)0;
-			P &= (F_N | F_V | F_Z | F_C)^0xFF;
-			byte al = (byte)((A & 15) + (val & 15) + c);
+			byte c = ((_p & F_C) != 0) ? (byte)1 : (byte)0;
+			_p &= (F_N | F_V | F_Z | F_C)^0xFF;
+			byte al = (byte)((_a & 15) + (val & 15) + c);
 			if (al > 9)
 				al += 6;
-			byte ah = (byte)((A >> 4) + (val >> 4) + ((al > 15)?1:0));
-			if ((byte)(A + val + c) == 0)
-				P |= F_Z;
+			byte ah = (byte)((_a >> 4) + (val >> 4) + ((al > 15)?1:0));
+			if ((byte)(_a + val + c) == 0)
+				_p |= F_Z;
 			else if ((ah & 8) != 0)
-				P |= F_N;
-			if ((~(A ^ val) & (A ^ (ah << 4)) & 0x80) != 0)
-				P |= F_V;
+				_a |= F_N;
+			if ((~(_a ^ val) & (_a ^ (ah << 4)) & 0x80) != 0)
+				_p |= F_V;
 			if (ah > 9)
 				ah += 6;
 			if (ah > 15)
-				P |= F_C;
-			A = (byte)((ah << 4) | (al & 15));
+				_p |= F_C;
+			_a = (byte)((ah << 4) | (al & 15));
 		}
 
 		void do_adc_nd(byte val)
 		{
 			ushort sum;
-			sum = (ushort)(A + val + (((P & F_C) != 0) ? 1 : 0));
-			P &= (F_N | F_V | F_Z | F_C)^0xFF;
+			sum = (ushort)(_a + val + (((_p & F_C) != 0) ? 1 : 0));
+			_p &= (F_N | F_V | F_Z | F_C)^0xFF;
 			if ((byte)sum == 0)
-				P |= F_Z;
+				_p |= F_Z;
 			else if ((sum & 0x80) != 0)
-				P |= F_N;
-			if ((~(A ^ val) & (A ^ sum) & 0x80) != 0)
-				P |= F_V;
+				_p |= F_N;
+			if ((~(_a ^ val) & (_a ^ sum) & 0x80) != 0)
+				_p |= F_V;
 			if ((sum & 0xff00) != 0)
-				P |= F_C;
-			A = (byte)sum;
+				_p |= F_C;
+			_a = (byte)sum;
 		}
 
 		void do_adc(byte val)
 		{
-			if ((P & F_D) != 0)
+			if ((_p & F_D) != 0)
 				do_adc_d(val);
 			else
 				do_adc_nd(val);
@@ -270,49 +285,49 @@ namespace cpulib_65xx {
 
 		void do_arr_nd()
 		{
-			bool c = (P & F_C) != 0;
-			P &= (F_N | F_Z | F_C | F_V) ^ 0xFF;
-			A >>= 1;
+			bool c = (_p & F_C) != 0;
+			_p &= (F_N | F_Z | F_C | F_V) ^ 0xFF;
+			_a >>= 1;
 			if (c)
-				A |= 0x80;
-			if (A == 0)
-				P |= F_Z;
-			else if ((A & 0x80) != 0)
-				P |= F_N;
-			if ((A & 0x40) != 0)
-				P |= F_V | F_C;
-			if ((A & 0x20) != 0)
-				P ^= F_V;
+				_a |= 0x80;
+			if (_a == 0)
+				_p |= F_Z;
+			else if ((_a & 0x80) != 0)
+				_p |= F_N;
+			if ((_a & 0x40) != 0)
+				_p |= F_V | F_C;
+			if ((_a & 0x20) != 0)
+				_p ^= F_V;
 		}
 
 		void do_arr_d()
 		{
 			// The adc/ror interaction gives an extremely weird result
-			bool c = (P & F_C) != 0;
-			P &= (F_N | F_Z | F_C | F_V) ^ 0xFF;
-			byte a = (byte)(A >> 1);
+			bool c = (_p & F_C) != 0;
+			_p &= (F_N | F_Z | F_C | F_V) ^ 0xFF;
+			byte a = (byte)(_a >> 1);
 			if (c)
 				a |= 0x80;
 			if (a == 0)
-				P |= F_Z;
+				_p |= F_Z;
 			else if ((a & 0x80) != 0)
-				P |= F_N;
-			if (((a ^ A) & 0x40) != 0)
-				P |= F_V;
+				_p |= F_N;
+			if (((a ^ _a) & 0x40) != 0)
+				_p |= F_V;
 
-			if ((A & 0x0f) >= 0x05)
+			if ((_a & 0x0f) >= 0x05)
 				a = (byte)(((a + 6) & 0x0f) | (a & 0xf0));
 
-			if ((A & 0xf0) >= 0x50) {
+			if ((_a & 0xf0) >= 0x50) {
 				a += 0x60;
-				P |= F_C;
+				_p |= F_C;
 			}
-			A = a;
+			_a = a;
 		}
 
 		void do_arr()
 		{
-			if ((P & F_D) != 0)
+			if ((_p & F_D) != 0)
 				do_arr_d();
 			else
 				do_arr_nd();
@@ -320,56 +335,56 @@ namespace cpulib_65xx {
 
 		void do_cmp(byte val1, byte val2)
 		{
-			P &= (F_N | F_Z | F_C) ^ 0xFF;
+			_p &= (F_N | F_Z | F_C) ^ 0xFF;
 			ushort r = (ushort)(val1 - val2);
 			if (r == 0)
-				P |= F_Z;
+				_p |= F_Z;
 			else if ((r & 0x80) !=0 )
-				P |= F_N;
+				_p |= F_N;
 			if ((r & 0xff00) == 0)
-				P |= F_C;
+				_p |= F_C;
 		}
 
 		void do_sbc_d(byte val)
 		{
-			byte c = ((P & F_C)!=0) ? (byte)0 : (byte)1;
-			P &= (F_N | F_V | F_Z | F_C) ^ 0xFF;
-			ushort diff = (ushort)(A - val - c);
-			byte al = (byte)((A & 15) - (val & 15) - c);
+			byte c = ((_p & F_C)!=0) ? (byte)0 : (byte)1;
+			_p &= (F_N | F_V | F_Z | F_C) ^ 0xFF;
+			ushort diff = (ushort)(_a - val - c);
+			byte al = (byte)((_a & 15) - (val & 15) - c);
 			if ((al & 0x80) != 0)
 				al -= 6;
-			byte ah = (byte)((A >> 4) - (val >> 4) - ((al & 0x80)!=0?(byte)1:(byte)0));
+			byte ah = (byte)((_a >> 4) - (val >> 4) - ((al & 0x80)!=0?(byte)1:(byte)0));
 			if (((byte)diff) != 0)
-				P |= F_Z;
+				_p |= F_Z;
 			else if ((diff & 0x80) != 0)
-				P |= F_N;
-			if (((A ^ val) & (A ^ diff) & 0x80) != 0)
-				P |= F_V;
+				_p |= F_N;
+			if (((_a ^ val) & (_a ^ diff) & 0x80) != 0)
+				_p |= F_V;
 			if ((diff & 0xff00) != 0)
-				P |= F_C;
+				_p |= F_C;
 			if ((ah & 0x80) != 0)
 				ah -= 6;
-			A = (byte)((ah << 4) | (al & 15));
+			_a = (byte)((ah << 4) | (al & 15));
 		}
 
 		void do_sbc_nd(byte val)
 		{
-			ushort diff = (ushort)(A - val - ((P & F_C)!=0 ? 0 : 1));
-			P &= (F_N | F_V | F_Z | F_C) ^ 0xFF;
+			ushort diff = (ushort)(_a - val - ((_p & F_C)!=0 ? 0 : 1));
+			_p &= (F_N | F_V | F_Z | F_C) ^ 0xFF;
 			if ((byte)diff != 0)
-				P |= F_Z;
+				_p |= F_Z;
 			else if ((diff & 0x80) != 0)
-				P |= F_N;
-			if (((A ^ val) & (A ^ diff) & 0x80) != 0)
-				P |= F_V;
+				_p |= F_N;
+			if (((_a ^ val) & (_a ^ diff) & 0x80) != 0)
+				_p |= F_V;
 			if ((diff & 0xff00) == 0)
-				P |= F_C;
-			A = (byte)diff;
+				_p |= F_C;
+			_a = (byte)diff;
 		}
 
 		void do_sbc(byte val)
 		{
-			if ((P & F_D) != 0)
+			if ((_p & F_D) != 0)
 				do_sbc_d(val);
 			else
 				do_sbc_nd(val);
@@ -377,82 +392,82 @@ namespace cpulib_65xx {
 
 		void do_bit(byte val)
 		{
-			P &= (F_N | F_Z | F_V) ^ 0xFF;
-			byte r = (byte)(A & val);
+			_p &= (F_N | F_Z | F_V) ^ 0xFF;
+			byte r = (byte)(_a & val);
 			if (r == 0)
-				P |= F_Z;
+				_p |= F_Z;
 			if ((val & 0x80) != 0)
-				P |= F_N;
+				_p |= F_N;
 			if ((val & 0x40) != 0)
-				P |= F_V;
+				_p |= F_V;
 		}
 
 		byte do_asl(byte v)
 		{
-			P &= (F_N | F_Z | F_C) ^ 0xFF;
+			_p &= (F_N | F_Z | F_C) ^ 0xFF;
 			byte r = (byte)(v << 1);
 			if (r == 0)
-				P |= F_Z;
+				_p |= F_Z;
 			else if ((r & 0x80) != 0)
-				P |= F_N;
+				_p |= F_N;
 			if ((v & 0x80) != 0)
-				P |= F_C;
+				_p |= F_C;
 			return r;
 		}
 
 		byte do_lsr(byte v)
 		{
-			P &= (F_N | F_Z | F_C) ^ 0xFF;
+			_p &= (F_N | F_Z | F_C) ^ 0xFF;
 			if ((v & 1) != 0)
-				P |= F_C;
+				_p |= F_C;
 			v >>= 1;
 			if (v != 0)
-				P |= F_Z;
+				_p |= F_Z;
 			return v;
 		}
 
 		byte do_ror(byte v)
 		{
-			bool c = (P & F_C) != 0;
-			P &= (F_N | F_Z | F_C) ^ 0xFF;
+			bool c = (_p & F_C) != 0;
+			_p &= (F_N | F_Z | F_C) ^ 0xFF;
 			if ((v & 1) != 0)
-				P |= F_C;
+				_p |= F_C;
 			v >>= 1;
 			if (c)
 				v |= 0x80;
 			if (v == 0)
-				P |= F_Z;
+				_p |= F_Z;
 			else if ((v & 0x80) != 0)
-				P |= F_N;
+				_p |= F_N;
 			return v;
 		}
 
 		byte do_rol(byte v)
 		{
-			bool c = (P & F_C) != 0;
-			P &= (F_N | F_Z | F_C) ^ 0xFF;
+			bool c = (_p & F_C) != 0;
+			_p &= (F_N | F_Z | F_C) ^ 0xFF;
 			if ((v & 0x80) != 0)
-				P |= F_C;
+				_p |= F_C;
 			v <<= 1;
 			if (c)
 				v |= 0x01;
 			if (v == 0)
-				P |= F_Z;
+				_p |= F_Z;
 			else if ((v & 0x80) != 0)
-				P |= F_N;
+				_p |= F_N;
 			return v;
 		}
 
 		byte do_asr(byte v)
 		{
-			P &= (F_N | F_Z | F_C) ^ 0xFF;
+			_p &= (F_N | F_Z | F_C) ^ 0xFF;
 			if ((v & 1) != 0)
-				P |= F_C;
+				_p |= F_C;
 			v >>= 1;
 			if (v == 0)
-				P |= F_Z;
+				_p |= F_Z;
 			else if ((v & 0x40) != 0) {
-				P |= F_N;
+				_p |= F_N;
 				v |= 0x80;
 			}
 			return v;
@@ -467,7 +482,7 @@ namespace cpulib_65xx {
 			case cpu_65xx_inputlines.INPUT_LINE_NMI: nmi_state = nmi_state || (state == cpu_65xx_inputstate.ASSERT_LINE); break;
 			case cpu_65xx_inputlines.INPUT_LINE_V:
 				if (!v_state && state == cpu_65xx_inputstate.ASSERT_LINE)
-					P |= F_V;
+					_p |= F_V;
 				v_state = state == cpu_65xx_inputstate.ASSERT_LINE;
 				break;
 			case cpu_65xx_inputlines.INPUT_LINE_HALT:
@@ -478,11 +493,11 @@ namespace cpulib_65xx {
 
 		protected void set_nz(byte v)
 		{
-			P &= (F_Z | F_N) ^ 0xFF;
+			_p &= (F_Z | F_N) ^ 0xFF;
 			if ((v & 0x80) != 0)
-				P |= F_N;
+				_p |= F_N;
 			if (v == 0)
-				P |= F_Z;
+				_p |= F_Z;
 		}
 
 
@@ -491,16 +506,16 @@ namespace cpulib_65xx {
 
 		protected void m6502_device_postfetch()
 		{
-			IR = DAT;
-			Sync = false;
+			_ir = _dat;
+			_sync = false;
 			//sync_w(CLEAR_LINE);
 
-			if (!skip_ints_next && (nmi_state || (irq_state && !((P & F_I)!=0))) && !inhibit_interrupts) {
+			if (!skip_ints_next && (nmi_state || (irq_state && !((_p & F_I)!=0))) && !inhibit_interrupts) {
 				irq_taken = true;
-				IR = 0x00;
+				_ir = 0x00;
 			}
 			else
-				PC++;
+				_pc++;
 			skip_ints_next = false;
 
 			postfetch_int();
@@ -508,10 +523,10 @@ namespace cpulib_65xx {
 
 		protected void m6502_device_prefetch()
 		{
-			Sync = true;
+			_sync = true;
 			//sync_w(ASSERT_LINE);
-			ADDR = PC;
-			RNW = true;
+			_addr = _pc;
+			_rnw = true;
 			NextFn = PrefetchNextFn;
 		}
 
@@ -529,13 +544,13 @@ namespace cpulib_65xx {
 		}
 
 		protected void m6502_device_forceJMP() {
-			PC = forceJMPaddr;
+			_pc = _forceJMPaddr;
 			m6502_device_fetch();
 		}
 
 		protected void forceJMP(ushort val)
 		{
-			forceJMPaddr = val;
+			_forceJMPaddr = val;
 			NextFn = m6502_device_forceJMP;
 		}
 
