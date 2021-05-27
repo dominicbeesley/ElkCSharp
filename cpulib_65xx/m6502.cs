@@ -8,8 +8,8 @@ namespace cpulib_65xx {
 	{
 
 
-		public m6502_device() :
-			base()
+		public m6502_device(ISYSCpu syscpu) :
+			base(syscpu)
 
 		{
 			PC = 0;
@@ -164,7 +164,10 @@ namespace cpulib_65xx {
 			if (!halt_state)
 			{
 				NextFn?.Invoke();
-				return true;
+				if (RNW)
+					return SysCpu.Read(_addr, ref _dat);
+				else
+					return SysCpu.Write(_addr, _dat);
 			}
 			else {
 				return false;
@@ -489,7 +492,7 @@ namespace cpulib_65xx {
 		protected void m6502_device_postfetch()
 		{
 			IR = DAT;
-			sync = false;
+			Sync = false;
 			//sync_w(CLEAR_LINE);
 
 			if (!skip_ints_next && (nmi_state || (irq_state && !((P & F_I)!=0))) && !inhibit_interrupts) {
@@ -505,7 +508,7 @@ namespace cpulib_65xx {
 
 		protected void m6502_device_prefetch()
 		{
-			sync = true;
+			Sync = true;
 			//sync_w(ASSERT_LINE);
 			ADDR = PC;
 			RNW = true;

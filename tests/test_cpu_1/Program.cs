@@ -6,7 +6,7 @@ using cpulib_65xx;
 
 namespace test_cpu_1
 {
-    class Program
+    class Program : ISYSCpu
     {
 
 
@@ -14,14 +14,16 @@ namespace test_cpu_1
 
         m6502_device cpu;
 
-        void read()
+        public bool Read(ushort addr, ref byte dat)
         {
-            cpu.DAT = store[cpu.ADDR];
+            dat = store[addr];
+			return true;
         }
 
-		void write()
+		public bool Write(ushort addr, byte dat)
         {
-            store[cpu.ADDR] = cpu.DAT;
+            store[addr] = dat;
+			return true;
         }
 
 
@@ -82,7 +84,7 @@ and returns the flat-out clock speed
 				brMos.Read(store, 0xC000, 0x4000);
             }
 
-			cpu = new m6502_device();
+			cpu = new m6502_device(this);
 
 			cpu.start();
 			cpu.reset();
@@ -95,14 +97,6 @@ and returns the flat-out clock speed
 			for (long i = 0; i < MAXCYCLES; i++)
 			{
 				cpu.tick();
-				if (cpu.RNW)
-				{
-					read();
-				}
-				else
-				{
-					write();
-				}
 
 				//cout << cpu;
 			}

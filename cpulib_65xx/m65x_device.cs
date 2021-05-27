@@ -4,15 +4,20 @@ namespace cpulib_65xx
 {
 
 	
+	
 
 	public abstract class m65x_device : cpu_device
 	{
 
-		public m65x_device() : base()
+		public ISYSCpu SysCpu { get; private set; }
+
+		public m65x_device(ISYSCpu syscpu) : base()
 		{
+			SysCpu = syscpu;
+
 			//sync_w(*this),
 			DAT = 0;
-			sync = false;
+			Sync = false;
 			ADDR = 0;
 			RNW = true;
 		}
@@ -21,16 +26,23 @@ namespace cpulib_65xx
 		{
 
 			RNW = true;
-			sync = false;
+			Sync = false;
 			ADDR = 0;
 			DAT = 0;
 		}
 
 
-		public ushort ADDR { get; protected set; }
-		public byte DAT { get; set; }
-		public bool RNW { get; protected set; }
-		public bool sync { get; protected set; }
+		protected ushort _addr;
+		public ushort ADDR { get => _addr; protected set => _addr = value; }
+
+		protected byte _dat;
+		public byte DAT { get => _dat; set => _dat = value; }
+
+		protected bool _rnw;
+		public bool RNW { get => _rnw; protected set => _rnw = value; }
+
+		protected bool _sync;
+		public bool Sync { get => _sync; protected set => _sync = value; }
 
 		//should really be abstract but then blitter which doesn't have the concept would have to override
 		protected virtual void postfetch_int() { }
@@ -43,7 +55,7 @@ namespace cpulib_65xx
 		public override void reset()
 		{
 
-			sync = false;
+			Sync = false;
 			RNW = true;
 		}
 
