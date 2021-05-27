@@ -1,0 +1,20 @@
+# license:BSD-3-Clause
+# copyright-holders:Olivier Galibert
+# m65ce02 - Adds the B and Z registers to the r65c02, a bunch of instructions, and changes most of the timings
+ce:brk_imp  ce:ora_idx  ce:cle_imp  ce:see_imp  ce:tsb_zpg  ce:ora_zpg  ce:asl_zpg  ce:rmb_bzp  ce:php_imp  ora_imm     ce:asl_acc  ce:tsy_imp     ce:tsb_aba  ora_aba     ce:asl_aba  ce:bbr_zpb
+ce:bpl_rel  ce:ora_idy  ce:ora_idz  ce:bpl_rw2  ce:trb_zpg  ce:ora_zpx  ce:asl_zpx  ce:rmb_bzp  ce:clc_imp  ce:ora_aby  ce:inc_acc  ce:inz_imp     ce:trb_aba  ce:ora_abx  ce:asl_abx  ce:bbr_zpb
+ce:jsr_adr  ce:and_idx  ce:jsr_ind  ce:jsr_iax  ce:bit_zpg  ce:and_zpg  ce:rol_zpg  ce:rmb_bzp  ce:plp_imp  and_imm     ce:rol_acc  ce:tys_imp     bit_aba     and_aba     ce:rol_aba  ce:bbr_zpb
+ce:bmi_rel  ce:and_idy  ce:and_idz  ce:bmi_rw2  ce:bit_zpx  ce:and_zpx  ce:rol_zpx  ce:rmb_bzp  ce:sec_imp  ce:and_aby  ce:dec_acc  ce:dez_imp     ce:bit_abx  ce:and_abx  ce:rol_abx  ce:bbr_zpb
+ce:rti_imp  ce:eor_idx  ce:neg_acc  ce:asr_acc  ce:asr_zpg  ce:eor_zpg  ce:lsr_zpg  ce:rmb_bzp  ce:pha_imp  eor_imm     ce:lsr_acc  ce:taz_imp     jmp_adr     eor_aba     ce:lsr_aba  ce:bbr_zpb
+ce:bvc_rel  ce:eor_idy  ce:eor_idz  ce:bvc_rw2  ce:asr_zpx  ce:eor_zpx  ce:lsr_zpx  ce:rmb_bzp  ce:cli_imp  ce:eor_aby  ce:phy_imp  ce:tab_imp     ce:aug_iw3  ce:eor_abx  ce:lsr_abx  ce:bbr_zpb
+ce:rts_imp  ce:adc_idx  ce:rtn_imm  ce:bsr_rw2  ce:stz_zpg  ce:adc_zpg  ce:ror_zpg  ce:rmb_bzp  ce:pla_imp  ce:adc_imm  ce:ror_acc  ce:tza_imp     ce:jmp_ind  ce:adc_aba  ce:ror_aba  ce:bbr_zpb
+ce:bvs_rel  ce:adc_idy  ce:adc_idz  ce:bvs_rw2  ce:stz_zpx  ce:adc_zpx  ce:ror_zpx  ce:rmb_bzp  ce:sei_imp  ce:adc_aby  ce:ply_imp  ce:tba_imp     ce:jmp_iax  ce:adc_abx  ce:ror_abx  ce:bbr_zpb
+ce:bra_rel  ce:sta_idx  ce:sta_isy  ce:bra_rw2  ce:sty_zpg  ce:sta_zpg  ce:stx_zpg  ce:smb_bzp  ce:dey_imp  ce:bit_imm  ce:txa_imp  ce:sty_abx     sty_aba     sta_aba     stx_aba     ce:bbs_zpb
+ce:bcc_rel  ce:sta_idy  ce:sta_idz  ce:bcc_rw2  ce:sty_zpx  ce:sta_zpx  ce:stx_zpy  ce:smb_bzp  ce:tya_imp  ce:sta_aby  ce:txs_imp  ce:stx_aby     ce:stz_aba  ce:sta_abx  ce:stz_abx  ce:bbs_zpb
+ldy_imm     ce:lda_idx  ldx_imm     ce:ldz_imm  ce:ldy_zpg  ce:lda_zpg  ce:ldx_zpg  ce:smb_bzp  ce:tay_imp  lda_imm     ce:tax_imp  ce:ldz_aba     ldy_aba     lda_aba     ldx_aba     ce:bbs_zpb
+ce:bcs_rel  ce:lda_idy  ce:lda_idz  ce:bcs_rw2  ce:ldy_zpx  ce:lda_zpx  ce:ldx_zpy  ce:smb_bzp  ce:clv_imp  ce:lda_aby  ce:tsx_imp  ce:ldz_abx     ce:ldy_abx  ce:lda_abx  ce:ldx_aby  ce:bbs_zpb
+cpy_imm     ce:cmp_idx  ce:cpz_imm  ce:dew_zpg  ce:cpy_zpg  ce:cmp_zpg  ce:dec_zpg  ce:smb_bzp  ce:iny_imp  cmp_imm     ce:dex_imp  ce:asw_aba     cpy_aba     cmp_aba     ce:dec_aba  ce:bbs_zpb
+ce:bne_rel  ce:cmp_idy  ce:cmp_idz  ce:bne_rw2  ce:cpz_zpg  ce:cmp_zpx  ce:dec_zpx  ce:smb_bzp  ce:cld_imp  ce:cmp_aby  ce:phx_imp  ce:phz_imp     ce:cpz_aba  ce:cmp_abx  ce:dec_abx  ce:bbs_zpb
+cpx_imm     ce:sbc_idx  ce:lda_isy  ce:inw_zpg  ce:cpx_zpg  ce:sbc_zpg  ce:inc_zpg  ce:smb_bzp  ce:inx_imp  ce:sbc_imm  c:nop_imp   ce:row_aba     cpx_aba     ce:sbc_aba  ce:inc_aba  ce:bbs_zpb
+ce:beq_rel  ce:sbc_idy  ce:sbc_idz  ce:beq_rw2  ce:phw_iw2  ce:sbc_zpx  ce:inc_zpx  ce:smb_bzp  ce:sed_imp  ce:sbc_aby  ce:plx_imp  ce:plz_imp     ce:phw_aba  ce:sbc_abx  ce:inc_abx  ce:bbs_zpb
+c:reset
