@@ -97,6 +97,7 @@ and returns the flat-out clock speed
 			for (long i = 0; i < MAXCYCLES; i++)
 			{
 				cpu.tick();
+				//Console.WriteLine($"PC={cpu.PC:X4},A={cpu.A:X2},X={cpu.X:X2},Y={cpu.Y:X2},P={cpu.P:X2},ADDR={cpu.ADDR:X4},DAT={cpu.DAT:X2}");
 
 				//cout << cpu;
 			}

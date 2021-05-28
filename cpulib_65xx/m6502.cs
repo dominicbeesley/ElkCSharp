@@ -174,12 +174,25 @@ namespace cpulib_65xx {
 		}
 
 
+		protected void _doread(ushort a)
+        {
+			_addr = a;
+			_rnw = true;
+        }
+
+		protected void _dowrite(ushort a, byte d)
+        {
+			_addr = a;
+			_rnw = false;
+			_dat = d;
+        }
+
 		public override bool tick() {
 			//TODO: halt needs to _not_ halt on writes for NMOS
 			if (!halt_state)
 			{
 				NextFn?.Invoke();
-				if (RNW)
+				if (_rnw)
 					return SysCpu.Read(_addr, ref _dat);
 				else
 					return SysCpu.Write(_addr, _dat);

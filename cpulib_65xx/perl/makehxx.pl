@@ -70,7 +70,7 @@ sub do_d_lst() {
 	open(my $fh_in_dlst, "<", $infn_dlst) || usage "cannot open input file $infn_dlst : $!";
 
 	print $fh_out_cxx "\t\tprotected override void postfetch_int() {\n";
-	print $fh_out_cxx "\t\t\tswitch(IR) {\n";
+	print $fh_out_cxx "\t\t\tswitch(_ir) {\n";
 
 	my $lin = 0;
 
@@ -176,14 +176,15 @@ sub do_o_lst() {
 				$t =~ /\b(read|write)\b/ && die "nested reads/writes";
 
 				my @seq = (
-						{ type => 'op', text => "_addr = (ushort)($a);" },
-						{ type => 'op', text => "_rnw = true;" },
+#						{ type => 'op', text => "_addr = (ushort)($a);" },
+#						{ type => 'op', text => "_rnw = true;" },
+						{ type => 'op', text => "_doread((ushort)($a));"},
 						{ type => 'cyc', text => "READ" }
 					);
 				
 
 				if ($b4 =~ /[^\s]/ || $t =~ /[^\s;]/) {
-					push @seq, { type=> 'op', text => "${b4}DAT${t}"};				
+					push @seq, { type=> 'op', text => "${b4}_dat${t}"};				
 				}
 
 				$DEBUG >= 3 && print_insts(${in}, \@seq);
@@ -202,9 +203,10 @@ sub do_o_lst() {
 				$t =~ /^\s*$/ || die "writes must be on own line";
 
 				my @seq = (
-					{ type => 'op', text => "_addr = (ushort)($a);" },
-					{ type => 'op', text => "_dat = $d;" },
-					{ type => 'op', text => "_rnw = false;" },
+#					{ type => 'op', text => "_addr = (ushort)($a);" },
+#					{ type => 'op', text => "_dat = $d;" },
+#					{ type => 'op', text => "_rnw = false;" },
+					{ type => 'op', text => "_dowrite((ushort)($a),(byte)($d));"},
 					{ type => 'cyc', text => "WRITE" }
 				);
 

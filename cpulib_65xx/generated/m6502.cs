@@ -5,263 +5,232 @@ namespace cpulib_65xx {
 	public partial class m6502_device {
 // --- op adc_aba --- 
 protected void m6502_device_adc_aba_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_adc_aba_1;return; // READ
 }
 
 protected void m6502_device_adc_aba_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_adc_aba_2;return; // READ
 }
 
 protected void m6502_device_adc_aba_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_adc_aba_3;return; // READ
 }
 
 protected void m6502_device_adc_aba_3() {
-  _tmp = DAT;
+  _tmp = _dat;
   do_adc((byte)_tmp);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op adc_abx --- 
 protected void m6502_device_adc_abx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_adc_abx_1;return; // READ
 }
 
 protected void m6502_device_adc_abx_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_adc_abx_2;return; // READ
 }
 
 protected void m6502_device_adc_abx_2() {
-  _tmp = set_h(_tmp, DAT);
+  _tmp = set_h(_tmp, _dat);
   if (page_changing(_tmp, _x)) {
-    _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_x)));
-    _rnw = true;
+    _doread((ushort)(set_l(_tmp,(byte)(_tmp+_x))));
     NextFn = m6502_device_adc_abx_3;return; // READ
   }
   _tmp += _x;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_adc_abx_4;return; // READ
 }
 
 protected void m6502_device_adc_abx_3() {
     _tmp += _x;
-    _addr = (ushort)(_tmp);
-    _rnw = true;
+    _doread((ushort)(_tmp));
     NextFn = m6502_device_adc_abx_4;return; // READ
 }
 
 protected void m6502_device_adc_abx_4() {
-  _tmp = DAT;
+  _tmp = _dat;
   do_adc((byte)_tmp);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op adc_aby --- 
 protected void m6502_device_adc_aby_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_adc_aby_1;return; // READ
 }
 
 protected void m6502_device_adc_aby_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_adc_aby_2;return; // READ
 }
 
 protected void m6502_device_adc_aby_2() {
-  _tmp = set_h(_tmp, DAT);
+  _tmp = set_h(_tmp, _dat);
   if (page_changing(_tmp, _y)) {
-    _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_y)));
-    _rnw = true;
+    _doread((ushort)(set_l(_tmp,(byte)(_tmp+_y))));
     NextFn = m6502_device_adc_aby_3;return; // READ
   }
   _tmp += _y;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_adc_aby_4;return; // READ
 }
 
 protected void m6502_device_adc_aby_3() {
     _tmp += _y;
-    _addr = (ushort)(_tmp);
-    _rnw = true;
+    _doread((ushort)(_tmp));
     NextFn = m6502_device_adc_aby_4;return; // READ
 }
 
 protected void m6502_device_adc_aby_4() {
-  _tmp = DAT;
+  _tmp = _dat;
   do_adc((byte)_tmp);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op adc_idx --- 
 protected void m6502_device_adc_idx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_adc_idx_1;return; // READ
 }
 
 protected void m6502_device_adc_idx_1() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp2);
-  _rnw = true;
+  _tmp2 = _dat;
+  _doread((ushort)(_tmp2));
   NextFn = m6502_device_adc_idx_2;return; // READ
 }
 
 protected void m6502_device_adc_idx_2() {
   _tmp2 += _x;
-  _addr = (ushort)(_tmp2 & 0xff);
-  _rnw = true;
+  _doread((ushort)(_tmp2 & 0xff));
   NextFn = m6502_device_adc_idx_3;return; // READ
 }
 
 protected void m6502_device_adc_idx_3() {
-  _tmp = DAT;
-  _addr = (ushort)((_tmp2+1) & 0xff);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)((_tmp2+1) & 0xff));
   NextFn = m6502_device_adc_idx_4;return; // READ
 }
 
 protected void m6502_device_adc_idx_4() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_adc_idx_5;return; // READ
 }
 
 protected void m6502_device_adc_idx_5() {
-  do_adc(DAT);
+  do_adc(_dat);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op adc_idy --- 
 protected void m6502_device_adc_idy_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_adc_idy_1;return; // READ
 }
 
 protected void m6502_device_adc_idy_1() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp2);
-  _rnw = true;
+  _tmp2 = _dat;
+  _doread((ushort)(_tmp2));
   NextFn = m6502_device_adc_idy_2;return; // READ
 }
 
 protected void m6502_device_adc_idy_2() {
-  _tmp = DAT;
-  _addr = (ushort)((_tmp2+1) & 0xff);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)((_tmp2+1) & 0xff));
   NextFn = m6502_device_adc_idy_3;return; // READ
 }
 
 protected void m6502_device_adc_idy_3() {
-  _tmp = set_h(_tmp, DAT);
+  _tmp = set_h(_tmp, _dat);
   if (page_changing(_tmp, _y)) {
-    _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_y)));
-    _rnw = true;
+    _doread((ushort)(set_l(_tmp,(byte)(_tmp+_y))));
     NextFn = m6502_device_adc_idy_4;return; // READ
   }
-  _addr = (ushort)(_tmp+_y);
-  _rnw = true;
+  _doread((ushort)(_tmp+_y));
   NextFn = m6502_device_adc_idy_5;return; // READ
 }
 
 protected void m6502_device_adc_idy_4() {
-    _addr = (ushort)(_tmp+_y);
-    _rnw = true;
+    _doread((ushort)(_tmp+_y));
     NextFn = m6502_device_adc_idy_5;return; // READ
 }
 
 protected void m6502_device_adc_idy_5() {
-  do_adc(DAT);
+  do_adc(_dat);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op adc_imm --- 
 protected void m6502_device_adc_imm_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_adc_imm_1;return; // READ
 }
 
 protected void m6502_device_adc_imm_1() {
-  _tmp = DAT;
+  _tmp = _dat;
   do_adc((byte)_tmp);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op adc_zpg --- 
 protected void m6502_device_adc_zpg_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_adc_zpg_1;return; // READ
 }
 
 protected void m6502_device_adc_zpg_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_adc_zpg_2;return; // READ
 }
 
 protected void m6502_device_adc_zpg_2() {
-  _tmp = DAT;
+  _tmp = _dat;
   do_adc((byte)_tmp);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op adc_zpx --- 
 protected void m6502_device_adc_zpx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_adc_zpx_1;return; // READ
 }
 
 protected void m6502_device_adc_zpx_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_adc_zpx_2;return; // READ
 }
 
 protected void m6502_device_adc_zpx_2() {
-  _addr = (ushort)((byte)(_tmp+_x));
-  _rnw = true;
+  _doread((ushort)((byte)(_tmp+_x)));
   NextFn = m6502_device_adc_zpx_3;return; // READ
 }
 
 protected void m6502_device_adc_zpx_3() {
-  _tmp = DAT;
+  _tmp = _dat;
   do_adc((byte)_tmp);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op anc_imm --- 
 protected void m6502_device_anc_imm_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_anc_imm_1;return; // READ
 }
 
 protected void m6502_device_anc_imm_1() {
-  _a &= DAT;
+  _a &= _dat;
   set_nz(_a);
   if ((_a & 0x80) != 0) {
     _p |= F_C;
@@ -273,265 +242,234 @@ protected void m6502_device_anc_imm_1() {
 
 // --- op and_aba --- 
 protected void m6502_device_and_aba_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_and_aba_1;return; // READ
 }
 
 protected void m6502_device_and_aba_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_and_aba_2;return; // READ
 }
 
 protected void m6502_device_and_aba_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_and_aba_3;return; // READ
 }
 
 protected void m6502_device_and_aba_3() {
-  _a &= DAT;
+  _a &= _dat;
   set_nz(_a);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op and_abx --- 
 protected void m6502_device_and_abx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_and_abx_1;return; // READ
 }
 
 protected void m6502_device_and_abx_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_and_abx_2;return; // READ
 }
 
 protected void m6502_device_and_abx_2() {
-  _tmp = set_h(_tmp, DAT);
+  _tmp = set_h(_tmp, _dat);
   if (page_changing(_tmp, _x)) {
-    _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_x)));
-    _rnw = true;
+    _doread((ushort)(set_l(_tmp,(byte)(_tmp+_x))));
     NextFn = m6502_device_and_abx_3;return; // READ
   }
   _tmp += _x;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_and_abx_4;return; // READ
 }
 
 protected void m6502_device_and_abx_3() {
     _tmp += _x;
-    _addr = (ushort)(_tmp);
-    _rnw = true;
+    _doread((ushort)(_tmp));
     NextFn = m6502_device_and_abx_4;return; // READ
 }
 
 protected void m6502_device_and_abx_4() {
-  _a &= DAT;
+  _a &= _dat;
   set_nz(_a);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op and_aby --- 
 protected void m6502_device_and_aby_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_and_aby_1;return; // READ
 }
 
 protected void m6502_device_and_aby_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_and_aby_2;return; // READ
 }
 
 protected void m6502_device_and_aby_2() {
-  _tmp = set_h(_tmp, DAT);
+  _tmp = set_h(_tmp, _dat);
   if (page_changing(_tmp, _y)) {
-    _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_y)));
-    _rnw = true;
+    _doread((ushort)(set_l(_tmp,(byte)(_tmp+_y))));
     NextFn = m6502_device_and_aby_3;return; // READ
   }
   _tmp += _y;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_and_aby_4;return; // READ
 }
 
 protected void m6502_device_and_aby_3() {
     _tmp += _y;
-    _addr = (ushort)(_tmp);
-    _rnw = true;
+    _doread((ushort)(_tmp));
     NextFn = m6502_device_and_aby_4;return; // READ
 }
 
 protected void m6502_device_and_aby_4() {
-  _a &= DAT;
+  _a &= _dat;
   set_nz(_a);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op and_idx --- 
 protected void m6502_device_and_idx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_and_idx_1;return; // READ
 }
 
 protected void m6502_device_and_idx_1() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp2);
-  _rnw = true;
+  _tmp2 = _dat;
+  _doread((ushort)(_tmp2));
   NextFn = m6502_device_and_idx_2;return; // READ
 }
 
 protected void m6502_device_and_idx_2() {
   _tmp2 += _x;
-  _addr = (ushort)(_tmp2 & 0xff);
-  _rnw = true;
+  _doread((ushort)(_tmp2 & 0xff));
   NextFn = m6502_device_and_idx_3;return; // READ
 }
 
 protected void m6502_device_and_idx_3() {
-  _tmp = DAT;
-  _addr = (ushort)((_tmp2+1) & 0xff);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)((_tmp2+1) & 0xff));
   NextFn = m6502_device_and_idx_4;return; // READ
 }
 
 protected void m6502_device_and_idx_4() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_and_idx_5;return; // READ
 }
 
 protected void m6502_device_and_idx_5() {
-  _a &= DAT;
+  _a &= _dat;
   set_nz(_a);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op and_idy --- 
 protected void m6502_device_and_idy_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_and_idy_1;return; // READ
 }
 
 protected void m6502_device_and_idy_1() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp2);
-  _rnw = true;
+  _tmp2 = _dat;
+  _doread((ushort)(_tmp2));
   NextFn = m6502_device_and_idy_2;return; // READ
 }
 
 protected void m6502_device_and_idy_2() {
-  _tmp = DAT;
-  _addr = (ushort)((_tmp2+1) & 0xff);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)((_tmp2+1) & 0xff));
   NextFn = m6502_device_and_idy_3;return; // READ
 }
 
 protected void m6502_device_and_idy_3() {
-  _tmp = set_h(_tmp, DAT);
+  _tmp = set_h(_tmp, _dat);
   if (page_changing(_tmp, _y)) {
-    _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_y)));
-    _rnw = true;
+    _doread((ushort)(set_l(_tmp,(byte)(_tmp+_y))));
     NextFn = m6502_device_and_idy_4;return; // READ
   }
-  _addr = (ushort)(_tmp+_y);
-  _rnw = true;
+  _doread((ushort)(_tmp+_y));
   NextFn = m6502_device_and_idy_5;return; // READ
 }
 
 protected void m6502_device_and_idy_4() {
-    _addr = (ushort)(_tmp+_y);
-    _rnw = true;
+    _doread((ushort)(_tmp+_y));
     NextFn = m6502_device_and_idy_5;return; // READ
 }
 
 protected void m6502_device_and_idy_5() {
-  _a &= DAT;
+  _a &= _dat;
   set_nz(_a);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op and_imm --- 
 protected void m6502_device_and_imm_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_and_imm_1;return; // READ
 }
 
 protected void m6502_device_and_imm_1() {
-  _a &= DAT;
+  _a &= _dat;
   set_nz(_a);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op and_zpg --- 
 protected void m6502_device_and_zpg_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_and_zpg_1;return; // READ
 }
 
 protected void m6502_device_and_zpg_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_and_zpg_2;return; // READ
 }
 
 protected void m6502_device_and_zpg_2() {
-  _a &= DAT;
+  _a &= _dat;
   set_nz(_a);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op and_zpx --- 
 protected void m6502_device_and_zpx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_and_zpx_1;return; // READ
 }
 
 protected void m6502_device_and_zpx_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_and_zpx_2;return; // READ
 }
 
 protected void m6502_device_and_zpx_2() {
-  _addr = (ushort)((byte)(_tmp+_x));
-  _rnw = true;
+  _doread((ushort)((byte)(_tmp+_x)));
   NextFn = m6502_device_and_zpx_3;return; // READ
 }
 
 protected void m6502_device_and_zpx_3() {
-  _a &= DAT;
+  _a &= _dat;
   set_nz(_a);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op ane_imm --- 
 protected void m6502_device_ane_imm_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_ane_imm_1;return; // READ
 }
 
 protected void m6502_device_ane_imm_1() {
-  _tmp2 = DAT;
+  _tmp2 = _dat;
   _a &= (byte)(_tmp2 & _x);
   set_nz(_a);
   m6502_device_fetch();return; // fetch
@@ -539,51 +477,43 @@ protected void m6502_device_ane_imm_1() {
 
 // --- op arr_imm --- 
 protected void m6502_device_arr_imm_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_arr_imm_1;return; // READ
 }
 
 protected void m6502_device_arr_imm_1() {
-  _a &= DAT;
+  _a &= _dat;
   do_arr();
   m6502_device_fetch();return; // fetch
 }
 
 // --- op asl_aba --- 
 protected void m6502_device_asl_aba_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_asl_aba_1;return; // READ
 }
 
 protected void m6502_device_asl_aba_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_asl_aba_2;return; // READ
 }
 
 protected void m6502_device_asl_aba_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_asl_aba_3;return; // READ
 }
 
 protected void m6502_device_asl_aba_3() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_asl_aba_4;return; // WRITE
 }
 
 protected void m6502_device_asl_aba_4() {
   _tmp2 = do_asl(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_asl_aba_5;return; // WRITE
 }
 
@@ -593,45 +523,37 @@ protected void m6502_device_asl_aba_5() {
 
 // --- op asl_abx --- 
 protected void m6502_device_asl_abx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_asl_abx_1;return; // READ
 }
 
 protected void m6502_device_asl_abx_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_asl_abx_2;return; // READ
 }
 
 protected void m6502_device_asl_abx_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_x)));
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(set_l(_tmp,(byte)(_tmp+_x))));
   NextFn = m6502_device_asl_abx_3;return; // READ
 }
 
 protected void m6502_device_asl_abx_3() {
   _tmp += _x;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_asl_abx_4;return; // READ
 }
 
 protected void m6502_device_asl_abx_4() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_asl_abx_5;return; // WRITE
 }
 
 protected void m6502_device_asl_abx_5() {
   _tmp2 = do_asl(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_asl_abx_6;return; // WRITE
 }
 
@@ -641,8 +563,7 @@ protected void m6502_device_asl_abx_6() {
 
 // --- op asl_acc --- 
 protected void m6502_device_asl_acc_0() {
-  _addr = (ushort)(_pc);
-  _rnw = true;
+  _doread((ushort)(_pc));
   NextFn = m6502_device_asl_acc_1;return; // READ
 }
 
@@ -653,31 +574,25 @@ protected void m6502_device_asl_acc_1() {
 
 // --- op asl_zpg --- 
 protected void m6502_device_asl_zpg_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_asl_zpg_1;return; // READ
 }
 
 protected void m6502_device_asl_zpg_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_asl_zpg_2;return; // READ
 }
 
 protected void m6502_device_asl_zpg_2() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_asl_zpg_3;return; // WRITE
 }
 
 protected void m6502_device_asl_zpg_3() {
   _tmp2 = do_asl(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_asl_zpg_4;return; // WRITE
 }
 
@@ -687,38 +602,31 @@ protected void m6502_device_asl_zpg_4() {
 
 // --- op asl_zpx --- 
 protected void m6502_device_asl_zpx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_asl_zpx_1;return; // READ
 }
 
 protected void m6502_device_asl_zpx_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_asl_zpx_2;return; // READ
 }
 
 protected void m6502_device_asl_zpx_2() {
   _tmp = (byte)(_tmp+_x);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_asl_zpx_3;return; // READ
 }
 
 protected void m6502_device_asl_zpx_3() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_asl_zpx_4;return; // WRITE
 }
 
 protected void m6502_device_asl_zpx_4() {
   _tmp2 = do_asl(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_asl_zpx_5;return; // WRITE
 }
 
@@ -728,29 +636,26 @@ protected void m6502_device_asl_zpx_5() {
 
 // --- op asr_imm --- 
 protected void m6502_device_asr_imm_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_asr_imm_1;return; // READ
 }
 
 protected void m6502_device_asr_imm_1() {
-  _a &= DAT;
+  _a &= _dat;
   _a = do_lsr(_a);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op bcc_rel --- 
 protected void m6502_device_bcc_rel_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_bcc_rel_1;return; // READ
 }
 
 protected void m6502_device_bcc_rel_1() {
-  _tmp = DAT;
+  _tmp = _dat;
   if ((_p & F_C) == 0) {
-    _addr = (ushort)(_pc);
-    _rnw = true;
+    _doread((ushort)(_pc));
     NextFn = m6502_device_bcc_rel_2;return; // READ
   }
   m6502_device_fetch();return; // fetch
@@ -758,8 +663,7 @@ protected void m6502_device_bcc_rel_1() {
 
 protected void m6502_device_bcc_rel_2() {
     if (page_changing(_pc, (sbyte)(_tmp))) {
-      _addr = (ushort)(set_l(_pc,(byte)(_pc+(sbyte)(_tmp))));
-      _rnw = true;
+      _doread((ushort)(set_l(_pc,(byte)(_pc+(sbyte)(_tmp)))));
       NextFn = m6502_device_bcc_rel_3;return; // READ
     }
     _pc = (ushort)(_pc + (sbyte)(_tmp));
@@ -773,16 +677,14 @@ protected void m6502_device_bcc_rel_3() {
 
 // --- op bcs_rel --- 
 protected void m6502_device_bcs_rel_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_bcs_rel_1;return; // READ
 }
 
 protected void m6502_device_bcs_rel_1() {
-  _tmp = DAT;
+  _tmp = _dat;
   if ((_p & F_C) != 0) {
-    _addr = (ushort)(_pc);
-    _rnw = true;
+    _doread((ushort)(_pc));
     NextFn = m6502_device_bcs_rel_2;return; // READ
   }
   m6502_device_fetch();return; // fetch
@@ -790,8 +692,7 @@ protected void m6502_device_bcs_rel_1() {
 
 protected void m6502_device_bcs_rel_2() {
     if (page_changing(_pc, (sbyte)(_tmp))) {
-      _addr = (ushort)(set_l(_pc,(byte)(_pc+(sbyte)(_tmp))));
-      _rnw = true;
+      _doread((ushort)(set_l(_pc,(byte)(_pc+(sbyte)(_tmp)))));
       NextFn = m6502_device_bcs_rel_3;return; // READ
     }
     _pc = (ushort)(_pc + (sbyte)(_tmp));
@@ -805,16 +706,14 @@ protected void m6502_device_bcs_rel_3() {
 
 // --- op beq_rel --- 
 protected void m6502_device_beq_rel_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_beq_rel_1;return; // READ
 }
 
 protected void m6502_device_beq_rel_1() {
-  _tmp = DAT;
+  _tmp = _dat;
   if ((_p & F_Z) != 0) {
-    _addr = (ushort)(_pc);
-    _rnw = true;
+    _doread((ushort)(_pc));
     NextFn = m6502_device_beq_rel_2;return; // READ
   }
   m6502_device_fetch();return; // fetch
@@ -822,8 +721,7 @@ protected void m6502_device_beq_rel_1() {
 
 protected void m6502_device_beq_rel_2() {
     if (page_changing(_pc, (sbyte)(_tmp))) {
-      _addr = (ushort)(set_l(_pc,(byte)(_pc+(sbyte)(_tmp))));
-      _rnw = true;
+      _doread((ushort)(set_l(_pc,(byte)(_pc+(sbyte)(_tmp)))));
       NextFn = m6502_device_beq_rel_3;return; // READ
     }
     _pc = (ushort)(_pc + (sbyte)(_tmp));
@@ -837,61 +735,54 @@ protected void m6502_device_beq_rel_3() {
 
 // --- op bit_aba --- 
 protected void m6502_device_bit_aba_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_bit_aba_1;return; // READ
 }
 
 protected void m6502_device_bit_aba_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_bit_aba_2;return; // READ
 }
 
 protected void m6502_device_bit_aba_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_bit_aba_3;return; // READ
 }
 
 protected void m6502_device_bit_aba_3() {
-  do_bit(DAT);
+  do_bit(_dat);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op bit_zpg --- 
 protected void m6502_device_bit_zpg_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_bit_zpg_1;return; // READ
 }
 
 protected void m6502_device_bit_zpg_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_bit_zpg_2;return; // READ
 }
 
 protected void m6502_device_bit_zpg_2() {
-  do_bit(DAT);
+  do_bit(_dat);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op bmi_rel --- 
 protected void m6502_device_bmi_rel_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_bmi_rel_1;return; // READ
 }
 
 protected void m6502_device_bmi_rel_1() {
-  _tmp = DAT;
+  _tmp = _dat;
   if ((_p & F_N) != 0) {
-    _addr = (ushort)(_pc);
-    _rnw = true;
+    _doread((ushort)(_pc));
     NextFn = m6502_device_bmi_rel_2;return; // READ
   }
   m6502_device_fetch();return; // fetch
@@ -899,8 +790,7 @@ protected void m6502_device_bmi_rel_1() {
 
 protected void m6502_device_bmi_rel_2() {
     if (page_changing(_pc, (sbyte)(_tmp))) {
-      _addr = (ushort)(set_l(_pc,(byte)(_pc+(sbyte)(_tmp))));
-      _rnw = true;
+      _doread((ushort)(set_l(_pc,(byte)(_pc+(sbyte)(_tmp)))));
       NextFn = m6502_device_bmi_rel_3;return; // READ
     }
     _pc = (ushort)(_pc + (sbyte)(_tmp));
@@ -914,16 +804,14 @@ protected void m6502_device_bmi_rel_3() {
 
 // --- op bne_rel --- 
 protected void m6502_device_bne_rel_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_bne_rel_1;return; // READ
 }
 
 protected void m6502_device_bne_rel_1() {
-  _tmp = DAT;
+  _tmp = _dat;
   if ((_p & F_Z) == 0) {
-    _addr = (ushort)(_pc);
-    _rnw = true;
+    _doread((ushort)(_pc));
     NextFn = m6502_device_bne_rel_2;return; // READ
   }
   m6502_device_fetch();return; // fetch
@@ -931,8 +819,7 @@ protected void m6502_device_bne_rel_1() {
 
 protected void m6502_device_bne_rel_2() {
     if (page_changing(_pc, (sbyte)(_tmp))) {
-      _addr = (ushort)(set_l(_pc,(byte)(_pc+(sbyte)(_tmp))));
-      _rnw = true;
+      _doread((ushort)(set_l(_pc,(byte)(_pc+(sbyte)(_tmp)))));
       NextFn = m6502_device_bne_rel_3;return; // READ
     }
     _pc = (ushort)(_pc + (sbyte)(_tmp));
@@ -946,16 +833,14 @@ protected void m6502_device_bne_rel_3() {
 
 // --- op bpl_rel --- 
 protected void m6502_device_bpl_rel_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_bpl_rel_1;return; // READ
 }
 
 protected void m6502_device_bpl_rel_1() {
-  _tmp = DAT;
+  _tmp = _dat;
   if ((_p & F_N) == 0) {
-    _addr = (ushort)(_pc);
-    _rnw = true;
+    _doread((ushort)(_pc));
     NextFn = m6502_device_bpl_rel_2;return; // READ
   }
   m6502_device_fetch();return; // fetch
@@ -963,8 +848,7 @@ protected void m6502_device_bpl_rel_1() {
 
 protected void m6502_device_bpl_rel_2() {
     if (page_changing(_pc, (sbyte)(_tmp))) {
-      _addr = (ushort)(set_l(_pc,(byte)(_pc+(sbyte)(_tmp))));
-      _rnw = true;
+      _doread((ushort)(set_l(_pc,(byte)(_pc+(sbyte)(_tmp)))));
       NextFn = m6502_device_bpl_rel_3;return; // READ
     }
     _pc = (ushort)(_pc + (sbyte)(_tmp));
@@ -978,8 +862,7 @@ protected void m6502_device_bpl_rel_3() {
 
 // --- op brk_imp --- 
 protected void m6502_device_brk_imp_0() {
-  _addr = (ushort)(_pc);
-  _rnw = true;
+  _doread((ushort)(_pc));
   NextFn = m6502_device_brk_imp_1;return; // READ
 }
 
@@ -987,37 +870,29 @@ protected void m6502_device_brk_imp_1() {
   if (!irq_taken) {
     _pc++;
   }
-  _addr = (ushort)(_sp);
-  _dat =  (byte)(_pc >> 8);
-  _rnw = false;
+  _dowrite((ushort)(_sp),(byte)( (byte)(_pc >> 8)));
   NextFn = m6502_device_brk_imp_2;return; // WRITE
 }
 
 protected void m6502_device_brk_imp_2() {
   dec_SP();
-  _addr = (ushort)(_sp);
-  _dat =  (byte)_pc;
-  _rnw = false;
+  _dowrite((ushort)(_sp),(byte)( (byte)_pc));
   NextFn = m6502_device_brk_imp_3;return; // WRITE
 }
 
 protected void m6502_device_brk_imp_3() {
   dec_SP();
-  _addr = (ushort)(_sp);
-  _dat =  (byte)(irq_taken ? _p & (F_B ^ 0xFF) : _p);
-  _rnw = false;
+  _dowrite((ushort)(_sp),(byte)( (byte)(irq_taken ? _p & (F_B ^ 0xFF) : _p)));
   NextFn = m6502_device_brk_imp_4;return; // WRITE
 }
 
 protected void m6502_device_brk_imp_4() {
   dec_SP();
   if (nmi_state) {
-    _addr = (ushort)(0xfffa);
-    _rnw = true;
+    _doread((ushort)(0xfffa));
     NextFn = m6502_device_brk_imp_5;return; // READ
   } else {
-    _addr = (ushort)(0xfffe);
-    _rnw = true;
+    _doread((ushort)(0xfffe));
     NextFn = m6502_device_brk_imp_7;return; // READ
   }
   irq_taken = false;
@@ -1026,21 +901,19 @@ protected void m6502_device_brk_imp_4() {
 }
 
 protected void m6502_device_brk_imp_5() {
-    _pc = DAT;
-    _addr = (ushort)(0xfffb);
-    _rnw = true;
+    _pc = _dat;
+    _doread((ushort)(0xfffb));
     NextFn = m6502_device_brk_imp_6;return; // READ
 }
 
 protected void m6502_device_brk_imp_7() {
-    _pc = DAT;
-    _addr = (ushort)(0xffff);
-    _rnw = true;
+    _pc = _dat;
+    _doread((ushort)(0xffff));
     NextFn = m6502_device_brk_imp_8;return; // READ
 }
 
 protected void m6502_device_brk_imp_6() {
-    _pc = set_h(_pc, DAT);
+    _pc = set_h(_pc, _dat);
     nmi_state = false;
     irq_taken = false;
     _p |= F_I;
@@ -1048,7 +921,7 @@ protected void m6502_device_brk_imp_6() {
 }
 
 protected void m6502_device_brk_imp_8() {
-    _pc = set_h(_pc, DAT);
+    _pc = set_h(_pc, _dat);
     irq_taken = false;
     _p |= F_I;
     m6502_device_fetch();return; // fetch
@@ -1056,16 +929,14 @@ protected void m6502_device_brk_imp_8() {
 
 // --- op bvc_rel --- 
 protected void m6502_device_bvc_rel_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_bvc_rel_1;return; // READ
 }
 
 protected void m6502_device_bvc_rel_1() {
-  _tmp = DAT;
+  _tmp = _dat;
   if ((_p & F_V) == 0) {
-    _addr = (ushort)(_pc);
-    _rnw = true;
+    _doread((ushort)(_pc));
     NextFn = m6502_device_bvc_rel_2;return; // READ
   }
   m6502_device_fetch();return; // fetch
@@ -1073,8 +944,7 @@ protected void m6502_device_bvc_rel_1() {
 
 protected void m6502_device_bvc_rel_2() {
     if (page_changing(_pc, (sbyte)(_tmp))) {
-      _addr = (ushort)(set_l(_pc,(byte)(_pc+(sbyte)(_tmp))));
-      _rnw = true;
+      _doread((ushort)(set_l(_pc,(byte)(_pc+(sbyte)(_tmp)))));
       NextFn = m6502_device_bvc_rel_3;return; // READ
     }
     _pc = (ushort)(_pc + (sbyte)(_tmp));
@@ -1088,16 +958,14 @@ protected void m6502_device_bvc_rel_3() {
 
 // --- op bvs_rel --- 
 protected void m6502_device_bvs_rel_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_bvs_rel_1;return; // READ
 }
 
 protected void m6502_device_bvs_rel_1() {
-  _tmp = DAT;
+  _tmp = _dat;
   if ((_p & F_V) != 0) {
-    _addr = (ushort)(_pc);
-    _rnw = true;
+    _doread((ushort)(_pc));
     NextFn = m6502_device_bvs_rel_2;return; // READ
   }
   m6502_device_fetch();return; // fetch
@@ -1105,8 +973,7 @@ protected void m6502_device_bvs_rel_1() {
 
 protected void m6502_device_bvs_rel_2() {
     if (page_changing(_pc, (sbyte)(_tmp))) {
-      _addr = (ushort)(set_l(_pc,(byte)(_pc+(sbyte)(_tmp))));
-      _rnw = true;
+      _doread((ushort)(set_l(_pc,(byte)(_pc+(sbyte)(_tmp)))));
       NextFn = m6502_device_bvs_rel_3;return; // READ
     }
     _pc = (ushort)(_pc + (sbyte)(_tmp));
@@ -1120,8 +987,7 @@ protected void m6502_device_bvs_rel_3() {
 
 // --- op clc_imp --- 
 protected void m6502_device_clc_imp_0() {
-  _addr = (ushort)(_pc);
-  _rnw = true;
+  _doread((ushort)(_pc));
   NextFn = m6502_device_clc_imp_1;return; // READ
 }
 
@@ -1132,8 +998,7 @@ protected void m6502_device_clc_imp_1() {
 
 // --- op cld_imp --- 
 protected void m6502_device_cld_imp_0() {
-  _addr = (ushort)(_pc);
-  _rnw = true;
+  _doread((ushort)(_pc));
   NextFn = m6502_device_cld_imp_1;return; // READ
 }
 
@@ -1144,8 +1009,7 @@ protected void m6502_device_cld_imp_1() {
 
 // --- op cli_imp --- 
 protected void m6502_device_cli_imp_0() {
-  _addr = (ushort)(_pc);
-  _rnw = true;
+  _doread((ushort)(_pc));
   NextFn = m6502_device_cli_imp_1;return; // READ
 }
 
@@ -1161,8 +1025,7 @@ protected void m6502_device_cli_imp_2() {
 
 // --- op clv_imp --- 
 protected void m6502_device_clv_imp_0() {
-  _addr = (ushort)(_pc);
-  _rnw = true;
+  _doread((ushort)(_pc));
   NextFn = m6502_device_clv_imp_1;return; // READ
 }
 
@@ -1173,408 +1036,359 @@ protected void m6502_device_clv_imp_1() {
 
 // --- op cmp_aba --- 
 protected void m6502_device_cmp_aba_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_cmp_aba_1;return; // READ
 }
 
 protected void m6502_device_cmp_aba_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_cmp_aba_2;return; // READ
 }
 
 protected void m6502_device_cmp_aba_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_cmp_aba_3;return; // READ
 }
 
 protected void m6502_device_cmp_aba_3() {
-  _tmp = DAT;
+  _tmp = _dat;
   do_cmp(_a, (byte)_tmp);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op cmp_abx --- 
 protected void m6502_device_cmp_abx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_cmp_abx_1;return; // READ
 }
 
 protected void m6502_device_cmp_abx_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_cmp_abx_2;return; // READ
 }
 
 protected void m6502_device_cmp_abx_2() {
-  _tmp = set_h(_tmp, DAT);
+  _tmp = set_h(_tmp, _dat);
   if (page_changing(_tmp, _x)) {
-    _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_x)));
-    _rnw = true;
+    _doread((ushort)(set_l(_tmp,(byte)(_tmp+_x))));
     NextFn = m6502_device_cmp_abx_3;return; // READ
   }
   _tmp += _x;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_cmp_abx_4;return; // READ
 }
 
 protected void m6502_device_cmp_abx_3() {
     _tmp += _x;
-    _addr = (ushort)(_tmp);
-    _rnw = true;
+    _doread((ushort)(_tmp));
     NextFn = m6502_device_cmp_abx_4;return; // READ
 }
 
 protected void m6502_device_cmp_abx_4() {
-  _tmp = DAT;
+  _tmp = _dat;
   do_cmp(_a, (byte)_tmp);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op cmp_aby --- 
 protected void m6502_device_cmp_aby_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_cmp_aby_1;return; // READ
 }
 
 protected void m6502_device_cmp_aby_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_cmp_aby_2;return; // READ
 }
 
 protected void m6502_device_cmp_aby_2() {
-  _tmp = set_h(_tmp, DAT);
+  _tmp = set_h(_tmp, _dat);
   if (page_changing(_tmp, _y)) {
-    _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_y)));
-    _rnw = true;
+    _doread((ushort)(set_l(_tmp,(byte)(_tmp+_y))));
     NextFn = m6502_device_cmp_aby_3;return; // READ
   }
   _tmp += _y;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_cmp_aby_4;return; // READ
 }
 
 protected void m6502_device_cmp_aby_3() {
     _tmp += _y;
-    _addr = (ushort)(_tmp);
-    _rnw = true;
+    _doread((ushort)(_tmp));
     NextFn = m6502_device_cmp_aby_4;return; // READ
 }
 
 protected void m6502_device_cmp_aby_4() {
-  _tmp = DAT;
+  _tmp = _dat;
   do_cmp(_a, (byte)_tmp);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op cmp_idx --- 
 protected void m6502_device_cmp_idx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_cmp_idx_1;return; // READ
 }
 
 protected void m6502_device_cmp_idx_1() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp2);
-  _rnw = true;
+  _tmp2 = _dat;
+  _doread((ushort)(_tmp2));
   NextFn = m6502_device_cmp_idx_2;return; // READ
 }
 
 protected void m6502_device_cmp_idx_2() {
   _tmp2 += _x;
-  _addr = (ushort)(_tmp2 & 0xff);
-  _rnw = true;
+  _doread((ushort)(_tmp2 & 0xff));
   NextFn = m6502_device_cmp_idx_3;return; // READ
 }
 
 protected void m6502_device_cmp_idx_3() {
-  _tmp = DAT;
-  _addr = (ushort)((_tmp2+1) & 0xff);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)((_tmp2+1) & 0xff));
   NextFn = m6502_device_cmp_idx_4;return; // READ
 }
 
 protected void m6502_device_cmp_idx_4() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_cmp_idx_5;return; // READ
 }
 
 protected void m6502_device_cmp_idx_5() {
-  do_cmp(_a, DAT);
+  do_cmp(_a, _dat);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op cmp_idy --- 
 protected void m6502_device_cmp_idy_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_cmp_idy_1;return; // READ
 }
 
 protected void m6502_device_cmp_idy_1() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp2);
-  _rnw = true;
+  _tmp2 = _dat;
+  _doread((ushort)(_tmp2));
   NextFn = m6502_device_cmp_idy_2;return; // READ
 }
 
 protected void m6502_device_cmp_idy_2() {
-  _tmp = DAT;
-  _addr = (ushort)((_tmp2+1) & 0xff);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)((_tmp2+1) & 0xff));
   NextFn = m6502_device_cmp_idy_3;return; // READ
 }
 
 protected void m6502_device_cmp_idy_3() {
-  _tmp = set_h(_tmp, DAT);
+  _tmp = set_h(_tmp, _dat);
   if (page_changing(_tmp, _y)) {
-    _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_y)));
-    _rnw = true;
+    _doread((ushort)(set_l(_tmp,(byte)(_tmp+_y))));
     NextFn = m6502_device_cmp_idy_4;return; // READ
   }
-  _addr = (ushort)(_tmp+_y);
-  _rnw = true;
+  _doread((ushort)(_tmp+_y));
   NextFn = m6502_device_cmp_idy_5;return; // READ
 }
 
 protected void m6502_device_cmp_idy_4() {
-    _addr = (ushort)(_tmp+_y);
-    _rnw = true;
+    _doread((ushort)(_tmp+_y));
     NextFn = m6502_device_cmp_idy_5;return; // READ
 }
 
 protected void m6502_device_cmp_idy_5() {
-  do_cmp(_a, DAT);
+  do_cmp(_a, _dat);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op cmp_imm --- 
 protected void m6502_device_cmp_imm_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_cmp_imm_1;return; // READ
 }
 
 protected void m6502_device_cmp_imm_1() {
-  _tmp = DAT;
+  _tmp = _dat;
   do_cmp(_a, (byte)_tmp);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op cmp_zpg --- 
 protected void m6502_device_cmp_zpg_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_cmp_zpg_1;return; // READ
 }
 
 protected void m6502_device_cmp_zpg_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_cmp_zpg_2;return; // READ
 }
 
 protected void m6502_device_cmp_zpg_2() {
-  _tmp = DAT;
+  _tmp = _dat;
   do_cmp(_a, (byte)_tmp);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op cmp_zpx --- 
 protected void m6502_device_cmp_zpx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_cmp_zpx_1;return; // READ
 }
 
 protected void m6502_device_cmp_zpx_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_cmp_zpx_2;return; // READ
 }
 
 protected void m6502_device_cmp_zpx_2() {
-  _addr = (ushort)((byte)(_tmp+_x));
-  _rnw = true;
+  _doread((ushort)((byte)(_tmp+_x)));
   NextFn = m6502_device_cmp_zpx_3;return; // READ
 }
 
 protected void m6502_device_cmp_zpx_3() {
-  _tmp = DAT;
+  _tmp = _dat;
   do_cmp(_a, (byte)_tmp);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op cpx_aba --- 
 protected void m6502_device_cpx_aba_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_cpx_aba_1;return; // READ
 }
 
 protected void m6502_device_cpx_aba_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_cpx_aba_2;return; // READ
 }
 
 protected void m6502_device_cpx_aba_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_cpx_aba_3;return; // READ
 }
 
 protected void m6502_device_cpx_aba_3() {
-  _tmp = DAT;
+  _tmp = _dat;
   do_cmp(_x, (byte)_tmp);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op cpx_imm --- 
 protected void m6502_device_cpx_imm_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_cpx_imm_1;return; // READ
 }
 
 protected void m6502_device_cpx_imm_1() {
-  _tmp = DAT;
+  _tmp = _dat;
   do_cmp(_x, (byte)_tmp);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op cpx_zpg --- 
 protected void m6502_device_cpx_zpg_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_cpx_zpg_1;return; // READ
 }
 
 protected void m6502_device_cpx_zpg_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_cpx_zpg_2;return; // READ
 }
 
 protected void m6502_device_cpx_zpg_2() {
-  _tmp = DAT;
+  _tmp = _dat;
   do_cmp(_x, (byte)_tmp);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op cpy_aba --- 
 protected void m6502_device_cpy_aba_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_cpy_aba_1;return; // READ
 }
 
 protected void m6502_device_cpy_aba_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_cpy_aba_2;return; // READ
 }
 
 protected void m6502_device_cpy_aba_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_cpy_aba_3;return; // READ
 }
 
 protected void m6502_device_cpy_aba_3() {
-  _tmp = DAT;
+  _tmp = _dat;
   do_cmp(_y, (byte)_tmp);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op cpy_imm --- 
 protected void m6502_device_cpy_imm_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_cpy_imm_1;return; // READ
 }
 
 protected void m6502_device_cpy_imm_1() {
-  _tmp = DAT;
+  _tmp = _dat;
   do_cmp(_y, (byte)_tmp);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op cpy_zpg --- 
 protected void m6502_device_cpy_zpg_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_cpy_zpg_1;return; // READ
 }
 
 protected void m6502_device_cpy_zpg_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_cpy_zpg_2;return; // READ
 }
 
 protected void m6502_device_cpy_zpg_2() {
-  _tmp = DAT;
+  _tmp = _dat;
   do_cmp(_y, (byte)_tmp);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op dcp_aba --- 
 protected void m6502_device_dcp_aba_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_dcp_aba_1;return; // READ
 }
 
 protected void m6502_device_dcp_aba_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_dcp_aba_2;return; // READ
 }
 
 protected void m6502_device_dcp_aba_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_dcp_aba_3;return; // READ
 }
 
 protected void m6502_device_dcp_aba_3() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_dcp_aba_4;return; // WRITE
 }
 
 protected void m6502_device_dcp_aba_4() {
   _tmp2--;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_dcp_aba_5;return; // WRITE
 }
 
@@ -1585,45 +1399,37 @@ protected void m6502_device_dcp_aba_5() {
 
 // --- op dcp_abx --- 
 protected void m6502_device_dcp_abx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_dcp_abx_1;return; // READ
 }
 
 protected void m6502_device_dcp_abx_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_dcp_abx_2;return; // READ
 }
 
 protected void m6502_device_dcp_abx_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_x)));
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(set_l(_tmp,(byte)(_tmp+_x))));
   NextFn = m6502_device_dcp_abx_3;return; // READ
 }
 
 protected void m6502_device_dcp_abx_3() {
   _tmp += _x;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_dcp_abx_4;return; // READ
 }
 
 protected void m6502_device_dcp_abx_4() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_dcp_abx_5;return; // WRITE
 }
 
 protected void m6502_device_dcp_abx_5() {
   _tmp2--;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_dcp_abx_6;return; // WRITE
 }
 
@@ -1634,45 +1440,37 @@ protected void m6502_device_dcp_abx_6() {
 
 // --- op dcp_aby --- 
 protected void m6502_device_dcp_aby_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_dcp_aby_1;return; // READ
 }
 
 protected void m6502_device_dcp_aby_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_dcp_aby_2;return; // READ
 }
 
 protected void m6502_device_dcp_aby_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_y)));
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(set_l(_tmp,(byte)(_tmp+_y))));
   NextFn = m6502_device_dcp_aby_3;return; // READ
 }
 
 protected void m6502_device_dcp_aby_3() {
   _tmp += _y;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_dcp_aby_4;return; // READ
 }
 
 protected void m6502_device_dcp_aby_4() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_dcp_aby_5;return; // WRITE
 }
 
 protected void m6502_device_dcp_aby_5() {
   _tmp2--;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_dcp_aby_6;return; // WRITE
 }
 
@@ -1683,52 +1481,43 @@ protected void m6502_device_dcp_aby_6() {
 
 // --- op dcp_idx --- 
 protected void m6502_device_dcp_idx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_dcp_idx_1;return; // READ
 }
 
 protected void m6502_device_dcp_idx_1() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp2);
-  _rnw = true;
+  _tmp2 = _dat;
+  _doread((ushort)(_tmp2));
   NextFn = m6502_device_dcp_idx_2;return; // READ
 }
 
 protected void m6502_device_dcp_idx_2() {
   _tmp2 += _x;
-  _addr = (ushort)(_tmp2 & 0xff);
-  _rnw = true;
+  _doread((ushort)(_tmp2 & 0xff));
   NextFn = m6502_device_dcp_idx_3;return; // READ
 }
 
 protected void m6502_device_dcp_idx_3() {
-  _tmp = DAT;
-  _addr = (ushort)((_tmp2+1) & 0xff);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)((_tmp2+1) & 0xff));
   NextFn = m6502_device_dcp_idx_4;return; // READ
 }
 
 protected void m6502_device_dcp_idx_4() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_dcp_idx_5;return; // READ
 }
 
 protected void m6502_device_dcp_idx_5() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_dcp_idx_6;return; // WRITE
 }
 
 protected void m6502_device_dcp_idx_6() {
   _tmp2--;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_dcp_idx_7;return; // WRITE
 }
 
@@ -1739,52 +1528,43 @@ protected void m6502_device_dcp_idx_7() {
 
 // --- op dcp_idy --- 
 protected void m6502_device_dcp_idy_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_dcp_idy_1;return; // READ
 }
 
 protected void m6502_device_dcp_idy_1() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp2);
-  _rnw = true;
+  _tmp2 = _dat;
+  _doread((ushort)(_tmp2));
   NextFn = m6502_device_dcp_idy_2;return; // READ
 }
 
 protected void m6502_device_dcp_idy_2() {
-  _tmp = DAT;
-  _addr = (ushort)((_tmp2+1) & 0xff);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)((_tmp2+1) & 0xff));
   NextFn = m6502_device_dcp_idy_3;return; // READ
 }
 
 protected void m6502_device_dcp_idy_3() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_y)));
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(set_l(_tmp,(byte)(_tmp+_y))));
   NextFn = m6502_device_dcp_idy_4;return; // READ
 }
 
 protected void m6502_device_dcp_idy_4() {
   _tmp += _y;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_dcp_idy_5;return; // READ
 }
 
 protected void m6502_device_dcp_idy_5() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_dcp_idy_6;return; // WRITE
 }
 
 protected void m6502_device_dcp_idy_6() {
   _tmp2--;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_dcp_idy_7;return; // WRITE
 }
 
@@ -1795,31 +1575,25 @@ protected void m6502_device_dcp_idy_7() {
 
 // --- op dcp_zpg --- 
 protected void m6502_device_dcp_zpg_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_dcp_zpg_1;return; // READ
 }
 
 protected void m6502_device_dcp_zpg_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_dcp_zpg_2;return; // READ
 }
 
 protected void m6502_device_dcp_zpg_2() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_dcp_zpg_3;return; // WRITE
 }
 
 protected void m6502_device_dcp_zpg_3() {
   _tmp2--;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_dcp_zpg_4;return; // WRITE
 }
 
@@ -1830,38 +1604,31 @@ protected void m6502_device_dcp_zpg_4() {
 
 // --- op dcp_zpx --- 
 protected void m6502_device_dcp_zpx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_dcp_zpx_1;return; // READ
 }
 
 protected void m6502_device_dcp_zpx_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_dcp_zpx_2;return; // READ
 }
 
 protected void m6502_device_dcp_zpx_2() {
   _tmp = (byte)(_tmp+_x);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_dcp_zpx_3;return; // READ
 }
 
 protected void m6502_device_dcp_zpx_3() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_dcp_zpx_4;return; // WRITE
 }
 
 protected void m6502_device_dcp_zpx_4() {
   _tmp2--;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_dcp_zpx_5;return; // WRITE
 }
 
@@ -1872,39 +1639,32 @@ protected void m6502_device_dcp_zpx_5() {
 
 // --- op dec_aba --- 
 protected void m6502_device_dec_aba_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_dec_aba_1;return; // READ
 }
 
 protected void m6502_device_dec_aba_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_dec_aba_2;return; // READ
 }
 
 protected void m6502_device_dec_aba_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_dec_aba_3;return; // READ
 }
 
 protected void m6502_device_dec_aba_3() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_dec_aba_4;return; // WRITE
 }
 
 protected void m6502_device_dec_aba_4() {
   _tmp2--;
   set_nz(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_dec_aba_5;return; // WRITE
 }
 
@@ -1914,46 +1674,38 @@ protected void m6502_device_dec_aba_5() {
 
 // --- op dec_abx --- 
 protected void m6502_device_dec_abx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_dec_abx_1;return; // READ
 }
 
 protected void m6502_device_dec_abx_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_dec_abx_2;return; // READ
 }
 
 protected void m6502_device_dec_abx_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_x)));
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(set_l(_tmp,(byte)(_tmp+_x))));
   NextFn = m6502_device_dec_abx_3;return; // READ
 }
 
 protected void m6502_device_dec_abx_3() {
   _tmp += _x;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_dec_abx_4;return; // READ
 }
 
 protected void m6502_device_dec_abx_4() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_dec_abx_5;return; // WRITE
 }
 
 protected void m6502_device_dec_abx_5() {
   _tmp2--;
   set_nz(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_dec_abx_6;return; // WRITE
 }
 
@@ -1963,32 +1715,26 @@ protected void m6502_device_dec_abx_6() {
 
 // --- op dec_zpg --- 
 protected void m6502_device_dec_zpg_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_dec_zpg_1;return; // READ
 }
 
 protected void m6502_device_dec_zpg_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_dec_zpg_2;return; // READ
 }
 
 protected void m6502_device_dec_zpg_2() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_dec_zpg_3;return; // WRITE
 }
 
 protected void m6502_device_dec_zpg_3() {
   _tmp2--;
   set_nz(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_dec_zpg_4;return; // WRITE
 }
 
@@ -1998,39 +1744,32 @@ protected void m6502_device_dec_zpg_4() {
 
 // --- op dec_zpx --- 
 protected void m6502_device_dec_zpx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_dec_zpx_1;return; // READ
 }
 
 protected void m6502_device_dec_zpx_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_dec_zpx_2;return; // READ
 }
 
 protected void m6502_device_dec_zpx_2() {
   _tmp = (byte)(_tmp+_x);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_dec_zpx_3;return; // READ
 }
 
 protected void m6502_device_dec_zpx_3() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_dec_zpx_4;return; // WRITE
 }
 
 protected void m6502_device_dec_zpx_4() {
   _tmp2--;
   set_nz(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_dec_zpx_5;return; // WRITE
 }
 
@@ -2040,8 +1779,7 @@ protected void m6502_device_dec_zpx_5() {
 
 // --- op dex_imp --- 
 protected void m6502_device_dex_imp_0() {
-  _addr = (ushort)(_pc);
-  _rnw = true;
+  _doread((ushort)(_pc));
   NextFn = m6502_device_dex_imp_1;return; // READ
 }
 
@@ -2053,8 +1791,7 @@ protected void m6502_device_dex_imp_1() {
 
 // --- op dey_imp --- 
 protected void m6502_device_dey_imp_0() {
-  _addr = (ushort)(_pc);
-  _rnw = true;
+  _doread((ushort)(_pc));
   NextFn = m6502_device_dey_imp_1;return; // READ
 }
 
@@ -2066,291 +1803,254 @@ protected void m6502_device_dey_imp_1() {
 
 // --- op eor_aba --- 
 protected void m6502_device_eor_aba_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_eor_aba_1;return; // READ
 }
 
 protected void m6502_device_eor_aba_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_eor_aba_2;return; // READ
 }
 
 protected void m6502_device_eor_aba_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_eor_aba_3;return; // READ
 }
 
 protected void m6502_device_eor_aba_3() {
-  _a ^= DAT;
+  _a ^= _dat;
   set_nz(_a);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op eor_abx --- 
 protected void m6502_device_eor_abx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_eor_abx_1;return; // READ
 }
 
 protected void m6502_device_eor_abx_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_eor_abx_2;return; // READ
 }
 
 protected void m6502_device_eor_abx_2() {
-  _tmp = set_h(_tmp, DAT);
+  _tmp = set_h(_tmp, _dat);
   if (page_changing(_tmp, _x)) {
-    _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_x)));
-    _rnw = true;
+    _doread((ushort)(set_l(_tmp,(byte)(_tmp+_x))));
     NextFn = m6502_device_eor_abx_3;return; // READ
   }
   _tmp += _x;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_eor_abx_4;return; // READ
 }
 
 protected void m6502_device_eor_abx_3() {
     _tmp += _x;
-    _addr = (ushort)(_tmp);
-    _rnw = true;
+    _doread((ushort)(_tmp));
     NextFn = m6502_device_eor_abx_4;return; // READ
 }
 
 protected void m6502_device_eor_abx_4() {
-  _a ^= DAT;
+  _a ^= _dat;
   set_nz(_a);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op eor_aby --- 
 protected void m6502_device_eor_aby_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_eor_aby_1;return; // READ
 }
 
 protected void m6502_device_eor_aby_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_eor_aby_2;return; // READ
 }
 
 protected void m6502_device_eor_aby_2() {
-  _tmp = set_h(_tmp, DAT);
+  _tmp = set_h(_tmp, _dat);
   if (page_changing(_tmp, _y)) {
-    _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_y)));
-    _rnw = true;
+    _doread((ushort)(set_l(_tmp,(byte)(_tmp+_y))));
     NextFn = m6502_device_eor_aby_3;return; // READ
   }
   _tmp += _y;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_eor_aby_4;return; // READ
 }
 
 protected void m6502_device_eor_aby_3() {
     _tmp += _y;
-    _addr = (ushort)(_tmp);
-    _rnw = true;
+    _doread((ushort)(_tmp));
     NextFn = m6502_device_eor_aby_4;return; // READ
 }
 
 protected void m6502_device_eor_aby_4() {
-  _a ^= DAT;
+  _a ^= _dat;
   set_nz(_a);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op eor_idx --- 
 protected void m6502_device_eor_idx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_eor_idx_1;return; // READ
 }
 
 protected void m6502_device_eor_idx_1() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp2);
-  _rnw = true;
+  _tmp2 = _dat;
+  _doread((ushort)(_tmp2));
   NextFn = m6502_device_eor_idx_2;return; // READ
 }
 
 protected void m6502_device_eor_idx_2() {
   _tmp2 += _x;
-  _addr = (ushort)(_tmp2 & 0xff);
-  _rnw = true;
+  _doread((ushort)(_tmp2 & 0xff));
   NextFn = m6502_device_eor_idx_3;return; // READ
 }
 
 protected void m6502_device_eor_idx_3() {
-  _tmp = DAT;
-  _addr = (ushort)((_tmp2+1) & 0xff);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)((_tmp2+1) & 0xff));
   NextFn = m6502_device_eor_idx_4;return; // READ
 }
 
 protected void m6502_device_eor_idx_4() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_eor_idx_5;return; // READ
 }
 
 protected void m6502_device_eor_idx_5() {
-  _a ^= DAT;
+  _a ^= _dat;
   set_nz(_a);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op eor_idy --- 
 protected void m6502_device_eor_idy_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_eor_idy_1;return; // READ
 }
 
 protected void m6502_device_eor_idy_1() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp2);
-  _rnw = true;
+  _tmp2 = _dat;
+  _doread((ushort)(_tmp2));
   NextFn = m6502_device_eor_idy_2;return; // READ
 }
 
 protected void m6502_device_eor_idy_2() {
-  _tmp = DAT;
-  _addr = (ushort)((_tmp2+1) & 0xff);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)((_tmp2+1) & 0xff));
   NextFn = m6502_device_eor_idy_3;return; // READ
 }
 
 protected void m6502_device_eor_idy_3() {
-  _tmp = set_h(_tmp, DAT);
+  _tmp = set_h(_tmp, _dat);
   if (page_changing(_tmp, _y)) {
-    _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_y)));
-    _rnw = true;
+    _doread((ushort)(set_l(_tmp,(byte)(_tmp+_y))));
     NextFn = m6502_device_eor_idy_4;return; // READ
   }
-  _addr = (ushort)(_tmp+_y);
-  _rnw = true;
+  _doread((ushort)(_tmp+_y));
   NextFn = m6502_device_eor_idy_5;return; // READ
 }
 
 protected void m6502_device_eor_idy_4() {
-    _addr = (ushort)(_tmp+_y);
-    _rnw = true;
+    _doread((ushort)(_tmp+_y));
     NextFn = m6502_device_eor_idy_5;return; // READ
 }
 
 protected void m6502_device_eor_idy_5() {
-  _a ^= DAT;
+  _a ^= _dat;
   set_nz(_a);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op eor_imm --- 
 protected void m6502_device_eor_imm_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_eor_imm_1;return; // READ
 }
 
 protected void m6502_device_eor_imm_1() {
-  _a ^= DAT;
+  _a ^= _dat;
   set_nz(_a);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op eor_zpg --- 
 protected void m6502_device_eor_zpg_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_eor_zpg_1;return; // READ
 }
 
 protected void m6502_device_eor_zpg_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_eor_zpg_2;return; // READ
 }
 
 protected void m6502_device_eor_zpg_2() {
-  _a ^= DAT;
+  _a ^= _dat;
   set_nz(_a);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op eor_zpx --- 
 protected void m6502_device_eor_zpx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_eor_zpx_1;return; // READ
 }
 
 protected void m6502_device_eor_zpx_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_eor_zpx_2;return; // READ
 }
 
 protected void m6502_device_eor_zpx_2() {
-  _addr = (ushort)((byte)(_tmp+_x));
-  _rnw = true;
+  _doread((ushort)((byte)(_tmp+_x)));
   NextFn = m6502_device_eor_zpx_3;return; // READ
 }
 
 protected void m6502_device_eor_zpx_3() {
-  _a ^= DAT;
+  _a ^= _dat;
   set_nz(_a);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op inc_aba --- 
 protected void m6502_device_inc_aba_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_inc_aba_1;return; // READ
 }
 
 protected void m6502_device_inc_aba_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_inc_aba_2;return; // READ
 }
 
 protected void m6502_device_inc_aba_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_inc_aba_3;return; // READ
 }
 
 protected void m6502_device_inc_aba_3() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_inc_aba_4;return; // WRITE
 }
 
 protected void m6502_device_inc_aba_4() {
   _tmp2++;
   set_nz(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_inc_aba_5;return; // WRITE
 }
 
@@ -2360,46 +2060,38 @@ protected void m6502_device_inc_aba_5() {
 
 // --- op inc_abx --- 
 protected void m6502_device_inc_abx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_inc_abx_1;return; // READ
 }
 
 protected void m6502_device_inc_abx_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_inc_abx_2;return; // READ
 }
 
 protected void m6502_device_inc_abx_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_x)));
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(set_l(_tmp,(byte)(_tmp+_x))));
   NextFn = m6502_device_inc_abx_3;return; // READ
 }
 
 protected void m6502_device_inc_abx_3() {
   _tmp += _x;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_inc_abx_4;return; // READ
 }
 
 protected void m6502_device_inc_abx_4() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_inc_abx_5;return; // WRITE
 }
 
 protected void m6502_device_inc_abx_5() {
   _tmp2++;
   set_nz(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_inc_abx_6;return; // WRITE
 }
 
@@ -2409,32 +2101,26 @@ protected void m6502_device_inc_abx_6() {
 
 // --- op inc_zpg --- 
 protected void m6502_device_inc_zpg_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_inc_zpg_1;return; // READ
 }
 
 protected void m6502_device_inc_zpg_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_inc_zpg_2;return; // READ
 }
 
 protected void m6502_device_inc_zpg_2() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_inc_zpg_3;return; // WRITE
 }
 
 protected void m6502_device_inc_zpg_3() {
   _tmp2++;
   set_nz(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_inc_zpg_4;return; // WRITE
 }
 
@@ -2444,39 +2130,32 @@ protected void m6502_device_inc_zpg_4() {
 
 // --- op inc_zpx --- 
 protected void m6502_device_inc_zpx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_inc_zpx_1;return; // READ
 }
 
 protected void m6502_device_inc_zpx_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_inc_zpx_2;return; // READ
 }
 
 protected void m6502_device_inc_zpx_2() {
   _tmp = (byte)(_tmp+_x);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_inc_zpx_3;return; // READ
 }
 
 protected void m6502_device_inc_zpx_3() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_inc_zpx_4;return; // WRITE
 }
 
 protected void m6502_device_inc_zpx_4() {
   _tmp2++;
   set_nz(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_inc_zpx_5;return; // WRITE
 }
 
@@ -2486,8 +2165,7 @@ protected void m6502_device_inc_zpx_5() {
 
 // --- op inx_imp --- 
 protected void m6502_device_inx_imp_0() {
-  _addr = (ushort)(_pc);
-  _rnw = true;
+  _doread((ushort)(_pc));
   NextFn = m6502_device_inx_imp_1;return; // READ
 }
 
@@ -2499,8 +2177,7 @@ protected void m6502_device_inx_imp_1() {
 
 // --- op iny_imp --- 
 protected void m6502_device_iny_imp_0() {
-  _addr = (ushort)(_pc);
-  _rnw = true;
+  _doread((ushort)(_pc));
   NextFn = m6502_device_iny_imp_1;return; // READ
 }
 
@@ -2512,38 +2189,31 @@ protected void m6502_device_iny_imp_1() {
 
 // --- op isb_aba --- 
 protected void m6502_device_isb_aba_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_isb_aba_1;return; // READ
 }
 
 protected void m6502_device_isb_aba_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_isb_aba_2;return; // READ
 }
 
 protected void m6502_device_isb_aba_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_isb_aba_3;return; // READ
 }
 
 protected void m6502_device_isb_aba_3() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_isb_aba_4;return; // WRITE
 }
 
 protected void m6502_device_isb_aba_4() {
   _tmp2++;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_isb_aba_5;return; // WRITE
 }
 
@@ -2554,45 +2224,37 @@ protected void m6502_device_isb_aba_5() {
 
 // --- op isb_abx --- 
 protected void m6502_device_isb_abx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_isb_abx_1;return; // READ
 }
 
 protected void m6502_device_isb_abx_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_isb_abx_2;return; // READ
 }
 
 protected void m6502_device_isb_abx_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_x)));
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(set_l(_tmp,(byte)(_tmp+_x))));
   NextFn = m6502_device_isb_abx_3;return; // READ
 }
 
 protected void m6502_device_isb_abx_3() {
   _tmp += _x;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_isb_abx_4;return; // READ
 }
 
 protected void m6502_device_isb_abx_4() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_isb_abx_5;return; // WRITE
 }
 
 protected void m6502_device_isb_abx_5() {
   _tmp2++;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_isb_abx_6;return; // WRITE
 }
 
@@ -2603,45 +2265,37 @@ protected void m6502_device_isb_abx_6() {
 
 // --- op isb_aby --- 
 protected void m6502_device_isb_aby_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_isb_aby_1;return; // READ
 }
 
 protected void m6502_device_isb_aby_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_isb_aby_2;return; // READ
 }
 
 protected void m6502_device_isb_aby_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_y)));
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(set_l(_tmp,(byte)(_tmp+_y))));
   NextFn = m6502_device_isb_aby_3;return; // READ
 }
 
 protected void m6502_device_isb_aby_3() {
   _tmp += _y;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_isb_aby_4;return; // READ
 }
 
 protected void m6502_device_isb_aby_4() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_isb_aby_5;return; // WRITE
 }
 
 protected void m6502_device_isb_aby_5() {
   _tmp2++;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_isb_aby_6;return; // WRITE
 }
 
@@ -2652,52 +2306,43 @@ protected void m6502_device_isb_aby_6() {
 
 // --- op isb_idx --- 
 protected void m6502_device_isb_idx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_isb_idx_1;return; // READ
 }
 
 protected void m6502_device_isb_idx_1() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp2);
-  _rnw = true;
+  _tmp2 = _dat;
+  _doread((ushort)(_tmp2));
   NextFn = m6502_device_isb_idx_2;return; // READ
 }
 
 protected void m6502_device_isb_idx_2() {
   _tmp2 += _x;
-  _addr = (ushort)(_tmp2 & 0xff);
-  _rnw = true;
+  _doread((ushort)(_tmp2 & 0xff));
   NextFn = m6502_device_isb_idx_3;return; // READ
 }
 
 protected void m6502_device_isb_idx_3() {
-  _tmp = DAT;
-  _addr = (ushort)((_tmp2+1) & 0xff);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)((_tmp2+1) & 0xff));
   NextFn = m6502_device_isb_idx_4;return; // READ
 }
 
 protected void m6502_device_isb_idx_4() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_isb_idx_5;return; // READ
 }
 
 protected void m6502_device_isb_idx_5() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_isb_idx_6;return; // WRITE
 }
 
 protected void m6502_device_isb_idx_6() {
   _tmp2++;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_isb_idx_7;return; // WRITE
 }
 
@@ -2708,52 +2353,43 @@ protected void m6502_device_isb_idx_7() {
 
 // --- op isb_idy --- 
 protected void m6502_device_isb_idy_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_isb_idy_1;return; // READ
 }
 
 protected void m6502_device_isb_idy_1() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp2);
-  _rnw = true;
+  _tmp2 = _dat;
+  _doread((ushort)(_tmp2));
   NextFn = m6502_device_isb_idy_2;return; // READ
 }
 
 protected void m6502_device_isb_idy_2() {
-  _tmp = DAT;
-  _addr = (ushort)((_tmp2+1) & 0xff);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)((_tmp2+1) & 0xff));
   NextFn = m6502_device_isb_idy_3;return; // READ
 }
 
 protected void m6502_device_isb_idy_3() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_y)));
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(set_l(_tmp,(byte)(_tmp+_y))));
   NextFn = m6502_device_isb_idy_4;return; // READ
 }
 
 protected void m6502_device_isb_idy_4() {
   _tmp += _y;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_isb_idy_5;return; // READ
 }
 
 protected void m6502_device_isb_idy_5() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_isb_idy_6;return; // WRITE
 }
 
 protected void m6502_device_isb_idy_6() {
   _tmp2++;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_isb_idy_7;return; // WRITE
 }
 
@@ -2764,31 +2400,25 @@ protected void m6502_device_isb_idy_7() {
 
 // --- op isb_zpg --- 
 protected void m6502_device_isb_zpg_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_isb_zpg_1;return; // READ
 }
 
 protected void m6502_device_isb_zpg_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_isb_zpg_2;return; // READ
 }
 
 protected void m6502_device_isb_zpg_2() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_isb_zpg_3;return; // WRITE
 }
 
 protected void m6502_device_isb_zpg_3() {
   _tmp2++;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_isb_zpg_4;return; // WRITE
 }
 
@@ -2799,38 +2429,31 @@ protected void m6502_device_isb_zpg_4() {
 
 // --- op isb_zpx --- 
 protected void m6502_device_isb_zpx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_isb_zpx_1;return; // READ
 }
 
 protected void m6502_device_isb_zpx_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_isb_zpx_2;return; // READ
 }
 
 protected void m6502_device_isb_zpx_2() {
   _tmp = (byte)(_tmp+_x);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_isb_zpx_3;return; // READ
 }
 
 protected void m6502_device_isb_zpx_3() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_isb_zpx_4;return; // WRITE
 }
 
 protected void m6502_device_isb_zpx_4() {
   _tmp2++;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_isb_zpx_5;return; // WRITE
 }
 
@@ -2841,121 +2464,104 @@ protected void m6502_device_isb_zpx_5() {
 
 // --- op jmp_adr --- 
 protected void m6502_device_jmp_adr_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_jmp_adr_1;return; // READ
 }
 
 protected void m6502_device_jmp_adr_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_jmp_adr_2;return; // READ
 }
 
 protected void m6502_device_jmp_adr_2() {
-  _tmp = set_h(_tmp, DAT);
+  _tmp = set_h(_tmp, _dat);
   _pc = _tmp;
   m6502_device_fetch();return; // fetch
 }
 
 // --- op jmp_ind --- 
 protected void m6502_device_jmp_ind_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_jmp_ind_1;return; // READ
 }
 
 protected void m6502_device_jmp_ind_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_jmp_ind_2;return; // READ
 }
 
 protected void m6502_device_jmp_ind_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_jmp_ind_3;return; // READ
 }
 
 protected void m6502_device_jmp_ind_3() {
-  _pc = DAT;
-  _addr = (ushort)(set_l(_tmp,(byte)(_tmp+1)));
-  _rnw = true;
+  _pc = _dat;
+  _doread((ushort)(set_l(_tmp,(byte)(_tmp+1))));
   NextFn = m6502_device_jmp_ind_4;return; // READ
 }
 
 protected void m6502_device_jmp_ind_4() {
-  _pc = set_h(_pc, DAT);
+  _pc = set_h(_pc, _dat);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op jsr_adr --- 
 protected void m6502_device_jsr_adr_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_jsr_adr_1;return; // READ
 }
 
 protected void m6502_device_jsr_adr_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_sp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_sp));
   NextFn = m6502_device_jsr_adr_2;return; // READ
 }
 
 protected void m6502_device_jsr_adr_2() {
-  _addr = (ushort)(_sp);
-  _dat =  (byte)(_pc>>8);
-  _rnw = false;
+  _dowrite((ushort)(_sp),(byte)( (byte)(_pc>>8)));
   NextFn = m6502_device_jsr_adr_3;return; // WRITE
 }
 
 protected void m6502_device_jsr_adr_3() {
   dec_SP();
-  _addr = (ushort)(_sp);
-  _dat =  (byte)_pc;
-  _rnw = false;
+  _dowrite((ushort)(_sp),(byte)( (byte)_pc));
   NextFn = m6502_device_jsr_adr_4;return; // WRITE
 }
 
 protected void m6502_device_jsr_adr_4() {
   dec_SP();
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_jsr_adr_5;return; // READ
 }
 
 protected void m6502_device_jsr_adr_5() {
-  _tmp = set_h(_tmp, DAT);
+  _tmp = set_h(_tmp, _dat);
   _pc = _tmp;
   m6502_device_fetch();return; // fetch
 }
 
 // --- op kil_non --- 
 protected void m6502_device_kil_non_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_kil_non_1;return; // READ
 }
 
 protected void m6502_device_kil_non_1() {
-  _addr = (ushort)(0xffff);
-  _rnw = true;
+  _doread((ushort)(0xffff));
   NextFn = m6502_device_kil_non_2;return; // READ
 }
 
 protected void m6502_device_kil_non_2() {
-  _addr = (ushort)(0xfffe);
-  _rnw = true;
+  _doread((ushort)(0xfffe));
   NextFn = m6502_device_kil_non_3;return; // READ
 }
 
 protected void m6502_device_kil_non_3() {
-  _addr = (ushort)(0xfffe);
-  _rnw = true;
+  _doread((ushort)(0xfffe));
   NextFn = m6502_device_kil_non_4;return; // READ
 }
 
@@ -2965,8 +2571,7 @@ protected void m6502_device_kil_non_4() {
 
 protected void m6502_device_kil_non_while_1() {
   if (!(true)) m6502_device_kil_non_whilenot_1();return;
-  _addr = (ushort)(0xffff);
-  _rnw = true;
+  _doread((ushort)(0xffff));
   NextFn = m6502_device_kil_non_5;return; // READ
 }
 
@@ -2980,38 +2585,33 @@ protected void m6502_device_kil_non_5() {
 
 // --- op las_aby --- 
 protected void m6502_device_las_aby_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_las_aby_1;return; // READ
 }
 
 protected void m6502_device_las_aby_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_las_aby_2;return; // READ
 }
 
 protected void m6502_device_las_aby_2() {
-  _tmp = set_h(_tmp, DAT);
+  _tmp = set_h(_tmp, _dat);
   if (page_changing(_tmp, _y)) {
-    _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_y)));
-    _rnw = true;
+    _doread((ushort)(set_l(_tmp,(byte)(_tmp+_y))));
     NextFn = m6502_device_las_aby_3;return; // READ
   }
-  _addr = (ushort)(_tmp+_y);
-  _rnw = true;
+  _doread((ushort)(_tmp+_y));
   NextFn = m6502_device_las_aby_4;return; // READ
 }
 
 protected void m6502_device_las_aby_3() {
-    _addr = (ushort)(_tmp+_y);
-    _rnw = true;
+    _doread((ushort)(_tmp+_y));
     NextFn = m6502_device_las_aby_4;return; // READ
 }
 
 protected void m6502_device_las_aby_4() {
-  _tmp2 = DAT;
+  _tmp2 = _dat;
   _a = (byte)(_tmp2 | 0x51);
   _x = 0xff;
   set_nz(_tmp2);
@@ -3020,734 +2620,645 @@ protected void m6502_device_las_aby_4() {
 
 // --- op lax_aba --- 
 protected void m6502_device_lax_aba_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_lax_aba_1;return; // READ
 }
 
 protected void m6502_device_lax_aba_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_lax_aba_2;return; // READ
 }
 
 protected void m6502_device_lax_aba_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_lax_aba_3;return; // READ
 }
 
 protected void m6502_device_lax_aba_3() {
-  _a = _x = DAT;
+  _a = _x = _dat;
   set_nz(_a);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op lax_aby --- 
 protected void m6502_device_lax_aby_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_lax_aby_1;return; // READ
 }
 
 protected void m6502_device_lax_aby_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_lax_aby_2;return; // READ
 }
 
 protected void m6502_device_lax_aby_2() {
-  _tmp = set_h(_tmp, DAT);
+  _tmp = set_h(_tmp, _dat);
   if (page_changing(_tmp, _y)) {
-    _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_y)));
-    _rnw = true;
+    _doread((ushort)(set_l(_tmp,(byte)(_tmp+_y))));
     NextFn = m6502_device_lax_aby_3;return; // READ
   }
-  _addr = (ushort)(_tmp+_y);
-  _rnw = true;
+  _doread((ushort)(_tmp+_y));
   NextFn = m6502_device_lax_aby_4;return; // READ
 }
 
 protected void m6502_device_lax_aby_3() {
-    _addr = (ushort)(_tmp+_y);
-    _rnw = true;
+    _doread((ushort)(_tmp+_y));
     NextFn = m6502_device_lax_aby_4;return; // READ
 }
 
 protected void m6502_device_lax_aby_4() {
-  _a = _x = DAT;
+  _a = _x = _dat;
   set_nz(_a);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op lax_idx --- 
 protected void m6502_device_lax_idx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_lax_idx_1;return; // READ
 }
 
 protected void m6502_device_lax_idx_1() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp2);
-  _rnw = true;
+  _tmp2 = _dat;
+  _doread((ushort)(_tmp2));
   NextFn = m6502_device_lax_idx_2;return; // READ
 }
 
 protected void m6502_device_lax_idx_2() {
   _tmp2 += _x;
-  _addr = (ushort)(_tmp2 & 0xff);
-  _rnw = true;
+  _doread((ushort)(_tmp2 & 0xff));
   NextFn = m6502_device_lax_idx_3;return; // READ
 }
 
 protected void m6502_device_lax_idx_3() {
-  _tmp = DAT;
-  _addr = (ushort)((_tmp2+1) & 0xff);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)((_tmp2+1) & 0xff));
   NextFn = m6502_device_lax_idx_4;return; // READ
 }
 
 protected void m6502_device_lax_idx_4() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_lax_idx_5;return; // READ
 }
 
 protected void m6502_device_lax_idx_5() {
-  _a = _x = DAT;
+  _a = _x = _dat;
   set_nz(_a);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op lax_idy --- 
 protected void m6502_device_lax_idy_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_lax_idy_1;return; // READ
 }
 
 protected void m6502_device_lax_idy_1() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp2);
-  _rnw = true;
+  _tmp2 = _dat;
+  _doread((ushort)(_tmp2));
   NextFn = m6502_device_lax_idy_2;return; // READ
 }
 
 protected void m6502_device_lax_idy_2() {
-  _tmp = DAT;
-  _addr = (ushort)((_tmp2+1) & 0xff);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)((_tmp2+1) & 0xff));
   NextFn = m6502_device_lax_idy_3;return; // READ
 }
 
 protected void m6502_device_lax_idy_3() {
-  _tmp = set_h(_tmp, DAT);
+  _tmp = set_h(_tmp, _dat);
   if (page_changing(_tmp, _y)) {
-    _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_y)));
-    _rnw = true;
+    _doread((ushort)(set_l(_tmp,(byte)(_tmp+_y))));
     NextFn = m6502_device_lax_idy_4;return; // READ
   }
-  _addr = (ushort)(_tmp+_y);
-  _rnw = true;
+  _doread((ushort)(_tmp+_y));
   NextFn = m6502_device_lax_idy_5;return; // READ
 }
 
 protected void m6502_device_lax_idy_4() {
-    _addr = (ushort)(_tmp+_y);
-    _rnw = true;
+    _doread((ushort)(_tmp+_y));
     NextFn = m6502_device_lax_idy_5;return; // READ
 }
 
 protected void m6502_device_lax_idy_5() {
-  _a = _x = DAT;
+  _a = _x = _dat;
   set_nz(_a);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op lax_zpg --- 
 protected void m6502_device_lax_zpg_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_lax_zpg_1;return; // READ
 }
 
 protected void m6502_device_lax_zpg_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_lax_zpg_2;return; // READ
 }
 
 protected void m6502_device_lax_zpg_2() {
-  _a = _x = DAT;
+  _a = _x = _dat;
   set_nz(_a);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op lax_zpy --- 
 protected void m6502_device_lax_zpy_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_lax_zpy_1;return; // READ
 }
 
 protected void m6502_device_lax_zpy_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_lax_zpy_2;return; // READ
 }
 
 protected void m6502_device_lax_zpy_2() {
   _tmp = (byte)(_tmp+_y);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_lax_zpy_3;return; // READ
 }
 
 protected void m6502_device_lax_zpy_3() {
-  _a = _x = DAT;
+  _a = _x = _dat;
   set_nz(_a);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op lda_aba --- 
 protected void m6502_device_lda_aba_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_lda_aba_1;return; // READ
 }
 
 protected void m6502_device_lda_aba_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_lda_aba_2;return; // READ
 }
 
 protected void m6502_device_lda_aba_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_lda_aba_3;return; // READ
 }
 
 protected void m6502_device_lda_aba_3() {
-  _a = DAT;
+  _a = _dat;
   set_nz(_a);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op lda_abx --- 
 protected void m6502_device_lda_abx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_lda_abx_1;return; // READ
 }
 
 protected void m6502_device_lda_abx_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_lda_abx_2;return; // READ
 }
 
 protected void m6502_device_lda_abx_2() {
-  _tmp = set_h(_tmp, DAT);
+  _tmp = set_h(_tmp, _dat);
   if (page_changing(_tmp, _x)) {
-    _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_x)));
-    _rnw = true;
+    _doread((ushort)(set_l(_tmp,(byte)(_tmp+_x))));
     NextFn = m6502_device_lda_abx_3;return; // READ
   }
-  _addr = (ushort)(_tmp + _x);
-  _rnw = true;
+  _doread((ushort)(_tmp + _x));
   NextFn = m6502_device_lda_abx_4;return; // READ
 }
 
 protected void m6502_device_lda_abx_3() {
-    _addr = (ushort)(_tmp + _x);
-    _rnw = true;
+    _doread((ushort)(_tmp + _x));
     NextFn = m6502_device_lda_abx_4;return; // READ
 }
 
 protected void m6502_device_lda_abx_4() {
-  _a = DAT;
+  _a = _dat;
   set_nz(_a);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op lda_aby --- 
 protected void m6502_device_lda_aby_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_lda_aby_1;return; // READ
 }
 
 protected void m6502_device_lda_aby_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_lda_aby_2;return; // READ
 }
 
 protected void m6502_device_lda_aby_2() {
-  _tmp = set_h(_tmp, DAT);
+  _tmp = set_h(_tmp, _dat);
   if (page_changing(_tmp, _y)) {
-    _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_y)));
-    _rnw = true;
+    _doread((ushort)(set_l(_tmp,(byte)(_tmp+_y))));
     NextFn = m6502_device_lda_aby_3;return; // READ
   }
-  _addr = (ushort)(_tmp + _y);
-  _rnw = true;
+  _doread((ushort)(_tmp + _y));
   NextFn = m6502_device_lda_aby_4;return; // READ
 }
 
 protected void m6502_device_lda_aby_3() {
-    _addr = (ushort)(_tmp + _y);
-    _rnw = true;
+    _doread((ushort)(_tmp + _y));
     NextFn = m6502_device_lda_aby_4;return; // READ
 }
 
 protected void m6502_device_lda_aby_4() {
-  _a = DAT;
+  _a = _dat;
   set_nz(_a);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op lda_idx --- 
 protected void m6502_device_lda_idx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_lda_idx_1;return; // READ
 }
 
 protected void m6502_device_lda_idx_1() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp2);
-  _rnw = true;
+  _tmp2 = _dat;
+  _doread((ushort)(_tmp2));
   NextFn = m6502_device_lda_idx_2;return; // READ
 }
 
 protected void m6502_device_lda_idx_2() {
   _tmp2 += _x;
-  _addr = (ushort)(_tmp2 & 0xff);
-  _rnw = true;
+  _doread((ushort)(_tmp2 & 0xff));
   NextFn = m6502_device_lda_idx_3;return; // READ
 }
 
 protected void m6502_device_lda_idx_3() {
-  _tmp = DAT;
-  _addr = (ushort)((_tmp2+1) & 0xff);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)((_tmp2+1) & 0xff));
   NextFn = m6502_device_lda_idx_4;return; // READ
 }
 
 protected void m6502_device_lda_idx_4() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_lda_idx_5;return; // READ
 }
 
 protected void m6502_device_lda_idx_5() {
-  _a = DAT;
+  _a = _dat;
   set_nz(_a);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op lda_idy --- 
 protected void m6502_device_lda_idy_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_lda_idy_1;return; // READ
 }
 
 protected void m6502_device_lda_idy_1() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp2);
-  _rnw = true;
+  _tmp2 = _dat;
+  _doread((ushort)(_tmp2));
   NextFn = m6502_device_lda_idy_2;return; // READ
 }
 
 protected void m6502_device_lda_idy_2() {
-  _tmp = DAT;
-  _addr = (ushort)((_tmp2+1) & 0xff);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)((_tmp2+1) & 0xff));
   NextFn = m6502_device_lda_idy_3;return; // READ
 }
 
 protected void m6502_device_lda_idy_3() {
-  _tmp = set_h(_tmp, DAT);
+  _tmp = set_h(_tmp, _dat);
   if (page_changing(_tmp, _y)) {
-    _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_y)));
-    _rnw = true;
+    _doread((ushort)(set_l(_tmp,(byte)(_tmp+_y))));
     NextFn = m6502_device_lda_idy_4;return; // READ
   }
-  _addr = (ushort)(_tmp+_y);
-  _rnw = true;
+  _doread((ushort)(_tmp+_y));
   NextFn = m6502_device_lda_idy_5;return; // READ
 }
 
 protected void m6502_device_lda_idy_4() {
-    _addr = (ushort)(_tmp+_y);
-    _rnw = true;
+    _doread((ushort)(_tmp+_y));
     NextFn = m6502_device_lda_idy_5;return; // READ
 }
 
 protected void m6502_device_lda_idy_5() {
-  _a = DAT;
+  _a = _dat;
   set_nz(_a);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op lda_imm --- 
 protected void m6502_device_lda_imm_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_lda_imm_1;return; // READ
 }
 
 protected void m6502_device_lda_imm_1() {
-  _a = DAT;
+  _a = _dat;
   set_nz(_a);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op lda_zpg --- 
 protected void m6502_device_lda_zpg_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_lda_zpg_1;return; // READ
 }
 
 protected void m6502_device_lda_zpg_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_lda_zpg_2;return; // READ
 }
 
 protected void m6502_device_lda_zpg_2() {
-  _a = DAT;
+  _a = _dat;
   set_nz(_a);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op lda_zpx --- 
 protected void m6502_device_lda_zpx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_lda_zpx_1;return; // READ
 }
 
 protected void m6502_device_lda_zpx_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_lda_zpx_2;return; // READ
 }
 
 protected void m6502_device_lda_zpx_2() {
-  _addr = (ushort)((byte)(_tmp+_x));
-  _rnw = true;
+  _doread((ushort)((byte)(_tmp+_x)));
   NextFn = m6502_device_lda_zpx_3;return; // READ
 }
 
 protected void m6502_device_lda_zpx_3() {
-  _a = DAT;
+  _a = _dat;
   set_nz(_a);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op ldx_aba --- 
 protected void m6502_device_ldx_aba_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_ldx_aba_1;return; // READ
 }
 
 protected void m6502_device_ldx_aba_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_ldx_aba_2;return; // READ
 }
 
 protected void m6502_device_ldx_aba_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_ldx_aba_3;return; // READ
 }
 
 protected void m6502_device_ldx_aba_3() {
-  _x = DAT;
+  _x = _dat;
   set_nz(_x);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op ldx_aby --- 
 protected void m6502_device_ldx_aby_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_ldx_aby_1;return; // READ
 }
 
 protected void m6502_device_ldx_aby_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_ldx_aby_2;return; // READ
 }
 
 protected void m6502_device_ldx_aby_2() {
-  _tmp = set_h(_tmp, DAT);
+  _tmp = set_h(_tmp, _dat);
   if (page_changing(_tmp, _y)) {
-    _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_y)));
-    _rnw = true;
+    _doread((ushort)(set_l(_tmp,(byte)(_tmp+_y))));
     NextFn = m6502_device_ldx_aby_3;return; // READ
   }
-  _addr = (ushort)(_tmp + _y);
-  _rnw = true;
+  _doread((ushort)(_tmp + _y));
   NextFn = m6502_device_ldx_aby_4;return; // READ
 }
 
 protected void m6502_device_ldx_aby_3() {
-    _addr = (ushort)(_tmp + _y);
-    _rnw = true;
+    _doread((ushort)(_tmp + _y));
     NextFn = m6502_device_ldx_aby_4;return; // READ
 }
 
 protected void m6502_device_ldx_aby_4() {
-  _x = DAT;
+  _x = _dat;
   set_nz(_x);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op ldx_imm --- 
 protected void m6502_device_ldx_imm_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_ldx_imm_1;return; // READ
 }
 
 protected void m6502_device_ldx_imm_1() {
-  _x = DAT;
+  _x = _dat;
   set_nz(_x);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op ldx_zpg --- 
 protected void m6502_device_ldx_zpg_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_ldx_zpg_1;return; // READ
 }
 
 protected void m6502_device_ldx_zpg_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_ldx_zpg_2;return; // READ
 }
 
 protected void m6502_device_ldx_zpg_2() {
-  _x = DAT;
+  _x = _dat;
   set_nz(_x);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op ldx_zpy --- 
 protected void m6502_device_ldx_zpy_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_ldx_zpy_1;return; // READ
 }
 
 protected void m6502_device_ldx_zpy_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_ldx_zpy_2;return; // READ
 }
 
 protected void m6502_device_ldx_zpy_2() {
-  _addr = (ushort)((byte)(_tmp+_y));
-  _rnw = true;
+  _doread((ushort)((byte)(_tmp+_y)));
   NextFn = m6502_device_ldx_zpy_3;return; // READ
 }
 
 protected void m6502_device_ldx_zpy_3() {
-  _x = DAT;
+  _x = _dat;
   set_nz(_x);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op ldy_aba --- 
 protected void m6502_device_ldy_aba_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_ldy_aba_1;return; // READ
 }
 
 protected void m6502_device_ldy_aba_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_ldy_aba_2;return; // READ
 }
 
 protected void m6502_device_ldy_aba_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_ldy_aba_3;return; // READ
 }
 
 protected void m6502_device_ldy_aba_3() {
-  _y = DAT;
+  _y = _dat;
   set_nz(_y);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op ldy_abx --- 
 protected void m6502_device_ldy_abx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_ldy_abx_1;return; // READ
 }
 
 protected void m6502_device_ldy_abx_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_ldy_abx_2;return; // READ
 }
 
 protected void m6502_device_ldy_abx_2() {
-  _tmp = set_h(_tmp, DAT);
+  _tmp = set_h(_tmp, _dat);
   if (page_changing(_tmp, _x)) {
-    _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_x)));
-    _rnw = true;
+    _doread((ushort)(set_l(_tmp,(byte)(_tmp+_x))));
     NextFn = m6502_device_ldy_abx_3;return; // READ
   }
   _tmp += _x;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_ldy_abx_4;return; // READ
 }
 
 protected void m6502_device_ldy_abx_3() {
     _tmp += _x;
-    _addr = (ushort)(_tmp);
-    _rnw = true;
+    _doread((ushort)(_tmp));
     NextFn = m6502_device_ldy_abx_4;return; // READ
 }
 
 protected void m6502_device_ldy_abx_4() {
-  _y = DAT;
+  _y = _dat;
   set_nz(_y);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op ldy_imm --- 
 protected void m6502_device_ldy_imm_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_ldy_imm_1;return; // READ
 }
 
 protected void m6502_device_ldy_imm_1() {
-  _y = DAT;
+  _y = _dat;
   set_nz(_y);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op ldy_zpg --- 
 protected void m6502_device_ldy_zpg_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_ldy_zpg_1;return; // READ
 }
 
 protected void m6502_device_ldy_zpg_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_ldy_zpg_2;return; // READ
 }
 
 protected void m6502_device_ldy_zpg_2() {
-  _y = DAT;
+  _y = _dat;
   set_nz(_y);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op ldy_zpx --- 
 protected void m6502_device_ldy_zpx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_ldy_zpx_1;return; // READ
 }
 
 protected void m6502_device_ldy_zpx_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_ldy_zpx_2;return; // READ
 }
 
 protected void m6502_device_ldy_zpx_2() {
-  _addr = (ushort)((byte)(_tmp+_x));
-  _rnw = true;
+  _doread((ushort)((byte)(_tmp+_x)));
   NextFn = m6502_device_ldy_zpx_3;return; // READ
 }
 
 protected void m6502_device_ldy_zpx_3() {
-  _y = DAT;
+  _y = _dat;
   set_nz(_y);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op lsr_aba --- 
 protected void m6502_device_lsr_aba_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_lsr_aba_1;return; // READ
 }
 
 protected void m6502_device_lsr_aba_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_lsr_aba_2;return; // READ
 }
 
 protected void m6502_device_lsr_aba_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_lsr_aba_3;return; // READ
 }
 
 protected void m6502_device_lsr_aba_3() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_lsr_aba_4;return; // WRITE
 }
 
 protected void m6502_device_lsr_aba_4() {
   _tmp2 = do_lsr(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_lsr_aba_5;return; // WRITE
 }
 
@@ -3757,45 +3268,37 @@ protected void m6502_device_lsr_aba_5() {
 
 // --- op lsr_abx --- 
 protected void m6502_device_lsr_abx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_lsr_abx_1;return; // READ
 }
 
 protected void m6502_device_lsr_abx_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_lsr_abx_2;return; // READ
 }
 
 protected void m6502_device_lsr_abx_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_x)));
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(set_l(_tmp,(byte)(_tmp+_x))));
   NextFn = m6502_device_lsr_abx_3;return; // READ
 }
 
 protected void m6502_device_lsr_abx_3() {
   _tmp += _x;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_lsr_abx_4;return; // READ
 }
 
 protected void m6502_device_lsr_abx_4() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_lsr_abx_5;return; // WRITE
 }
 
 protected void m6502_device_lsr_abx_5() {
   _tmp2 = do_lsr(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_lsr_abx_6;return; // WRITE
 }
 
@@ -3805,8 +3308,7 @@ protected void m6502_device_lsr_abx_6() {
 
 // --- op lsr_acc --- 
 protected void m6502_device_lsr_acc_0() {
-  _addr = (ushort)(_pc);
-  _rnw = true;
+  _doread((ushort)(_pc));
   NextFn = m6502_device_lsr_acc_1;return; // READ
 }
 
@@ -3817,31 +3319,25 @@ protected void m6502_device_lsr_acc_1() {
 
 // --- op lsr_zpg --- 
 protected void m6502_device_lsr_zpg_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_lsr_zpg_1;return; // READ
 }
 
 protected void m6502_device_lsr_zpg_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_lsr_zpg_2;return; // READ
 }
 
 protected void m6502_device_lsr_zpg_2() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_lsr_zpg_3;return; // WRITE
 }
 
 protected void m6502_device_lsr_zpg_3() {
   _tmp2 = do_lsr(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_lsr_zpg_4;return; // WRITE
 }
 
@@ -3851,38 +3347,31 @@ protected void m6502_device_lsr_zpg_4() {
 
 // --- op lsr_zpx --- 
 protected void m6502_device_lsr_zpx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_lsr_zpx_1;return; // READ
 }
 
 protected void m6502_device_lsr_zpx_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_lsr_zpx_2;return; // READ
 }
 
 protected void m6502_device_lsr_zpx_2() {
   _tmp = (byte)(_tmp+_x);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_lsr_zpx_3;return; // READ
 }
 
 protected void m6502_device_lsr_zpx_3() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_lsr_zpx_4;return; // WRITE
 }
 
 protected void m6502_device_lsr_zpx_4() {
   _tmp2 = do_lsr(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_lsr_zpx_5;return; // WRITE
 }
 
@@ -3892,35 +3381,31 @@ protected void m6502_device_lsr_zpx_5() {
 
 // --- op lxa_imm --- 
 protected void m6502_device_lxa_imm_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_lxa_imm_1;return; // READ
 }
 
 protected void m6502_device_lxa_imm_1() {
-  _a = _x = DAT;
+  _a = _x = _dat;
   set_nz(_a);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op nop_aba --- 
 protected void m6502_device_nop_aba_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_nop_aba_1;return; // READ
 }
 
 protected void m6502_device_nop_aba_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_nop_aba_2;return; // READ
 }
 
 protected void m6502_device_nop_aba_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_nop_aba_3;return; // READ
 }
 
@@ -3930,33 +3415,28 @@ protected void m6502_device_nop_aba_3() {
 
 // --- op nop_abx --- 
 protected void m6502_device_nop_abx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_nop_abx_1;return; // READ
 }
 
 protected void m6502_device_nop_abx_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_nop_abx_2;return; // READ
 }
 
 protected void m6502_device_nop_abx_2() {
-  _tmp = set_h(_tmp, DAT);
+  _tmp = set_h(_tmp, _dat);
   if (page_changing(_tmp, _x)) {
-    _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_x)));
-    _rnw = true;
+    _doread((ushort)(set_l(_tmp,(byte)(_tmp+_x))));
     NextFn = m6502_device_nop_abx_3;return; // READ
   }
-  _addr = (ushort)(_tmp + _x);
-  _rnw = true;
+  _doread((ushort)(_tmp + _x));
   NextFn = m6502_device_nop_abx_4;return; // READ
 }
 
 protected void m6502_device_nop_abx_3() {
-    _addr = (ushort)(_tmp + _x);
-    _rnw = true;
+    _doread((ushort)(_tmp + _x));
     NextFn = m6502_device_nop_abx_4;return; // READ
 }
 
@@ -3966,8 +3446,7 @@ protected void m6502_device_nop_abx_4() {
 
 // --- op nop_imm --- 
 protected void m6502_device_nop_imm_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_nop_imm_1;return; // READ
 }
 
@@ -3977,8 +3456,7 @@ protected void m6502_device_nop_imm_1() {
 
 // --- op nop_imp --- 
 protected void m6502_device_nop_imp_0() {
-  _addr = (ushort)(_pc);
-  _rnw = true;
+  _doread((ushort)(_pc));
   NextFn = m6502_device_nop_imp_1;return; // READ
 }
 
@@ -3988,15 +3466,13 @@ protected void m6502_device_nop_imp_1() {
 
 // --- op nop_zpg --- 
 protected void m6502_device_nop_zpg_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_nop_zpg_1;return; // READ
 }
 
 protected void m6502_device_nop_zpg_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_nop_zpg_2;return; // READ
 }
 
@@ -4006,21 +3482,18 @@ protected void m6502_device_nop_zpg_2() {
 
 // --- op nop_zpx --- 
 protected void m6502_device_nop_zpx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_nop_zpx_1;return; // READ
 }
 
 protected void m6502_device_nop_zpx_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_nop_zpx_2;return; // READ
 }
 
 protected void m6502_device_nop_zpx_2() {
-  _addr = (ushort)((byte)(_tmp+_x));
-  _rnw = true;
+  _doread((ushort)((byte)(_tmp+_x)));
   NextFn = m6502_device_nop_zpx_3;return; // READ
 }
 
@@ -4030,267 +3503,234 @@ protected void m6502_device_nop_zpx_3() {
 
 // --- op ora_aba --- 
 protected void m6502_device_ora_aba_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_ora_aba_1;return; // READ
 }
 
 protected void m6502_device_ora_aba_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_ora_aba_2;return; // READ
 }
 
 protected void m6502_device_ora_aba_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_ora_aba_3;return; // READ
 }
 
 protected void m6502_device_ora_aba_3() {
-  _a |= DAT;
+  _a |= _dat;
   set_nz(_a);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op ora_abx --- 
 protected void m6502_device_ora_abx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_ora_abx_1;return; // READ
 }
 
 protected void m6502_device_ora_abx_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_ora_abx_2;return; // READ
 }
 
 protected void m6502_device_ora_abx_2() {
-  _tmp = set_h(_tmp, DAT);
+  _tmp = set_h(_tmp, _dat);
   if (page_changing(_tmp, _x)) {
-    _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_x)));
-    _rnw = true;
+    _doread((ushort)(set_l(_tmp,(byte)(_tmp+_x))));
     NextFn = m6502_device_ora_abx_3;return; // READ
   }
   _tmp += _x;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_ora_abx_4;return; // READ
 }
 
 protected void m6502_device_ora_abx_3() {
     _tmp += _x;
-    _addr = (ushort)(_tmp);
-    _rnw = true;
+    _doread((ushort)(_tmp));
     NextFn = m6502_device_ora_abx_4;return; // READ
 }
 
 protected void m6502_device_ora_abx_4() {
-  _a |= DAT;
+  _a |= _dat;
   set_nz(_a);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op ora_aby --- 
 protected void m6502_device_ora_aby_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_ora_aby_1;return; // READ
 }
 
 protected void m6502_device_ora_aby_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_ora_aby_2;return; // READ
 }
 
 protected void m6502_device_ora_aby_2() {
-  _tmp = set_h(_tmp, DAT);
+  _tmp = set_h(_tmp, _dat);
   if (page_changing(_tmp, _y)) {
-    _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_y)));
-    _rnw = true;
+    _doread((ushort)(set_l(_tmp,(byte)(_tmp+_y))));
     NextFn = m6502_device_ora_aby_3;return; // READ
   }
   _tmp += _y;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_ora_aby_4;return; // READ
 }
 
 protected void m6502_device_ora_aby_3() {
     _tmp += _y;
-    _addr = (ushort)(_tmp);
-    _rnw = true;
+    _doread((ushort)(_tmp));
     NextFn = m6502_device_ora_aby_4;return; // READ
 }
 
 protected void m6502_device_ora_aby_4() {
-  _a |= DAT;
+  _a |= _dat;
   set_nz(_a);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op ora_idx --- 
 protected void m6502_device_ora_idx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_ora_idx_1;return; // READ
 }
 
 protected void m6502_device_ora_idx_1() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp2);
-  _rnw = true;
+  _tmp2 = _dat;
+  _doread((ushort)(_tmp2));
   NextFn = m6502_device_ora_idx_2;return; // READ
 }
 
 protected void m6502_device_ora_idx_2() {
   _tmp2 += _x;
-  _addr = (ushort)(_tmp2 & 0xff);
-  _rnw = true;
+  _doread((ushort)(_tmp2 & 0xff));
   NextFn = m6502_device_ora_idx_3;return; // READ
 }
 
 protected void m6502_device_ora_idx_3() {
-  _tmp = DAT;
-  _addr = (ushort)((_tmp2+1) & 0xff);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)((_tmp2+1) & 0xff));
   NextFn = m6502_device_ora_idx_4;return; // READ
 }
 
 protected void m6502_device_ora_idx_4() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_ora_idx_5;return; // READ
 }
 
 protected void m6502_device_ora_idx_5() {
-  _a |= DAT;
+  _a |= _dat;
   set_nz(_a);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op ora_idy --- 
 protected void m6502_device_ora_idy_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_ora_idy_1;return; // READ
 }
 
 protected void m6502_device_ora_idy_1() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp2);
-  _rnw = true;
+  _tmp2 = _dat;
+  _doread((ushort)(_tmp2));
   NextFn = m6502_device_ora_idy_2;return; // READ
 }
 
 protected void m6502_device_ora_idy_2() {
-  _tmp = DAT;
-  _addr = (ushort)((_tmp2+1) & 0xff);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)((_tmp2+1) & 0xff));
   NextFn = m6502_device_ora_idy_3;return; // READ
 }
 
 protected void m6502_device_ora_idy_3() {
-  _tmp = set_h(_tmp, DAT);
+  _tmp = set_h(_tmp, _dat);
   if (page_changing(_tmp, _y)) {
-    _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_y)));
-    _rnw = true;
+    _doread((ushort)(set_l(_tmp,(byte)(_tmp+_y))));
     NextFn = m6502_device_ora_idy_4;return; // READ
   }
-  _addr = (ushort)(_tmp+_y);
-  _rnw = true;
+  _doread((ushort)(_tmp+_y));
   NextFn = m6502_device_ora_idy_5;return; // READ
 }
 
 protected void m6502_device_ora_idy_4() {
-    _addr = (ushort)(_tmp+_y);
-    _rnw = true;
+    _doread((ushort)(_tmp+_y));
     NextFn = m6502_device_ora_idy_5;return; // READ
 }
 
 protected void m6502_device_ora_idy_5() {
-  _a |= DAT;
+  _a |= _dat;
   set_nz(_a);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op ora_imm --- 
 protected void m6502_device_ora_imm_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_ora_imm_1;return; // READ
 }
 
 protected void m6502_device_ora_imm_1() {
-  _a |= DAT;
+  _a |= _dat;
   set_nz(_a);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op ora_zpg --- 
 protected void m6502_device_ora_zpg_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_ora_zpg_1;return; // READ
 }
 
 protected void m6502_device_ora_zpg_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_ora_zpg_2;return; // READ
 }
 
 protected void m6502_device_ora_zpg_2() {
-  _a |= DAT;
+  _a |= _dat;
   set_nz(_a);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op ora_zpx --- 
 protected void m6502_device_ora_zpx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_ora_zpx_1;return; // READ
 }
 
 protected void m6502_device_ora_zpx_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_ora_zpx_2;return; // READ
 }
 
 protected void m6502_device_ora_zpx_2() {
-  _addr = (ushort)((byte)(_tmp+_x));
-  _rnw = true;
+  _doread((ushort)((byte)(_tmp+_x)));
   NextFn = m6502_device_ora_zpx_3;return; // READ
 }
 
 protected void m6502_device_ora_zpx_3() {
-  _a |= DAT;
+  _a |= _dat;
   set_nz(_a);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op pha_imp --- 
 protected void m6502_device_pha_imp_0() {
-  _addr = (ushort)(_pc);
-  _rnw = true;
+  _doread((ushort)(_pc));
   NextFn = m6502_device_pha_imp_1;return; // READ
 }
 
 protected void m6502_device_pha_imp_1() {
-  _addr = (ushort)(_sp);
-  _dat =  _a;
-  _rnw = false;
+  _dowrite((ushort)(_sp),(byte)( _a));
   NextFn = m6502_device_pha_imp_2;return; // WRITE
 }
 
@@ -4301,15 +3741,12 @@ protected void m6502_device_pha_imp_2() {
 
 // --- op php_imp --- 
 protected void m6502_device_php_imp_0() {
-  _addr = (ushort)(_pc);
-  _rnw = true;
+  _doread((ushort)(_pc));
   NextFn = m6502_device_php_imp_1;return; // READ
 }
 
 protected void m6502_device_php_imp_1() {
-  _addr = (ushort)(_sp);
-  _dat =  _p;
-  _rnw = false;
+  _dowrite((ushort)(_sp),(byte)( _p));
   NextFn = m6502_device_php_imp_2;return; // WRITE
 }
 
@@ -4320,52 +3757,46 @@ protected void m6502_device_php_imp_2() {
 
 // --- op pla_imp --- 
 protected void m6502_device_pla_imp_0() {
-  _addr = (ushort)(_pc);
-  _rnw = true;
+  _doread((ushort)(_pc));
   NextFn = m6502_device_pla_imp_1;return; // READ
 }
 
 protected void m6502_device_pla_imp_1() {
-  _addr = (ushort)(_sp);
-  _rnw = true;
+  _doread((ushort)(_sp));
   NextFn = m6502_device_pla_imp_2;return; // READ
 }
 
 protected void m6502_device_pla_imp_2() {
   inc_SP();
-  _addr = (ushort)(_sp);
-  _rnw = true;
+  _doread((ushort)(_sp));
   NextFn = m6502_device_pla_imp_3;return; // READ
 }
 
 protected void m6502_device_pla_imp_3() {
-  _a = DAT;
+  _a = _dat;
   set_nz(_a);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op plp_imp --- 
 protected void m6502_device_plp_imp_0() {
-  _addr = (ushort)(_pc);
-  _rnw = true;
+  _doread((ushort)(_pc));
   NextFn = m6502_device_plp_imp_1;return; // READ
 }
 
 protected void m6502_device_plp_imp_1() {
-  _addr = (ushort)(_sp);
-  _rnw = true;
+  _doread((ushort)(_sp));
   NextFn = m6502_device_plp_imp_2;return; // READ
 }
 
 protected void m6502_device_plp_imp_2() {
   inc_SP();
-  _addr = (ushort)(_sp);
-  _rnw = true;
+  _doread((ushort)(_sp));
   NextFn = m6502_device_plp_imp_3;return; // READ
 }
 
 protected void m6502_device_plp_imp_3() {
-  _tmp = (byte)(DAT | (F_B|F_E));
+  _tmp = (byte)(_dat | (F_B|F_E));
   PrefetchNextFn = m6502_device_plp_imp_4;
   m6502_device_prefetch();return; // prefetch
 }
@@ -4377,92 +3808,78 @@ protected void m6502_device_plp_imp_4() {
 
 // --- op reset --- 
 protected void m6502_device_reset_0() {
-  _addr = (ushort)(_pc);
-  _rnw = true;
+  _doread((ushort)(_pc));
   NextFn = m6502_device_reset_1;return; // READ
 }
 
 protected void m6502_device_reset_1() {
-  _tmp=DAT;
-  _addr = (ushort)(_pc);
-  _rnw = true;
+  _tmp=_dat;
+  _doread((ushort)(_pc));
   NextFn = m6502_device_reset_2;return; // READ
 }
 
 protected void m6502_device_reset_2() {
-  _tmp=DAT;
-  _addr = (ushort)(_sp);
-  _rnw = true;
+  _tmp=_dat;
+  _doread((ushort)(_sp));
   NextFn = m6502_device_reset_3;return; // READ
 }
 
 protected void m6502_device_reset_3() {
-  _tmp=DAT; dec_SP();
-  _addr = (ushort)(_sp);
-  _rnw = true;
+  _tmp=_dat; dec_SP();
+  _doread((ushort)(_sp));
   NextFn = m6502_device_reset_4;return; // READ
 }
 
 protected void m6502_device_reset_4() {
-  _tmp=DAT; dec_SP();
-  _addr = (ushort)(_sp);
-  _rnw = true;
+  _tmp=_dat; dec_SP();
+  _doread((ushort)(_sp));
   NextFn = m6502_device_reset_5;return; // READ
 }
 
 protected void m6502_device_reset_5() {
-  _tmp=DAT; dec_SP();
-  _addr = (ushort)(0xfffc);
-  _rnw = true;
+  _tmp=_dat; dec_SP();
+  _doread((ushort)(0xfffc));
   NextFn = m6502_device_reset_6;return; // READ
 }
 
 protected void m6502_device_reset_6() {
-  _p |= F_I; _pc = DAT;
-  _addr = (ushort)(0xfffd);
-  _rnw = true;
+  _p |= F_I; _pc = _dat;
+  _doread((ushort)(0xfffd));
   NextFn = m6502_device_reset_7;return; // READ
 }
 
 protected void m6502_device_reset_7() {
-  _pc = set_h(_pc, DAT);
+  _pc = set_h(_pc, _dat);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op rla_aba --- 
 protected void m6502_device_rla_aba_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_rla_aba_1;return; // READ
 }
 
 protected void m6502_device_rla_aba_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_rla_aba_2;return; // READ
 }
 
 protected void m6502_device_rla_aba_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_rla_aba_3;return; // READ
 }
 
 protected void m6502_device_rla_aba_3() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_rla_aba_4;return; // WRITE
 }
 
 protected void m6502_device_rla_aba_4() {
   _tmp2 = do_rol(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_rla_aba_5;return; // WRITE
 }
 
@@ -4474,45 +3891,37 @@ protected void m6502_device_rla_aba_5() {
 
 // --- op rla_abx --- 
 protected void m6502_device_rla_abx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_rla_abx_1;return; // READ
 }
 
 protected void m6502_device_rla_abx_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_rla_abx_2;return; // READ
 }
 
 protected void m6502_device_rla_abx_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_x)));
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(set_l(_tmp,(byte)(_tmp+_x))));
   NextFn = m6502_device_rla_abx_3;return; // READ
 }
 
 protected void m6502_device_rla_abx_3() {
   _tmp += _x;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_rla_abx_4;return; // READ
 }
 
 protected void m6502_device_rla_abx_4() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_rla_abx_5;return; // WRITE
 }
 
 protected void m6502_device_rla_abx_5() {
   _tmp2 = do_rol(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_rla_abx_6;return; // WRITE
 }
 
@@ -4524,45 +3933,37 @@ protected void m6502_device_rla_abx_6() {
 
 // --- op rla_aby --- 
 protected void m6502_device_rla_aby_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_rla_aby_1;return; // READ
 }
 
 protected void m6502_device_rla_aby_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_rla_aby_2;return; // READ
 }
 
 protected void m6502_device_rla_aby_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_y)));
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(set_l(_tmp,(byte)(_tmp+_y))));
   NextFn = m6502_device_rla_aby_3;return; // READ
 }
 
 protected void m6502_device_rla_aby_3() {
   _tmp += _y;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_rla_aby_4;return; // READ
 }
 
 protected void m6502_device_rla_aby_4() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_rla_aby_5;return; // WRITE
 }
 
 protected void m6502_device_rla_aby_5() {
   _tmp2 = do_rol(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_rla_aby_6;return; // WRITE
 }
 
@@ -4574,52 +3975,43 @@ protected void m6502_device_rla_aby_6() {
 
 // --- op rla_idx --- 
 protected void m6502_device_rla_idx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_rla_idx_1;return; // READ
 }
 
 protected void m6502_device_rla_idx_1() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp2);
-  _rnw = true;
+  _tmp2 = _dat;
+  _doread((ushort)(_tmp2));
   NextFn = m6502_device_rla_idx_2;return; // READ
 }
 
 protected void m6502_device_rla_idx_2() {
   _tmp2 += _x;
-  _addr = (ushort)(_tmp2 & 0xff);
-  _rnw = true;
+  _doread((ushort)(_tmp2 & 0xff));
   NextFn = m6502_device_rla_idx_3;return; // READ
 }
 
 protected void m6502_device_rla_idx_3() {
-  _tmp = DAT;
-  _addr = (ushort)((_tmp2+1) & 0xff);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)((_tmp2+1) & 0xff));
   NextFn = m6502_device_rla_idx_4;return; // READ
 }
 
 protected void m6502_device_rla_idx_4() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_rla_idx_5;return; // READ
 }
 
 protected void m6502_device_rla_idx_5() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_rla_idx_6;return; // WRITE
 }
 
 protected void m6502_device_rla_idx_6() {
   _tmp2 = do_rol(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_rla_idx_7;return; // WRITE
 }
 
@@ -4631,52 +4023,43 @@ protected void m6502_device_rla_idx_7() {
 
 // --- op rla_idy --- 
 protected void m6502_device_rla_idy_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_rla_idy_1;return; // READ
 }
 
 protected void m6502_device_rla_idy_1() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp2);
-  _rnw = true;
+  _tmp2 = _dat;
+  _doread((ushort)(_tmp2));
   NextFn = m6502_device_rla_idy_2;return; // READ
 }
 
 protected void m6502_device_rla_idy_2() {
-  _tmp = DAT;
-  _addr = (ushort)((_tmp2+1) & 0xff);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)((_tmp2+1) & 0xff));
   NextFn = m6502_device_rla_idy_3;return; // READ
 }
 
 protected void m6502_device_rla_idy_3() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_y)));
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(set_l(_tmp,(byte)(_tmp+_y))));
   NextFn = m6502_device_rla_idy_4;return; // READ
 }
 
 protected void m6502_device_rla_idy_4() {
   _tmp += _y;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_rla_idy_5;return; // READ
 }
 
 protected void m6502_device_rla_idy_5() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_rla_idy_6;return; // WRITE
 }
 
 protected void m6502_device_rla_idy_6() {
   _tmp2 = do_rol(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_rla_idy_7;return; // WRITE
 }
 
@@ -4688,31 +4071,25 @@ protected void m6502_device_rla_idy_7() {
 
 // --- op rla_zpg --- 
 protected void m6502_device_rla_zpg_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_rla_zpg_1;return; // READ
 }
 
 protected void m6502_device_rla_zpg_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_rla_zpg_2;return; // READ
 }
 
 protected void m6502_device_rla_zpg_2() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_rla_zpg_3;return; // WRITE
 }
 
 protected void m6502_device_rla_zpg_3() {
   _tmp2 = do_rol(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_rla_zpg_4;return; // WRITE
 }
 
@@ -4724,38 +4101,31 @@ protected void m6502_device_rla_zpg_4() {
 
 // --- op rla_zpx --- 
 protected void m6502_device_rla_zpx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_rla_zpx_1;return; // READ
 }
 
 protected void m6502_device_rla_zpx_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_rla_zpx_2;return; // READ
 }
 
 protected void m6502_device_rla_zpx_2() {
   _tmp = (byte)(_tmp+_x);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_rla_zpx_3;return; // READ
 }
 
 protected void m6502_device_rla_zpx_3() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_rla_zpx_4;return; // WRITE
 }
 
 protected void m6502_device_rla_zpx_4() {
   _tmp2 = do_rol(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_rla_zpx_5;return; // WRITE
 }
 
@@ -4767,38 +4137,31 @@ protected void m6502_device_rla_zpx_5() {
 
 // --- op rol_aba --- 
 protected void m6502_device_rol_aba_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_rol_aba_1;return; // READ
 }
 
 protected void m6502_device_rol_aba_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_rol_aba_2;return; // READ
 }
 
 protected void m6502_device_rol_aba_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_rol_aba_3;return; // READ
 }
 
 protected void m6502_device_rol_aba_3() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_rol_aba_4;return; // WRITE
 }
 
 protected void m6502_device_rol_aba_4() {
   _tmp2 = do_rol(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_rol_aba_5;return; // WRITE
 }
 
@@ -4808,45 +4171,37 @@ protected void m6502_device_rol_aba_5() {
 
 // --- op rol_abx --- 
 protected void m6502_device_rol_abx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_rol_abx_1;return; // READ
 }
 
 protected void m6502_device_rol_abx_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_rol_abx_2;return; // READ
 }
 
 protected void m6502_device_rol_abx_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_x)));
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(set_l(_tmp,(byte)(_tmp+_x))));
   NextFn = m6502_device_rol_abx_3;return; // READ
 }
 
 protected void m6502_device_rol_abx_3() {
   _tmp += _x;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_rol_abx_4;return; // READ
 }
 
 protected void m6502_device_rol_abx_4() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_rol_abx_5;return; // WRITE
 }
 
 protected void m6502_device_rol_abx_5() {
   _tmp2 = do_rol(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_rol_abx_6;return; // WRITE
 }
 
@@ -4856,8 +4211,7 @@ protected void m6502_device_rol_abx_6() {
 
 // --- op rol_acc --- 
 protected void m6502_device_rol_acc_0() {
-  _addr = (ushort)(_pc);
-  _rnw = true;
+  _doread((ushort)(_pc));
   NextFn = m6502_device_rol_acc_1;return; // READ
 }
 
@@ -4868,31 +4222,25 @@ protected void m6502_device_rol_acc_1() {
 
 // --- op rol_zpg --- 
 protected void m6502_device_rol_zpg_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_rol_zpg_1;return; // READ
 }
 
 protected void m6502_device_rol_zpg_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_rol_zpg_2;return; // READ
 }
 
 protected void m6502_device_rol_zpg_2() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_rol_zpg_3;return; // WRITE
 }
 
 protected void m6502_device_rol_zpg_3() {
   _tmp2 = do_rol(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_rol_zpg_4;return; // WRITE
 }
 
@@ -4902,38 +4250,31 @@ protected void m6502_device_rol_zpg_4() {
 
 // --- op rol_zpx --- 
 protected void m6502_device_rol_zpx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_rol_zpx_1;return; // READ
 }
 
 protected void m6502_device_rol_zpx_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_rol_zpx_2;return; // READ
 }
 
 protected void m6502_device_rol_zpx_2() {
   _tmp = (byte)(_tmp+_x);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_rol_zpx_3;return; // READ
 }
 
 protected void m6502_device_rol_zpx_3() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_rol_zpx_4;return; // WRITE
 }
 
 protected void m6502_device_rol_zpx_4() {
   _tmp2 = do_rol(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_rol_zpx_5;return; // WRITE
 }
 
@@ -4943,38 +4284,31 @@ protected void m6502_device_rol_zpx_5() {
 
 // --- op ror_aba --- 
 protected void m6502_device_ror_aba_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_ror_aba_1;return; // READ
 }
 
 protected void m6502_device_ror_aba_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_ror_aba_2;return; // READ
 }
 
 protected void m6502_device_ror_aba_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_ror_aba_3;return; // READ
 }
 
 protected void m6502_device_ror_aba_3() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_ror_aba_4;return; // WRITE
 }
 
 protected void m6502_device_ror_aba_4() {
   _tmp2 = do_ror(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_ror_aba_5;return; // WRITE
 }
 
@@ -4984,45 +4318,37 @@ protected void m6502_device_ror_aba_5() {
 
 // --- op ror_abx --- 
 protected void m6502_device_ror_abx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_ror_abx_1;return; // READ
 }
 
 protected void m6502_device_ror_abx_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_ror_abx_2;return; // READ
 }
 
 protected void m6502_device_ror_abx_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_x)));
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(set_l(_tmp,(byte)(_tmp+_x))));
   NextFn = m6502_device_ror_abx_3;return; // READ
 }
 
 protected void m6502_device_ror_abx_3() {
   _tmp += _x;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_ror_abx_4;return; // READ
 }
 
 protected void m6502_device_ror_abx_4() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_ror_abx_5;return; // WRITE
 }
 
 protected void m6502_device_ror_abx_5() {
   _tmp2 = do_ror(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_ror_abx_6;return; // WRITE
 }
 
@@ -5032,8 +4358,7 @@ protected void m6502_device_ror_abx_6() {
 
 // --- op ror_acc --- 
 protected void m6502_device_ror_acc_0() {
-  _addr = (ushort)(_pc);
-  _rnw = true;
+  _doread((ushort)(_pc));
   NextFn = m6502_device_ror_acc_1;return; // READ
 }
 
@@ -5044,31 +4369,25 @@ protected void m6502_device_ror_acc_1() {
 
 // --- op ror_zpg --- 
 protected void m6502_device_ror_zpg_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_ror_zpg_1;return; // READ
 }
 
 protected void m6502_device_ror_zpg_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_ror_zpg_2;return; // READ
 }
 
 protected void m6502_device_ror_zpg_2() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_ror_zpg_3;return; // WRITE
 }
 
 protected void m6502_device_ror_zpg_3() {
   _tmp2 = do_ror(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_ror_zpg_4;return; // WRITE
 }
 
@@ -5078,38 +4397,31 @@ protected void m6502_device_ror_zpg_4() {
 
 // --- op ror_zpx --- 
 protected void m6502_device_ror_zpx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_ror_zpx_1;return; // READ
 }
 
 protected void m6502_device_ror_zpx_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_ror_zpx_2;return; // READ
 }
 
 protected void m6502_device_ror_zpx_2() {
   _tmp = (byte)(_tmp+_x);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_ror_zpx_3;return; // READ
 }
 
 protected void m6502_device_ror_zpx_3() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_ror_zpx_4;return; // WRITE
 }
 
 protected void m6502_device_ror_zpx_4() {
   _tmp2 = do_ror(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_ror_zpx_5;return; // WRITE
 }
 
@@ -5119,38 +4431,31 @@ protected void m6502_device_ror_zpx_5() {
 
 // --- op rra_aba --- 
 protected void m6502_device_rra_aba_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_rra_aba_1;return; // READ
 }
 
 protected void m6502_device_rra_aba_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_rra_aba_2;return; // READ
 }
 
 protected void m6502_device_rra_aba_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_rra_aba_3;return; // READ
 }
 
 protected void m6502_device_rra_aba_3() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_rra_aba_4;return; // WRITE
 }
 
 protected void m6502_device_rra_aba_4() {
   _tmp2 = do_ror(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_rra_aba_5;return; // WRITE
 }
 
@@ -5161,45 +4466,37 @@ protected void m6502_device_rra_aba_5() {
 
 // --- op rra_abx --- 
 protected void m6502_device_rra_abx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_rra_abx_1;return; // READ
 }
 
 protected void m6502_device_rra_abx_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_rra_abx_2;return; // READ
 }
 
 protected void m6502_device_rra_abx_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_x)));
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(set_l(_tmp,(byte)(_tmp+_x))));
   NextFn = m6502_device_rra_abx_3;return; // READ
 }
 
 protected void m6502_device_rra_abx_3() {
   _tmp += _x;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_rra_abx_4;return; // READ
 }
 
 protected void m6502_device_rra_abx_4() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_rra_abx_5;return; // WRITE
 }
 
 protected void m6502_device_rra_abx_5() {
   _tmp2 = do_ror(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_rra_abx_6;return; // WRITE
 }
 
@@ -5210,45 +4507,37 @@ protected void m6502_device_rra_abx_6() {
 
 // --- op rra_aby --- 
 protected void m6502_device_rra_aby_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_rra_aby_1;return; // READ
 }
 
 protected void m6502_device_rra_aby_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_rra_aby_2;return; // READ
 }
 
 protected void m6502_device_rra_aby_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_y)));
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(set_l(_tmp,(byte)(_tmp+_y))));
   NextFn = m6502_device_rra_aby_3;return; // READ
 }
 
 protected void m6502_device_rra_aby_3() {
   _tmp += _y;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_rra_aby_4;return; // READ
 }
 
 protected void m6502_device_rra_aby_4() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_rra_aby_5;return; // WRITE
 }
 
 protected void m6502_device_rra_aby_5() {
   _tmp2 = do_ror(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_rra_aby_6;return; // WRITE
 }
 
@@ -5259,52 +4548,43 @@ protected void m6502_device_rra_aby_6() {
 
 // --- op rra_idx --- 
 protected void m6502_device_rra_idx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_rra_idx_1;return; // READ
 }
 
 protected void m6502_device_rra_idx_1() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp2);
-  _rnw = true;
+  _tmp2 = _dat;
+  _doread((ushort)(_tmp2));
   NextFn = m6502_device_rra_idx_2;return; // READ
 }
 
 protected void m6502_device_rra_idx_2() {
   _tmp2 += _x;
-  _addr = (ushort)(_tmp2 & 0xff);
-  _rnw = true;
+  _doread((ushort)(_tmp2 & 0xff));
   NextFn = m6502_device_rra_idx_3;return; // READ
 }
 
 protected void m6502_device_rra_idx_3() {
-  _tmp = DAT;
-  _addr = (ushort)((_tmp2+1) & 0xff);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)((_tmp2+1) & 0xff));
   NextFn = m6502_device_rra_idx_4;return; // READ
 }
 
 protected void m6502_device_rra_idx_4() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_rra_idx_5;return; // READ
 }
 
 protected void m6502_device_rra_idx_5() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_rra_idx_6;return; // WRITE
 }
 
 protected void m6502_device_rra_idx_6() {
   _tmp2 = do_ror(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_rra_idx_7;return; // WRITE
 }
 
@@ -5315,52 +4595,43 @@ protected void m6502_device_rra_idx_7() {
 
 // --- op rra_idy --- 
 protected void m6502_device_rra_idy_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_rra_idy_1;return; // READ
 }
 
 protected void m6502_device_rra_idy_1() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp2);
-  _rnw = true;
+  _tmp2 = _dat;
+  _doread((ushort)(_tmp2));
   NextFn = m6502_device_rra_idy_2;return; // READ
 }
 
 protected void m6502_device_rra_idy_2() {
-  _tmp = DAT;
-  _addr = (ushort)((_tmp2+1) & 0xff);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)((_tmp2+1) & 0xff));
   NextFn = m6502_device_rra_idy_3;return; // READ
 }
 
 protected void m6502_device_rra_idy_3() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_y)));
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(set_l(_tmp,(byte)(_tmp+_y))));
   NextFn = m6502_device_rra_idy_4;return; // READ
 }
 
 protected void m6502_device_rra_idy_4() {
   _tmp += _y;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_rra_idy_5;return; // READ
 }
 
 protected void m6502_device_rra_idy_5() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_rra_idy_6;return; // WRITE
 }
 
 protected void m6502_device_rra_idy_6() {
   _tmp2 = do_ror(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_rra_idy_7;return; // WRITE
 }
 
@@ -5371,31 +4642,25 @@ protected void m6502_device_rra_idy_7() {
 
 // --- op rra_zpg --- 
 protected void m6502_device_rra_zpg_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_rra_zpg_1;return; // READ
 }
 
 protected void m6502_device_rra_zpg_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_rra_zpg_2;return; // READ
 }
 
 protected void m6502_device_rra_zpg_2() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_rra_zpg_3;return; // WRITE
 }
 
 protected void m6502_device_rra_zpg_3() {
   _tmp2 = do_ror(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_rra_zpg_4;return; // WRITE
 }
 
@@ -5406,38 +4671,31 @@ protected void m6502_device_rra_zpg_4() {
 
 // --- op rra_zpx --- 
 protected void m6502_device_rra_zpx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_rra_zpx_1;return; // READ
 }
 
 protected void m6502_device_rra_zpx_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_rra_zpx_2;return; // READ
 }
 
 protected void m6502_device_rra_zpx_2() {
   _tmp = (byte)(_tmp+_x);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_rra_zpx_3;return; // READ
 }
 
 protected void m6502_device_rra_zpx_3() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_rra_zpx_4;return; // WRITE
 }
 
 protected void m6502_device_rra_zpx_4() {
   _tmp2 = do_ror(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_rra_zpx_5;return; // WRITE
 }
 
@@ -5448,77 +4706,67 @@ protected void m6502_device_rra_zpx_5() {
 
 // --- op rti_imp --- 
 protected void m6502_device_rti_imp_0() {
-  _addr = (ushort)(_pc);
-  _rnw = true;
+  _doread((ushort)(_pc));
   NextFn = m6502_device_rti_imp_1;return; // READ
 }
 
 protected void m6502_device_rti_imp_1() {
-  _addr = (ushort)(_sp);
-  _rnw = true;
+  _doread((ushort)(_sp));
   NextFn = m6502_device_rti_imp_2;return; // READ
 }
 
 protected void m6502_device_rti_imp_2() {
   inc_SP();
-  _addr = (ushort)(_sp);
-  _rnw = true;
+  _doread((ushort)(_sp));
   NextFn = m6502_device_rti_imp_3;return; // READ
 }
 
 protected void m6502_device_rti_imp_3() {
-  _p = (byte)(DAT | (F_B|F_E));
+  _p = (byte)(_dat | (F_B|F_E));
   inc_SP();
-  _addr = (ushort)(_sp);
-  _rnw = true;
+  _doread((ushort)(_sp));
   NextFn = m6502_device_rti_imp_4;return; // READ
 }
 
 protected void m6502_device_rti_imp_4() {
-  _pc = DAT;
+  _pc = _dat;
   inc_SP();
-  _addr = (ushort)(_sp);
-  _rnw = true;
+  _doread((ushort)(_sp));
   NextFn = m6502_device_rti_imp_5;return; // READ
 }
 
 protected void m6502_device_rti_imp_5() {
-  _pc = set_h(_pc, DAT);
+  _pc = set_h(_pc, _dat);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op rts_imp --- 
 protected void m6502_device_rts_imp_0() {
-  _addr = (ushort)(_pc);
-  _rnw = true;
+  _doread((ushort)(_pc));
   NextFn = m6502_device_rts_imp_1;return; // READ
 }
 
 protected void m6502_device_rts_imp_1() {
-  _addr = (ushort)(_sp);
-  _rnw = true;
+  _doread((ushort)(_sp));
   NextFn = m6502_device_rts_imp_2;return; // READ
 }
 
 protected void m6502_device_rts_imp_2() {
   inc_SP();
-  _addr = (ushort)(_sp);
-  _rnw = true;
+  _doread((ushort)(_sp));
   NextFn = m6502_device_rts_imp_3;return; // READ
 }
 
 protected void m6502_device_rts_imp_3() {
-  _pc = DAT;
+  _pc = _dat;
   inc_SP();
-  _addr = (ushort)(_sp);
-  _rnw = true;
+  _doread((ushort)(_sp));
   NextFn = m6502_device_rts_imp_4;return; // READ
 }
 
 protected void m6502_device_rts_imp_4() {
-  _pc = set_h(_pc, DAT);
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _pc = set_h(_pc, _dat);
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_rts_imp_5;return; // READ
 }
 
@@ -5528,24 +4776,20 @@ protected void m6502_device_rts_imp_5() {
 
 // --- op sax_aba --- 
 protected void m6502_device_sax_aba_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_sax_aba_1;return; // READ
 }
 
 protected void m6502_device_sax_aba_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_sax_aba_2;return; // READ
 }
 
 protected void m6502_device_sax_aba_2() {
-  _tmp = set_h(_tmp, DAT);
+  _tmp = set_h(_tmp, _dat);
   _tmp2 = (byte)(_a & _x);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_sax_aba_3;return; // WRITE
 }
 
@@ -5555,38 +4799,32 @@ protected void m6502_device_sax_aba_3() {
 
 // --- op sax_idx --- 
 protected void m6502_device_sax_idx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_sax_idx_1;return; // READ
 }
 
 protected void m6502_device_sax_idx_1() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp2);
-  _rnw = true;
+  _tmp2 = _dat;
+  _doread((ushort)(_tmp2));
   NextFn = m6502_device_sax_idx_2;return; // READ
 }
 
 protected void m6502_device_sax_idx_2() {
   _tmp2 += _x;
-  _addr = (ushort)(_tmp2 & 0xff);
-  _rnw = true;
+  _doread((ushort)(_tmp2 & 0xff));
   NextFn = m6502_device_sax_idx_3;return; // READ
 }
 
 protected void m6502_device_sax_idx_3() {
-  _tmp = DAT;
-  _addr = (ushort)((_tmp2+1) & 0xff);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)((_tmp2+1) & 0xff));
   NextFn = m6502_device_sax_idx_4;return; // READ
 }
 
 protected void m6502_device_sax_idx_4() {
-  _tmp = set_h(_tmp, DAT);
+  _tmp = set_h(_tmp, _dat);
   _tmp2 = (byte)(_a & _x);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_sax_idx_5;return; // WRITE
 }
 
@@ -5596,17 +4834,14 @@ protected void m6502_device_sax_idx_5() {
 
 // --- op sax_zpg --- 
 protected void m6502_device_sax_zpg_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_sax_zpg_1;return; // READ
 }
 
 protected void m6502_device_sax_zpg_1() {
-  _tmp = DAT;
+  _tmp = _dat;
   _tmp2 = (byte)(_a & _x);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_sax_zpg_2;return; // WRITE
 }
 
@@ -5616,24 +4851,20 @@ protected void m6502_device_sax_zpg_2() {
 
 // --- op sax_zpy --- 
 protected void m6502_device_sax_zpy_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_sax_zpy_1;return; // READ
 }
 
 protected void m6502_device_sax_zpy_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_sax_zpy_2;return; // READ
 }
 
 protected void m6502_device_sax_zpy_2() {
   _tmp = (byte)(_tmp+_y);
   _tmp2 = (byte)(_a & _x);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_sax_zpy_3;return; // WRITE
 }
 
@@ -5643,263 +4874,232 @@ protected void m6502_device_sax_zpy_3() {
 
 // --- op sbc_aba --- 
 protected void m6502_device_sbc_aba_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_sbc_aba_1;return; // READ
 }
 
 protected void m6502_device_sbc_aba_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_sbc_aba_2;return; // READ
 }
 
 protected void m6502_device_sbc_aba_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_sbc_aba_3;return; // READ
 }
 
 protected void m6502_device_sbc_aba_3() {
-  _tmp2 = DAT;
+  _tmp2 = _dat;
   do_sbc(_tmp2);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op sbc_abx --- 
 protected void m6502_device_sbc_abx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_sbc_abx_1;return; // READ
 }
 
 protected void m6502_device_sbc_abx_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_sbc_abx_2;return; // READ
 }
 
 protected void m6502_device_sbc_abx_2() {
-  _tmp = set_h(_tmp, DAT);
+  _tmp = set_h(_tmp, _dat);
   if (page_changing(_tmp, _x)) {
-    _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_x)));
-    _rnw = true;
+    _doread((ushort)(set_l(_tmp,(byte)(_tmp+_x))));
     NextFn = m6502_device_sbc_abx_3;return; // READ
   }
   _tmp += _x;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_sbc_abx_4;return; // READ
 }
 
 protected void m6502_device_sbc_abx_3() {
     _tmp += _x;
-    _addr = (ushort)(_tmp);
-    _rnw = true;
+    _doread((ushort)(_tmp));
     NextFn = m6502_device_sbc_abx_4;return; // READ
 }
 
 protected void m6502_device_sbc_abx_4() {
-  _tmp2 = DAT;
+  _tmp2 = _dat;
   do_sbc(_tmp2);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op sbc_aby --- 
 protected void m6502_device_sbc_aby_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_sbc_aby_1;return; // READ
 }
 
 protected void m6502_device_sbc_aby_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_sbc_aby_2;return; // READ
 }
 
 protected void m6502_device_sbc_aby_2() {
-  _tmp = set_h(_tmp, DAT);
+  _tmp = set_h(_tmp, _dat);
   if (page_changing(_tmp, _y)) {
-    _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_y)));
-    _rnw = true;
+    _doread((ushort)(set_l(_tmp,(byte)(_tmp+_y))));
     NextFn = m6502_device_sbc_aby_3;return; // READ
   }
   _tmp += _y;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_sbc_aby_4;return; // READ
 }
 
 protected void m6502_device_sbc_aby_3() {
     _tmp += _y;
-    _addr = (ushort)(_tmp);
-    _rnw = true;
+    _doread((ushort)(_tmp));
     NextFn = m6502_device_sbc_aby_4;return; // READ
 }
 
 protected void m6502_device_sbc_aby_4() {
-  _tmp2 = DAT;
+  _tmp2 = _dat;
   do_sbc(_tmp2);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op sbc_idx --- 
 protected void m6502_device_sbc_idx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_sbc_idx_1;return; // READ
 }
 
 protected void m6502_device_sbc_idx_1() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp2);
-  _rnw = true;
+  _tmp2 = _dat;
+  _doread((ushort)(_tmp2));
   NextFn = m6502_device_sbc_idx_2;return; // READ
 }
 
 protected void m6502_device_sbc_idx_2() {
   _tmp2 += _x;
-  _addr = (ushort)(_tmp2 & 0xff);
-  _rnw = true;
+  _doread((ushort)(_tmp2 & 0xff));
   NextFn = m6502_device_sbc_idx_3;return; // READ
 }
 
 protected void m6502_device_sbc_idx_3() {
-  _tmp = DAT;
-  _addr = (ushort)((_tmp2+1) & 0xff);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)((_tmp2+1) & 0xff));
   NextFn = m6502_device_sbc_idx_4;return; // READ
 }
 
 protected void m6502_device_sbc_idx_4() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_sbc_idx_5;return; // READ
 }
 
 protected void m6502_device_sbc_idx_5() {
-  do_sbc(DAT);
+  do_sbc(_dat);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op sbc_idy --- 
 protected void m6502_device_sbc_idy_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_sbc_idy_1;return; // READ
 }
 
 protected void m6502_device_sbc_idy_1() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp2);
-  _rnw = true;
+  _tmp2 = _dat;
+  _doread((ushort)(_tmp2));
   NextFn = m6502_device_sbc_idy_2;return; // READ
 }
 
 protected void m6502_device_sbc_idy_2() {
-  _tmp = DAT;
-  _addr = (ushort)((_tmp2+1) & 0xff);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)((_tmp2+1) & 0xff));
   NextFn = m6502_device_sbc_idy_3;return; // READ
 }
 
 protected void m6502_device_sbc_idy_3() {
-  _tmp = set_h(_tmp, DAT);
+  _tmp = set_h(_tmp, _dat);
   if (page_changing(_tmp, _y)) {
-    _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_y)));
-    _rnw = true;
+    _doread((ushort)(set_l(_tmp,(byte)(_tmp+_y))));
     NextFn = m6502_device_sbc_idy_4;return; // READ
   }
-  _addr = (ushort)(_tmp+_y);
-  _rnw = true;
+  _doread((ushort)(_tmp+_y));
   NextFn = m6502_device_sbc_idy_5;return; // READ
 }
 
 protected void m6502_device_sbc_idy_4() {
-    _addr = (ushort)(_tmp+_y);
-    _rnw = true;
+    _doread((ushort)(_tmp+_y));
     NextFn = m6502_device_sbc_idy_5;return; // READ
 }
 
 protected void m6502_device_sbc_idy_5() {
-  do_sbc(DAT);
+  do_sbc(_dat);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op sbc_imm --- 
 protected void m6502_device_sbc_imm_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_sbc_imm_1;return; // READ
 }
 
 protected void m6502_device_sbc_imm_1() {
-  _tmp2 = DAT;
+  _tmp2 = _dat;
   do_sbc(_tmp2);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op sbc_zpg --- 
 protected void m6502_device_sbc_zpg_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_sbc_zpg_1;return; // READ
 }
 
 protected void m6502_device_sbc_zpg_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_sbc_zpg_2;return; // READ
 }
 
 protected void m6502_device_sbc_zpg_2() {
-  _tmp2 = DAT;
+  _tmp2 = _dat;
   do_sbc(_tmp2);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op sbc_zpx --- 
 protected void m6502_device_sbc_zpx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_sbc_zpx_1;return; // READ
 }
 
 protected void m6502_device_sbc_zpx_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_sbc_zpx_2;return; // READ
 }
 
 protected void m6502_device_sbc_zpx_2() {
-  _addr = (ushort)((byte)(_tmp+_x));
-  _rnw = true;
+  _doread((ushort)((byte)(_tmp+_x)));
   NextFn = m6502_device_sbc_zpx_3;return; // READ
 }
 
 protected void m6502_device_sbc_zpx_3() {
-  _tmp2 = DAT;
+  _tmp2 = _dat;
   do_sbc(_tmp2);
   m6502_device_fetch();return; // fetch
 }
 
 // --- op sbx_imm --- 
 protected void m6502_device_sbx_imm_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_sbx_imm_1;return; // READ
 }
 
 protected void m6502_device_sbx_imm_1() {
-  _tmp2 = DAT;
+  _tmp2 = _dat;
   _x &= _a;
   if (_x < _tmp2) {
     _p &= F_C ^ 0xFF;
@@ -5913,8 +5113,7 @@ protected void m6502_device_sbx_imm_1() {
 
 // --- op sec_imp --- 
 protected void m6502_device_sec_imp_0() {
-  _addr = (ushort)(_pc);
-  _rnw = true;
+  _doread((ushort)(_pc));
   NextFn = m6502_device_sec_imp_1;return; // READ
 }
 
@@ -5925,8 +5124,7 @@ protected void m6502_device_sec_imp_1() {
 
 // --- op sed_imp --- 
 protected void m6502_device_sed_imp_0() {
-  _addr = (ushort)(_pc);
-  _rnw = true;
+  _doread((ushort)(_pc));
   NextFn = m6502_device_sed_imp_1;return; // READ
 }
 
@@ -5937,8 +5135,7 @@ protected void m6502_device_sed_imp_1() {
 
 // --- op sei_imp --- 
 protected void m6502_device_sei_imp_0() {
-  _addr = (ushort)(_pc);
-  _rnw = true;
+  _doread((ushort)(_pc));
   NextFn = m6502_device_sei_imp_1;return; // READ
 }
 
@@ -5954,22 +5151,19 @@ protected void m6502_device_sei_imp_2() {
 
 // --- op sha_aby --- 
 protected void m6502_device_sha_aby_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_sha_aby_1;return; // READ
 }
 
 protected void m6502_device_sha_aby_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_sha_aby_2;return; // READ
 }
 
 protected void m6502_device_sha_aby_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_y)));
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(set_l(_tmp,(byte)(_tmp+_y))));
   NextFn = m6502_device_sha_aby_3;return; // READ
 }
 
@@ -5980,9 +5174,7 @@ protected void m6502_device_sha_aby_3() {
   } else {
     _tmp += _y;
   }
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_sha_aby_4;return; // WRITE
 }
 
@@ -5992,29 +5184,25 @@ protected void m6502_device_sha_aby_4() {
 
 // --- op sha_idy --- 
 protected void m6502_device_sha_idy_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_sha_idy_1;return; // READ
 }
 
 protected void m6502_device_sha_idy_1() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp2);
-  _rnw = true;
+  _tmp2 = _dat;
+  _doread((ushort)(_tmp2));
   NextFn = m6502_device_sha_idy_2;return; // READ
 }
 
 protected void m6502_device_sha_idy_2() {
-  _tmp = DAT;
-  _addr = (ushort)((_tmp2+1) & 0xff);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)((_tmp2+1) & 0xff));
   NextFn = m6502_device_sha_idy_3;return; // READ
 }
 
 protected void m6502_device_sha_idy_3() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_y)));
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(set_l(_tmp,(byte)(_tmp+_y))));
   NextFn = m6502_device_sha_idy_4;return; // READ
 }
 
@@ -6025,9 +5213,7 @@ protected void m6502_device_sha_idy_4() {
   } else {
     _tmp += _y;
   }
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_sha_idy_5;return; // WRITE
 }
 
@@ -6037,22 +5223,19 @@ protected void m6502_device_sha_idy_5() {
 
 // --- op shs_aby --- 
 protected void m6502_device_shs_aby_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_shs_aby_1;return; // READ
 }
 
 protected void m6502_device_shs_aby_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_shs_aby_2;return; // READ
 }
 
 protected void m6502_device_shs_aby_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_y)));
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(set_l(_tmp,(byte)(_tmp+_y))));
   NextFn = m6502_device_shs_aby_3;return; // READ
 }
 
@@ -6064,9 +5247,7 @@ protected void m6502_device_shs_aby_3() {
   } else {
     _tmp += _y;
   }
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_shs_aby_4;return; // WRITE
 }
 
@@ -6076,22 +5257,19 @@ protected void m6502_device_shs_aby_4() {
 
 // --- op shx_aby --- 
 protected void m6502_device_shx_aby_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_shx_aby_1;return; // READ
 }
 
 protected void m6502_device_shx_aby_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_shx_aby_2;return; // READ
 }
 
 protected void m6502_device_shx_aby_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_y)));
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(set_l(_tmp,(byte)(_tmp+_y))));
   NextFn = m6502_device_shx_aby_3;return; // READ
 }
 
@@ -6102,9 +5280,7 @@ protected void m6502_device_shx_aby_3() {
   } else {
     _tmp += _y;
   }
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_shx_aby_4;return; // WRITE
 }
 
@@ -6114,22 +5290,19 @@ protected void m6502_device_shx_aby_4() {
 
 // --- op shy_abx --- 
 protected void m6502_device_shy_abx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_shy_abx_1;return; // READ
 }
 
 protected void m6502_device_shy_abx_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_shy_abx_2;return; // READ
 }
 
 protected void m6502_device_shy_abx_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_x)));
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(set_l(_tmp,(byte)(_tmp+_x))));
   NextFn = m6502_device_shy_abx_3;return; // READ
 }
 
@@ -6140,9 +5313,7 @@ protected void m6502_device_shy_abx_3() {
   } else {
     _tmp += _x;
   }
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_shy_abx_4;return; // WRITE
 }
 
@@ -6152,38 +5323,31 @@ protected void m6502_device_shy_abx_4() {
 
 // --- op slo_aba --- 
 protected void m6502_device_slo_aba_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_slo_aba_1;return; // READ
 }
 
 protected void m6502_device_slo_aba_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_slo_aba_2;return; // READ
 }
 
 protected void m6502_device_slo_aba_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_slo_aba_3;return; // READ
 }
 
 protected void m6502_device_slo_aba_3() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_slo_aba_4;return; // WRITE
 }
 
 protected void m6502_device_slo_aba_4() {
   _tmp2 = do_asl(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_slo_aba_5;return; // WRITE
 }
 
@@ -6195,45 +5359,37 @@ protected void m6502_device_slo_aba_5() {
 
 // --- op slo_abx --- 
 protected void m6502_device_slo_abx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_slo_abx_1;return; // READ
 }
 
 protected void m6502_device_slo_abx_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_slo_abx_2;return; // READ
 }
 
 protected void m6502_device_slo_abx_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_x)));
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(set_l(_tmp,(byte)(_tmp+_x))));
   NextFn = m6502_device_slo_abx_3;return; // READ
 }
 
 protected void m6502_device_slo_abx_3() {
   _tmp += _x;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_slo_abx_4;return; // READ
 }
 
 protected void m6502_device_slo_abx_4() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_slo_abx_5;return; // WRITE
 }
 
 protected void m6502_device_slo_abx_5() {
   _tmp2 = do_asl(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_slo_abx_6;return; // WRITE
 }
 
@@ -6245,45 +5401,37 @@ protected void m6502_device_slo_abx_6() {
 
 // --- op slo_aby --- 
 protected void m6502_device_slo_aby_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_slo_aby_1;return; // READ
 }
 
 protected void m6502_device_slo_aby_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_slo_aby_2;return; // READ
 }
 
 protected void m6502_device_slo_aby_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_y)));
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(set_l(_tmp,(byte)(_tmp+_y))));
   NextFn = m6502_device_slo_aby_3;return; // READ
 }
 
 protected void m6502_device_slo_aby_3() {
   _tmp += _y;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_slo_aby_4;return; // READ
 }
 
 protected void m6502_device_slo_aby_4() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_slo_aby_5;return; // WRITE
 }
 
 protected void m6502_device_slo_aby_5() {
   _tmp2 = do_asl(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_slo_aby_6;return; // WRITE
 }
 
@@ -6295,52 +5443,43 @@ protected void m6502_device_slo_aby_6() {
 
 // --- op slo_idx --- 
 protected void m6502_device_slo_idx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_slo_idx_1;return; // READ
 }
 
 protected void m6502_device_slo_idx_1() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp2);
-  _rnw = true;
+  _tmp2 = _dat;
+  _doread((ushort)(_tmp2));
   NextFn = m6502_device_slo_idx_2;return; // READ
 }
 
 protected void m6502_device_slo_idx_2() {
   _tmp2 += _x;
-  _addr = (ushort)(_tmp2 & 0xff);
-  _rnw = true;
+  _doread((ushort)(_tmp2 & 0xff));
   NextFn = m6502_device_slo_idx_3;return; // READ
 }
 
 protected void m6502_device_slo_idx_3() {
-  _tmp = DAT;
-  _addr = (ushort)((_tmp2+1) & 0xff);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)((_tmp2+1) & 0xff));
   NextFn = m6502_device_slo_idx_4;return; // READ
 }
 
 protected void m6502_device_slo_idx_4() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_slo_idx_5;return; // READ
 }
 
 protected void m6502_device_slo_idx_5() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_slo_idx_6;return; // WRITE
 }
 
 protected void m6502_device_slo_idx_6() {
   _tmp2 = do_asl(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_slo_idx_7;return; // WRITE
 }
 
@@ -6352,52 +5491,43 @@ protected void m6502_device_slo_idx_7() {
 
 // --- op slo_idy --- 
 protected void m6502_device_slo_idy_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_slo_idy_1;return; // READ
 }
 
 protected void m6502_device_slo_idy_1() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp2);
-  _rnw = true;
+  _tmp2 = _dat;
+  _doread((ushort)(_tmp2));
   NextFn = m6502_device_slo_idy_2;return; // READ
 }
 
 protected void m6502_device_slo_idy_2() {
-  _tmp = DAT;
-  _addr = (ushort)((_tmp2+1) & 0xff);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)((_tmp2+1) & 0xff));
   NextFn = m6502_device_slo_idy_3;return; // READ
 }
 
 protected void m6502_device_slo_idy_3() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_y)));
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(set_l(_tmp,(byte)(_tmp+_y))));
   NextFn = m6502_device_slo_idy_4;return; // READ
 }
 
 protected void m6502_device_slo_idy_4() {
   _tmp += _y;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_slo_idy_5;return; // READ
 }
 
 protected void m6502_device_slo_idy_5() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_slo_idy_6;return; // WRITE
 }
 
 protected void m6502_device_slo_idy_6() {
   _tmp2 = do_asl(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_slo_idy_7;return; // WRITE
 }
 
@@ -6409,31 +5539,25 @@ protected void m6502_device_slo_idy_7() {
 
 // --- op slo_zpg --- 
 protected void m6502_device_slo_zpg_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_slo_zpg_1;return; // READ
 }
 
 protected void m6502_device_slo_zpg_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_slo_zpg_2;return; // READ
 }
 
 protected void m6502_device_slo_zpg_2() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_slo_zpg_3;return; // WRITE
 }
 
 protected void m6502_device_slo_zpg_3() {
   _tmp2 = do_asl(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_slo_zpg_4;return; // WRITE
 }
 
@@ -6445,38 +5569,31 @@ protected void m6502_device_slo_zpg_4() {
 
 // --- op slo_zpx --- 
 protected void m6502_device_slo_zpx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_slo_zpx_1;return; // READ
 }
 
 protected void m6502_device_slo_zpx_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_slo_zpx_2;return; // READ
 }
 
 protected void m6502_device_slo_zpx_2() {
   _tmp = (byte)(_tmp+_x);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_slo_zpx_3;return; // READ
 }
 
 protected void m6502_device_slo_zpx_3() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_slo_zpx_4;return; // WRITE
 }
 
 protected void m6502_device_slo_zpx_4() {
   _tmp2 = do_asl(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_slo_zpx_5;return; // WRITE
 }
 
@@ -6488,38 +5605,31 @@ protected void m6502_device_slo_zpx_5() {
 
 // --- op sre_aba --- 
 protected void m6502_device_sre_aba_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_sre_aba_1;return; // READ
 }
 
 protected void m6502_device_sre_aba_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_sre_aba_2;return; // READ
 }
 
 protected void m6502_device_sre_aba_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_sre_aba_3;return; // READ
 }
 
 protected void m6502_device_sre_aba_3() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_sre_aba_4;return; // WRITE
 }
 
 protected void m6502_device_sre_aba_4() {
   _tmp2 = do_lsr(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_sre_aba_5;return; // WRITE
 }
 
@@ -6531,45 +5641,37 @@ protected void m6502_device_sre_aba_5() {
 
 // --- op sre_abx --- 
 protected void m6502_device_sre_abx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_sre_abx_1;return; // READ
 }
 
 protected void m6502_device_sre_abx_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_sre_abx_2;return; // READ
 }
 
 protected void m6502_device_sre_abx_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_x)));
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(set_l(_tmp,(byte)(_tmp+_x))));
   NextFn = m6502_device_sre_abx_3;return; // READ
 }
 
 protected void m6502_device_sre_abx_3() {
   _tmp += _x;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_sre_abx_4;return; // READ
 }
 
 protected void m6502_device_sre_abx_4() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_sre_abx_5;return; // WRITE
 }
 
 protected void m6502_device_sre_abx_5() {
   _tmp2 = do_lsr(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_sre_abx_6;return; // WRITE
 }
 
@@ -6581,45 +5683,37 @@ protected void m6502_device_sre_abx_6() {
 
 // --- op sre_aby --- 
 protected void m6502_device_sre_aby_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_sre_aby_1;return; // READ
 }
 
 protected void m6502_device_sre_aby_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_sre_aby_2;return; // READ
 }
 
 protected void m6502_device_sre_aby_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_y)));
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(set_l(_tmp,(byte)(_tmp+_y))));
   NextFn = m6502_device_sre_aby_3;return; // READ
 }
 
 protected void m6502_device_sre_aby_3() {
   _tmp += _y;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_sre_aby_4;return; // READ
 }
 
 protected void m6502_device_sre_aby_4() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_sre_aby_5;return; // WRITE
 }
 
 protected void m6502_device_sre_aby_5() {
   _tmp2 = do_lsr(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_sre_aby_6;return; // WRITE
 }
 
@@ -6631,52 +5725,43 @@ protected void m6502_device_sre_aby_6() {
 
 // --- op sre_idx --- 
 protected void m6502_device_sre_idx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_sre_idx_1;return; // READ
 }
 
 protected void m6502_device_sre_idx_1() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp2);
-  _rnw = true;
+  _tmp2 = _dat;
+  _doread((ushort)(_tmp2));
   NextFn = m6502_device_sre_idx_2;return; // READ
 }
 
 protected void m6502_device_sre_idx_2() {
   _tmp2 += _x;
-  _addr = (ushort)(_tmp2 & 0xff);
-  _rnw = true;
+  _doread((ushort)(_tmp2 & 0xff));
   NextFn = m6502_device_sre_idx_3;return; // READ
 }
 
 protected void m6502_device_sre_idx_3() {
-  _tmp = DAT;
-  _addr = (ushort)((_tmp2+1) & 0xff);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)((_tmp2+1) & 0xff));
   NextFn = m6502_device_sre_idx_4;return; // READ
 }
 
 protected void m6502_device_sre_idx_4() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_sre_idx_5;return; // READ
 }
 
 protected void m6502_device_sre_idx_5() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_sre_idx_6;return; // WRITE
 }
 
 protected void m6502_device_sre_idx_6() {
   _tmp2 = do_lsr(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_sre_idx_7;return; // WRITE
 }
 
@@ -6688,52 +5773,43 @@ protected void m6502_device_sre_idx_7() {
 
 // --- op sre_idy --- 
 protected void m6502_device_sre_idy_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_sre_idy_1;return; // READ
 }
 
 protected void m6502_device_sre_idy_1() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp2);
-  _rnw = true;
+  _tmp2 = _dat;
+  _doread((ushort)(_tmp2));
   NextFn = m6502_device_sre_idy_2;return; // READ
 }
 
 protected void m6502_device_sre_idy_2() {
-  _tmp = DAT;
-  _addr = (ushort)((_tmp2+1) & 0xff);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)((_tmp2+1) & 0xff));
   NextFn = m6502_device_sre_idy_3;return; // READ
 }
 
 protected void m6502_device_sre_idy_3() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_y)));
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(set_l(_tmp,(byte)(_tmp+_y))));
   NextFn = m6502_device_sre_idy_4;return; // READ
 }
 
 protected void m6502_device_sre_idy_4() {
   _tmp += _y;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_sre_idy_5;return; // READ
 }
 
 protected void m6502_device_sre_idy_5() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_sre_idy_6;return; // WRITE
 }
 
 protected void m6502_device_sre_idy_6() {
   _tmp2 = do_lsr(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_sre_idy_7;return; // WRITE
 }
 
@@ -6745,31 +5821,25 @@ protected void m6502_device_sre_idy_7() {
 
 // --- op sre_zpg --- 
 protected void m6502_device_sre_zpg_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_sre_zpg_1;return; // READ
 }
 
 protected void m6502_device_sre_zpg_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_sre_zpg_2;return; // READ
 }
 
 protected void m6502_device_sre_zpg_2() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_sre_zpg_3;return; // WRITE
 }
 
 protected void m6502_device_sre_zpg_3() {
   _tmp2 = do_lsr(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_sre_zpg_4;return; // WRITE
 }
 
@@ -6781,38 +5851,31 @@ protected void m6502_device_sre_zpg_4() {
 
 // --- op sre_zpx --- 
 protected void m6502_device_sre_zpx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_sre_zpx_1;return; // READ
 }
 
 protected void m6502_device_sre_zpx_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_sre_zpx_2;return; // READ
 }
 
 protected void m6502_device_sre_zpx_2() {
   _tmp = (byte)(_tmp+_x);
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_sre_zpx_3;return; // READ
 }
 
 protected void m6502_device_sre_zpx_3() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _tmp2 = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_sre_zpx_4;return; // WRITE
 }
 
 protected void m6502_device_sre_zpx_4() {
   _tmp2 = do_lsr(_tmp2);
-  _addr = (ushort)(_tmp);
-  _dat =  _tmp2;
-  _rnw = false;
+  _dowrite((ushort)(_tmp),(byte)( _tmp2));
   NextFn = m6502_device_sre_zpx_5;return; // WRITE
 }
 
@@ -6824,23 +5887,19 @@ protected void m6502_device_sre_zpx_5() {
 
 // --- op sta_aba --- 
 protected void m6502_device_sta_aba_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_sta_aba_1;return; // READ
 }
 
 protected void m6502_device_sta_aba_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_sta_aba_2;return; // READ
 }
 
 protected void m6502_device_sta_aba_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(_tmp);
-  _dat =  _a;
-  _rnw = false;
+  _tmp = set_h(_tmp, _dat);
+  _dowrite((ushort)(_tmp),(byte)( _a));
   NextFn = m6502_device_sta_aba_3;return; // WRITE
 }
 
@@ -6850,29 +5909,24 @@ protected void m6502_device_sta_aba_3() {
 
 // --- op sta_abx --- 
 protected void m6502_device_sta_abx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_sta_abx_1;return; // READ
 }
 
 protected void m6502_device_sta_abx_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_sta_abx_2;return; // READ
 }
 
 protected void m6502_device_sta_abx_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_x)));
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(set_l(_tmp,(byte)(_tmp+_x))));
   NextFn = m6502_device_sta_abx_3;return; // READ
 }
 
 protected void m6502_device_sta_abx_3() {
-  _addr = (ushort)(_tmp+_x);
-  _dat =  _a;
-  _rnw = false;
+  _dowrite((ushort)(_tmp+_x),(byte)( _a));
   NextFn = m6502_device_sta_abx_4;return; // WRITE
 }
 
@@ -6882,29 +5936,24 @@ protected void m6502_device_sta_abx_4() {
 
 // --- op sta_aby --- 
 protected void m6502_device_sta_aby_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_sta_aby_1;return; // READ
 }
 
 protected void m6502_device_sta_aby_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_sta_aby_2;return; // READ
 }
 
 protected void m6502_device_sta_aby_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_y)));
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(set_l(_tmp,(byte)(_tmp+_y))));
   NextFn = m6502_device_sta_aby_3;return; // READ
 }
 
 protected void m6502_device_sta_aby_3() {
-  _addr = (ushort)(_tmp+_y);
-  _dat =  _a;
-  _rnw = false;
+  _dowrite((ushort)(_tmp+_y),(byte)( _a));
   NextFn = m6502_device_sta_aby_4;return; // WRITE
 }
 
@@ -6914,37 +5963,31 @@ protected void m6502_device_sta_aby_4() {
 
 // --- op sta_idx --- 
 protected void m6502_device_sta_idx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_sta_idx_1;return; // READ
 }
 
 protected void m6502_device_sta_idx_1() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp2);
-  _rnw = true;
+  _tmp2 = _dat;
+  _doread((ushort)(_tmp2));
   NextFn = m6502_device_sta_idx_2;return; // READ
 }
 
 protected void m6502_device_sta_idx_2() {
   _tmp2 += _x;
-  _addr = (ushort)(_tmp2 & 0xff);
-  _rnw = true;
+  _doread((ushort)(_tmp2 & 0xff));
   NextFn = m6502_device_sta_idx_3;return; // READ
 }
 
 protected void m6502_device_sta_idx_3() {
-  _tmp = DAT;
-  _addr = (ushort)((_tmp2+1) & 0xff);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)((_tmp2+1) & 0xff));
   NextFn = m6502_device_sta_idx_4;return; // READ
 }
 
 protected void m6502_device_sta_idx_4() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(_tmp);
-  _dat =  _a;
-  _rnw = false;
+  _tmp = set_h(_tmp, _dat);
+  _dowrite((ushort)(_tmp),(byte)( _a));
   NextFn = m6502_device_sta_idx_5;return; // WRITE
 }
 
@@ -6954,36 +5997,30 @@ protected void m6502_device_sta_idx_5() {
 
 // --- op sta_idy --- 
 protected void m6502_device_sta_idy_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_sta_idy_1;return; // READ
 }
 
 protected void m6502_device_sta_idy_1() {
-  _tmp2 = DAT;
-  _addr = (ushort)(_tmp2);
-  _rnw = true;
+  _tmp2 = _dat;
+  _doread((ushort)(_tmp2));
   NextFn = m6502_device_sta_idy_2;return; // READ
 }
 
 protected void m6502_device_sta_idy_2() {
-  _tmp = DAT;
-  _addr = (ushort)((_tmp2+1) & 0xff);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)((_tmp2+1) & 0xff));
   NextFn = m6502_device_sta_idy_3;return; // READ
 }
 
 protected void m6502_device_sta_idy_3() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(set_l(_tmp,(byte)(_tmp+_y)));
-  _rnw = true;
+  _tmp = set_h(_tmp, _dat);
+  _doread((ushort)(set_l(_tmp,(byte)(_tmp+_y))));
   NextFn = m6502_device_sta_idy_4;return; // READ
 }
 
 protected void m6502_device_sta_idy_4() {
-  _addr = (ushort)(_tmp+_y);
-  _dat =  _a;
-  _rnw = false;
+  _dowrite((ushort)(_tmp+_y),(byte)( _a));
   NextFn = m6502_device_sta_idy_5;return; // WRITE
 }
 
@@ -6993,16 +6030,13 @@ protected void m6502_device_sta_idy_5() {
 
 // --- op sta_zpg --- 
 protected void m6502_device_sta_zpg_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_sta_zpg_1;return; // READ
 }
 
 protected void m6502_device_sta_zpg_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _a;
-  _rnw = false;
+  _tmp = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _a));
   NextFn = m6502_device_sta_zpg_2;return; // WRITE
 }
 
@@ -7012,22 +6046,18 @@ protected void m6502_device_sta_zpg_2() {
 
 // --- op sta_zpx --- 
 protected void m6502_device_sta_zpx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_sta_zpx_1;return; // READ
 }
 
 protected void m6502_device_sta_zpx_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_sta_zpx_2;return; // READ
 }
 
 protected void m6502_device_sta_zpx_2() {
-  _addr = (ushort)((byte)(_tmp+_x));
-  _dat =  _a;
-  _rnw = false;
+  _dowrite((ushort)((byte)(_tmp+_x)),(byte)( _a));
   NextFn = m6502_device_sta_zpx_3;return; // WRITE
 }
 
@@ -7037,23 +6067,19 @@ protected void m6502_device_sta_zpx_3() {
 
 // --- op stx_aba --- 
 protected void m6502_device_stx_aba_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_stx_aba_1;return; // READ
 }
 
 protected void m6502_device_stx_aba_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_stx_aba_2;return; // READ
 }
 
 protected void m6502_device_stx_aba_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(_tmp);
-  _dat =  _x;
-  _rnw = false;
+  _tmp = set_h(_tmp, _dat);
+  _dowrite((ushort)(_tmp),(byte)( _x));
   NextFn = m6502_device_stx_aba_3;return; // WRITE
 }
 
@@ -7063,16 +6089,13 @@ protected void m6502_device_stx_aba_3() {
 
 // --- op stx_zpg --- 
 protected void m6502_device_stx_zpg_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_stx_zpg_1;return; // READ
 }
 
 protected void m6502_device_stx_zpg_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _x;
-  _rnw = false;
+  _tmp = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _x));
   NextFn = m6502_device_stx_zpg_2;return; // WRITE
 }
 
@@ -7082,22 +6105,18 @@ protected void m6502_device_stx_zpg_2() {
 
 // --- op stx_zpy --- 
 protected void m6502_device_stx_zpy_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_stx_zpy_1;return; // READ
 }
 
 protected void m6502_device_stx_zpy_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_stx_zpy_2;return; // READ
 }
 
 protected void m6502_device_stx_zpy_2() {
-  _addr = (ushort)((byte)(_tmp+_y));
-  _dat =  _x;
-  _rnw = false;
+  _dowrite((ushort)((byte)(_tmp+_y)),(byte)( _x));
   NextFn = m6502_device_stx_zpy_3;return; // WRITE
 }
 
@@ -7107,23 +6126,19 @@ protected void m6502_device_stx_zpy_3() {
 
 // --- op sty_aba --- 
 protected void m6502_device_sty_aba_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_sty_aba_1;return; // READ
 }
 
 protected void m6502_device_sty_aba_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_sty_aba_2;return; // READ
 }
 
 protected void m6502_device_sty_aba_2() {
-  _tmp = set_h(_tmp, DAT);
-  _addr = (ushort)(_tmp);
-  _dat =  _y;
-  _rnw = false;
+  _tmp = set_h(_tmp, _dat);
+  _dowrite((ushort)(_tmp),(byte)( _y));
   NextFn = m6502_device_sty_aba_3;return; // WRITE
 }
 
@@ -7133,16 +6148,13 @@ protected void m6502_device_sty_aba_3() {
 
 // --- op sty_zpg --- 
 protected void m6502_device_sty_zpg_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_sty_zpg_1;return; // READ
 }
 
 protected void m6502_device_sty_zpg_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _dat =  _y;
-  _rnw = false;
+  _tmp = _dat;
+  _dowrite((ushort)(_tmp),(byte)( _y));
   NextFn = m6502_device_sty_zpg_2;return; // WRITE
 }
 
@@ -7152,22 +6164,18 @@ protected void m6502_device_sty_zpg_2() {
 
 // --- op sty_zpx --- 
 protected void m6502_device_sty_zpx_0() {
-  _addr = (ushort)(_pc++);
-  _rnw = true;
+  _doread((ushort)(_pc++));
   NextFn = m6502_device_sty_zpx_1;return; // READ
 }
 
 protected void m6502_device_sty_zpx_1() {
-  _tmp = DAT;
-  _addr = (ushort)(_tmp);
-  _rnw = true;
+  _tmp = _dat;
+  _doread((ushort)(_tmp));
   NextFn = m6502_device_sty_zpx_2;return; // READ
 }
 
 protected void m6502_device_sty_zpx_2() {
-  _addr = (ushort)((byte)(_tmp+_x));
-  _dat =  _y;
-  _rnw = false;
+  _dowrite((ushort)((byte)(_tmp+_x)),(byte)( _y));
   NextFn = m6502_device_sty_zpx_3;return; // WRITE
 }
 
@@ -7177,8 +6185,7 @@ protected void m6502_device_sty_zpx_3() {
 
 // --- op tax_imp --- 
 protected void m6502_device_tax_imp_0() {
-  _addr = (ushort)(_pc);
-  _rnw = true;
+  _doread((ushort)(_pc));
   NextFn = m6502_device_tax_imp_1;return; // READ
 }
 
@@ -7190,8 +6197,7 @@ protected void m6502_device_tax_imp_1() {
 
 // --- op tay_imp --- 
 protected void m6502_device_tay_imp_0() {
-  _addr = (ushort)(_pc);
-  _rnw = true;
+  _doread((ushort)(_pc));
   NextFn = m6502_device_tay_imp_1;return; // READ
 }
 
@@ -7203,8 +6209,7 @@ protected void m6502_device_tay_imp_1() {
 
 // --- op tsx_imp --- 
 protected void m6502_device_tsx_imp_0() {
-  _addr = (ushort)(_pc);
-  _rnw = true;
+  _doread((ushort)(_pc));
   NextFn = m6502_device_tsx_imp_1;return; // READ
 }
 
@@ -7216,8 +6221,7 @@ protected void m6502_device_tsx_imp_1() {
 
 // --- op txa_imp --- 
 protected void m6502_device_txa_imp_0() {
-  _addr = (ushort)(_pc);
-  _rnw = true;
+  _doread((ushort)(_pc));
   NextFn = m6502_device_txa_imp_1;return; // READ
 }
 
@@ -7229,8 +6233,7 @@ protected void m6502_device_txa_imp_1() {
 
 // --- op txs_imp --- 
 protected void m6502_device_txs_imp_0() {
-  _addr = (ushort)(_pc);
-  _rnw = true;
+  _doread((ushort)(_pc));
   NextFn = m6502_device_txs_imp_1;return; // READ
 }
 
@@ -7241,8 +6244,7 @@ protected void m6502_device_txs_imp_1() {
 
 // --- op tya_imp --- 
 protected void m6502_device_tya_imp_0() {
-  _addr = (ushort)(_pc);
-  _rnw = true;
+  _doread((ushort)(_pc));
   NextFn = m6502_device_tya_imp_1;return; // READ
 }
 
@@ -7253,7 +6255,7 @@ protected void m6502_device_tya_imp_1() {
 }
 
 		protected override void postfetch_int() {
-			switch(IR) {
+			switch(_ir) {
 				case 0x00: m6502_device_brk_imp_0(); break;
 				case 0x01: m6502_device_ora_idx_0(); break;
 				case 0x02: m6502_device_kil_non_0(); break;
