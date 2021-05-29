@@ -130,8 +130,8 @@ Expects a full 64k ram image. Read/Write char hardware at F004/F001
 			for (long i = 0; i < MAXCYCLES; i++)
 			{
 
-				if (cpu.PC == 0x2ABB)
-					verby = true;
+				//if (cpu.PC == 0x2ABB)
+				//	verby = true;
 				if (cpu.PC == 0x4458)
 					verby = false;
 

@@ -373,7 +373,7 @@ namespace cpulib_65xx {
 				_p |= F_N;
 			if (((_a ^ val) & (_a ^ diff) & 0x80) != 0)
 				_p |= F_V;
-			if ((diff & 0xff00) != 0)
+			if ((diff & 0xff00) == 0)
 				_p |= F_C;
 			if ((ah & 0x80) != 0)
 				ah -= 6;
@@ -384,7 +384,7 @@ namespace cpulib_65xx {
 		{
 			ushort diff = (ushort)(_a - val - ((_p & F_C)!=0 ? 0 : 1));
 			_p &= (F_N | F_V | F_Z | F_C) ^ 0xFF;
-			if ((byte)diff != 0)
+			if ((byte)diff == 0)
 				_p |= F_Z;
 			else if ((diff & 0x80) != 0)
 				_p |= F_N;
@@ -434,7 +434,7 @@ namespace cpulib_65xx {
 			if ((v & 1) != 0)
 				_p |= F_C;
 			v >>= 1;
-			if (v != 0)
+			if (v == 0)
 				_p |= F_Z;
 			return v;
 		}
