@@ -30,7 +30,7 @@ print $fh_out_cxx "// do not edit it.\n";
 print $fh_out_cxx "// from file(s) $infn_dlst $infn_olst\n";	
 
 print $fh_out_cxx "namespace $namespace {\n";
-print $fh_out_cxx "\tpublic partial class $classname {\n";
+print $fh_out_cxx "\tpublic unsafe partial class $classname {\n";
 
 
 if ($infn_olst ne '-')
@@ -92,7 +92,7 @@ sub do_d_lst() {
 
 				my $ix = $lin * 16;
 				foreach my $i (@insts) {
-					printf $fh_out_cxx "\t\t\t\tcase 0x%2.2x: %s_0(); break;\n", $ix, archprefix($i);
+					printf $fh_out_cxx "\t\t\t\tcase 0x%2.2x: %s_0(this); break;\n", $ix, archprefix($i);
 
 					$i =~ /(\w{3})_(\w{3})/ or die "Bad opcode format should be xxx_yyy $i";
 
@@ -109,7 +109,7 @@ sub do_d_lst() {
 				my @insts = split(/\s+/, $l);
 				my $n = scalar(@insts);
 				$n == 1 || die "There must be exactly 1 instructions on line 17 ($n)";
-				printf $fh_out_cxx "\t\t\t\tdefault:   %s_0(); break;\n", archprefix(@insts[0]);
+				printf $fh_out_cxx "\t\t\t\tdefault:   %s_0(this); break;\n", archprefix(@insts[0]);
 
 
 			} else {
@@ -130,22 +130,36 @@ sub do_d_lst() {
 	my $first = 1;
 	foreach my $i (@instrmatrix) {
 
-		my $optype; if ($i->{operand} =~ /imp|non/) { $optype =
-		"Implied"; } elsif ($i->{operand} =~ /rel/) { $optype =
-		"Relative"; } elsif ($i->{operand} =~ /adr|aba/) {
-		$optype = "Absolute"; } elsif ($i->{operand} =~ /abx/)
-		{ $optype = "AbsoluteX"; } elsif ($i->{operand} =~
-		/aby/) { $optype = "AbsoluteY"; } elsif ($i->{operand}
-		=~ /imm/) { $optype = "Immediate"; } elsif
-		($i->{operand} =~ /ind/) { $optype = "Indirect"; }
-		elsif ($i->{operand} =~ /idx/) { $optype = "IndirectX";
-		} elsif ($i->{operand} =~ /idy/) { $optype =
-		"IndirectY"; } elsif ($i->{operand} =~ /zpg/) { $optype
-		= "Zeropage"; } elsif ($i->{operand} =~ /zpx/) {
-		$optype = "ZeropageX"; } elsif ($i->{operand} =~ /zpy/)
-		{ $optype = "ZeropageY"; } elsif ($i->{operand} =~
-		/acc/) { $optype = "Accumulator"; } else { die
-		"unrecognized operand type $i->{operand}"; }
+		my $optype; 
+		if ($i->{operand} =~ /imp|non/) { 
+			$optype = "Implied"; 
+		} elsif ($i->{operand} =~ /rel/) { 
+			$optype = "Relative"; 
+		} elsif ($i->{operand} =~ /adr|aba/) {
+			$optype = "Absolute"; 
+		} elsif ($i->{operand} =~ /abx/) { 
+			$optype = "AbsoluteX"; 
+		} elsif ($i->{operand} =~ /aby/) { 
+			$optype = "AbsoluteY"; 
+		} elsif ($i->{operand} =~ /imm/) { 
+			$optype = "Immediate"; 
+		} elsif	($i->{operand} =~ /ind/) { 
+			$optype = "Indirect"; 
+		} elsif ($i->{operand} =~ /idx/) { 
+			$optype = "IndirectX";
+		} elsif ($i->{operand} =~ /idy/) { 
+			$optype = "IndirectY"; 
+		} elsif ($i->{operand} =~ /zpg/) { 
+			$optype	= "Zeropage"; 
+		} elsif ($i->{operand} =~ /zpx/) {
+			$optype = "ZeropageX"; 
+		} elsif ($i->{operand} =~ /zpy/) { 
+			$optype = "ZeropageY"; 
+		} elsif ($i->{operand} =~ /acc/) { 
+			$optype = "Accumulator"; 
+		} else { 
+			die "unrecognized operand type $i->{operand}"; 
+		}
 
 		print $fh_out_cxx "\t\t" . ((!$first)?",":"") . "\tnew DisOpDetails() \{ Mnemonic = \"$i->{opcode}\", OperandType = DisOperandType.$optype \}\n";
 		$first = 0;
@@ -494,7 +508,7 @@ sub showtree($$) {
 
 sub expand_members($) {
 	my ($l) = @_;
-	$l =~ s/(?!(true|false|int8_t|uint8_t))(\b[A-Z_]\w*\b)/\2/gi;
+	$l =~ s/(?!(true|false|byte|sbyte|short|ushort|F_))(\b[A-Z_]\w*\b)/cpu.\2/gi;
 	return $l;
 }
 
@@ -512,13 +526,13 @@ sub emit($$$@%)
 
 	if (!$fnopen) {
 		if ($whilenotindex) {
-			print $fh_out_cxx "protected void ${classname}_${k}_whilenot_${whilenotindex}() {\n";
+			print $fh_out_cxx "protected static void ${classname}_${k}_whilenot_${whilenotindex}(m6502_device cpu) {\n";
 		}
 		elsif ($whileindex) {
-			print $fh_out_cxx "protected void ${classname}_${k}_while_${whileindex}() {\n";
-			print $fh_out_cxx "  if (!(${\ expand_members($parent->{text}) })) ${classname}_${k}_whilenot_${whileindex}();return;\n";
+			print $fh_out_cxx "protected static void ${classname}_${k}_while_${whileindex}(m6502_device cpu) {\n";
+			print $fh_out_cxx "  if (!(${\ expand_members($parent->{text}) })) ${classname}_${k}_whilenot_${whileindex}(cpu);return;\n";
 		} else {
-			print $fh_out_cxx "protected void ${classname}_${k}_${cycindex}() {\n";
+			print $fh_out_cxx "protected static void ${classname}_${k}_${cycindex}(m6502_device cpu) {\n";
 		}
 
 		$already->{$cycindex} = 1;
@@ -566,7 +580,7 @@ sub emit($$$@%)
 				};
 			}
 
-			print $fh_out_cxx  "  " x $indent . "${classname}_${k}_while_$whileindex();return;\n";
+			print $fh_out_cxx  "  " x $indent . "${classname}_${k}_while_$whileindex(cpu);return;\n";
 			if (!$fnopen) {
 				print $fh_out_cxx "}\n\n";
 			}
@@ -574,7 +588,7 @@ sub emit($$$@%)
 
 		} elsif ($curinst->{type} eq 'wend') {
 			my $whileindex = $curinst->{whileindex};
-			print $fh_out_cxx  "  " x $indent . "${classname}_${k}_while_$whileindex();return;\n";
+			print $fh_out_cxx  "  " x $indent . "${classname}_${k}_while_$whileindex(cpu);return;\n";
 			if (!$fnopen) {
 				print $fh_out_cxx "}\n\n";
 			}
@@ -583,15 +597,15 @@ sub emit($$$@%)
 			$cycindex =  $curinst->{cycindex};
 			if (!($curinst->{text} =~ /^(READ|WRITE)$/)) {
 				if ($curinst->{text} =~ /^post/) {
-					print $fh_out_cxx  "  " x $indent . "m6502_device_$curinst->{text}();return; // $curinst->{text}\n";	
+					print $fh_out_cxx  "  " x $indent . "m6502_device_$curinst->{text}(cpu);return; // $curinst->{text}\n";	
 				} else {
 					if ($curinst->{text} =~ /^pre/) {
-						print $fh_out_cxx  "  " x $indent . "PrefetchNextFn = ${classname}_${k}_${cycindex};\n";
+						print $fh_out_cxx  "  " x $indent . "cpu.PrefetchNextFn = &${classname}_${k}_${cycindex};\n";
 					}
-					print $fh_out_cxx  "  " x $indent . "m6502_device_$curinst->{text}();return; // $curinst->{text}\n";
+					print $fh_out_cxx  "  " x $indent . "m6502_device_$curinst->{text}(cpu);return; // $curinst->{text}\n";
 				}
 			} else {
-				print $fh_out_cxx  "  " x $indent . "NextFn = ${classname}_${k}_${cycindex};return; // $curinst->{text}\n";
+				print $fh_out_cxx  "  " x $indent . "cpu.NextFn = &${classname}_${k}_${cycindex};return; // $curinst->{text}\n";
 			}
 			if (!$fnopen) {
 				print $fh_out_cxx "}\n\n";

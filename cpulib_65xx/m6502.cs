@@ -2,9 +2,9 @@ namespace cpulib_65xx {
 
 
 
-	public delegate void StatFn();
+//	public delegate void StatFn();
 
-	public partial class m6502_device : m65x_device 
+	public unsafe partial class m6502_device : m65x_device 
 	{
 
 
@@ -47,15 +47,16 @@ namespace cpulib_65xx {
 		protected const byte F_C = 0x01;
 
 
+
 		/// <summary>
 		/// what will happen in next cycle
 		/// </summary>
-		protected StatFn NextFn { get; set; }
+		delegate*<m6502_device, void> NextFn;
 
 		/// <summary>
 		/// what will happen after prefetch
 		/// </summary>
-		protected StatFn PrefetchNextFn { get; set; }
+		delegate*<m6502_device, void> PrefetchNextFn;
 
 		private ushort _pc;
 		/// <summary>
@@ -151,7 +152,7 @@ namespace cpulib_65xx {
 			skip_ints_next = false;
 
 			base.reset();
-			NextFn = m6502_device_reset_0;
+			NextFn = &m6502_device_reset_0;
 
 		}
 
@@ -191,7 +192,7 @@ namespace cpulib_65xx {
 			//TODO: halt needs to _not_ halt on writes for NMOS
 			if (!halt_state)
 			{
-				NextFn?.Invoke();
+				NextFn(this);
 				if (_rnw)
 					return SysCpu.Read(_addr, out _dat);
 				else
@@ -517,54 +518,54 @@ namespace cpulib_65xx {
 
 		/* shared state functions */
 
-		protected void m6502_device_postfetch()
+		protected static void m6502_device_postfetch(m6502_device cpu)
 		{
-			_ir = _dat;
-			_sync = false;
+			cpu._ir = cpu._dat;
+			cpu._sync = false;
 			//sync_w(CLEAR_LINE);
 
-			if (!skip_ints_next && (nmi_state || (irq_state && !((_p & F_I)!=0))) && !inhibit_interrupts) {
-				irq_taken = true;
-				_ir = 0x00;
+			if (!cpu.skip_ints_next && (cpu.nmi_state || (cpu.irq_state && !((cpu._p & F_I)!=0))) && !cpu.inhibit_interrupts) {
+				cpu.irq_taken = true;
+				cpu._ir = 0x00;
 			}
 			else
-				_pc++;
-			skip_ints_next = false;
+				cpu._pc++;
+			cpu.skip_ints_next = false;
 
-			postfetch_int();
+			cpu.postfetch_int();
 		}
 
-		protected void m6502_device_prefetch()
+		protected static void m6502_device_prefetch(m6502_device cpu)
 		{
-			_sync = true;
+			cpu._sync = true;
 			//sync_w(ASSERT_LINE);
-			_addr = _pc;
-			_rnw = true;
-			NextFn = PrefetchNextFn;
+			cpu._addr = cpu._pc;
+			cpu._rnw = true;
+			cpu.NextFn = cpu.PrefetchNextFn;
 		}
 
 		//TODO: speed up (don't mess around with PrefetchNextFn here?
 
-		protected void m6502_device_fetch() {
-			PrefetchNextFn = m6502_device_postfetch;
-			m6502_device_prefetch();
+		protected static void m6502_device_fetch(m6502_device cpu) {
+			cpu.PrefetchNextFn = &m6502_device_postfetch;
+			m6502_device_prefetch(cpu);
 		}
 
-		protected void m6502_device_fetch_noirq() {
-			skip_ints_next = true;
-			PrefetchNextFn = m6502_device_postfetch;
-			m6502_device_prefetch();
+		protected static void m6502_device_fetch_noirq(m6502_device cpu) {
+			cpu.skip_ints_next = true;
+			cpu.PrefetchNextFn = &m6502_device_postfetch;
+			m6502_device_prefetch(cpu);
 		}
 
-		protected void m6502_device_forceJMP() {
-			_pc = _forceJMPaddr;
-			m6502_device_fetch();
+		protected static void m6502_device_forceJMP(m6502_device cpu) {
+			cpu._pc = cpu._forceJMPaddr;
+			m6502_device_fetch(cpu);
 		}
 
 		protected void forceJMP(ushort val)
 		{
 			_forceJMPaddr = val;
-			NextFn = m6502_device_forceJMP;
+			NextFn = &m6502_device_forceJMP;
 		}
 
 	}
