@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "test_cpu_dorman": {
+      "commandName": "Project",
+      "commandLineArgs": "D:\\work\\vs2017\\scratch\\emuc#\\emucsharp\\test_asm\\dorman\\6502_functional_test.bin"
+    }
+  }
+}

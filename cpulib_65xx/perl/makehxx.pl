@@ -74,6 +74,8 @@ sub do_d_lst() {
 
 	my $lin = 0;
 
+	my @instrmatrix = ();
+
 	while (<$fh_in_dlst>) {
 
 		my $l = $_;
@@ -91,6 +93,15 @@ sub do_d_lst() {
 				my $ix = $lin * 16;
 				foreach my $i (@insts) {
 					printf $fh_out_cxx "\t\t\t\tcase 0x%2.2x: %s_0(); break;\n", $ix, archprefix($i);
+
+					$i =~ /(\w{3})_(\w{3})/ or die "Bad opcode format should be xxx_yyy $i";
+
+					push @instrmatrix, {
+						idx => $ix,
+						opcode => $1,
+						operand => $2
+					};
+	
 					$ix++;
 				}
 
@@ -111,6 +122,35 @@ sub do_d_lst() {
 
 	print $fh_out_cxx "\t\t}\n";
 	print $fh_out_cxx "\t}\n\n";
+
+
+	# debug info
+	print $fh_out_cxx "\t\tpublic override DisOpDetails[] OpCodes { get { return new DisOpDetails[] {\n";
+
+	my $first = 1;
+	foreach my $i (@instrmatrix) {
+
+		my $optype; if ($i->{operand} =~ /imp|non/) { $optype =
+		"Implied"; } elsif ($i->{operand} =~ /rel/) { $optype =
+		"Relative"; } elsif ($i->{operand} =~ /adr|aba/) {
+		$optype = "Absolute"; } elsif ($i->{operand} =~ /abx/)
+		{ $optype = "AbsoluteX"; } elsif ($i->{operand} =~
+		/aby/) { $optype = "AbsoluteY"; } elsif ($i->{operand}
+		=~ /imm/) { $optype = "Immediate"; } elsif
+		($i->{operand} =~ /ind/) { $optype = "Indirect"; }
+		elsif ($i->{operand} =~ /idx/) { $optype = "IndirectX";
+		} elsif ($i->{operand} =~ /idy/) { $optype =
+		"IndirectY"; } elsif ($i->{operand} =~ /zpg/) { $optype
+		= "Zeropage"; } elsif ($i->{operand} =~ /zpx/) {
+		$optype = "ZeropageX"; } elsif ($i->{operand} =~ /zpy/)
+		{ $optype = "ZeropageY"; } elsif ($i->{operand} =~
+		/acc/) { $optype = "Accumulator"; } else { die
+		"unrecognized operand type $i->{operand}"; }
+
+		print $fh_out_cxx "\t\t" . ((!$first)?",":"") . "\tnew DisOpDetails() \{ Mnemonic = \"$i->{opcode}\", OperandType = DisOperandType.$optype \}\n";
+		$first = 0;
+	}
+	print $fh_out_cxx "\t\t};}}\n";
 }
 
 

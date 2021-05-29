@@ -26,7 +26,7 @@ all:		$(TARGETS)
 %.bin:		%.o $(LIBS)
 		$(LD) -vm -Ln $(basename $@).sy2 -m $(basename $@).map -o $@ -C dorman.cfg $< $(LIBS)
 		#../../scripts/getsymbols.pl <$(basename $@).sy2 >$(basename $@).sym.noi
-		#da65 -S 0xC000 --comments 4 $(basename $@).rom >$(basename $@).da.s
+		da65 -S 0x0000 --comments 4 $(basename $@).bin >$(basename $@).da.s
 
 
 %.o:		%.a65 $(DEPS) $(INCS)

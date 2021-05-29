@@ -193,7 +193,7 @@ namespace cpulib_65xx {
 			{
 				NextFn?.Invoke();
 				if (_rnw)
-					return SysCpu.Read(_addr, ref _dat);
+					return SysCpu.Read(_addr, out _dat);
 				else
 					return SysCpu.Write(_addr, _dat);
 			}
