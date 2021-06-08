@@ -43,15 +43,17 @@ namespace ElkHWLib
         {
             ScreenBitmap = new Bitmap(640, 256, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
 
+            ColorPalette pal = ScreenBitmap.Palette;
             // this is the _physical_ palette, the logical to physical mapping is done in the rasterizer
-            for (int i = 0; i < 16; i++)
+            for (int i = 0; i < 256; i++)
             {
-                ScreenBitmap.Palette.Entries[i] = Color.FromArgb(
+                pal.Entries[i] = Color.FromArgb(
                     ((i & 1) != 0) ? 255 : 0,
                     ((i & 2) != 0) ? 255 : 0,
                     ((i & 4) != 0) ? 255 : 0
                     );
             }
+            ScreenBitmap.Palette = pal;
 
             SetMode(0);
 
@@ -94,15 +96,24 @@ namespace ElkHWLib
             //TODO: Mode 0 only!
             if (ScreenX <= 640 - 8 && ScreenY < CurModeEndY)
             {
-                byte val = _ram[CurAddr];
-                for (int i = 0; i < 8; i++)
+                if (CharScanLine < 8)
                 {
-                    curbmpdata[ScreenX + i] = ((val & 0x80) != 0) ? (byte)7 : (byte)0;
-                    val = (byte)(val << 1);
+                    byte val = _ram[CurAddr];
+                    for (int i = 0; i < 8; i++)
+                    {
+                        curbmpdata[ScreenX + i] = ((val & 0x80) != 0) ? (byte)7 : (byte)0;
+                        val = (byte)(val << 1);
+                    }
+                    CurAddr += 8;
                 }
-                CurAddr += 8;
+                else
+                {
+                    for (int i = 0; i < 8; i++)
+                    {
+                        curbmpdata[ScreenX + i] = 0;
+                    }
+                }
             }
-            
 
             ScreenX += 8;
             if (ScreenX > 1024)

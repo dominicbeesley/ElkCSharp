@@ -23,11 +23,27 @@ namespace ElkCSharp
     /// </summary>
     public partial class MainWindow : Window
     {
+        int framectr = 0;
+        int timerctr = 0;
+        int prevframectr = 0;
+
         public MainWindow()
         {
             InitializeComponent();
 
             Task.Run(() => EmulatorLoop());
+
+            System.Windows.Threading.DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
+            dispatcherTimer.Tick += dispatcherTimer_Tick;
+            dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
+            dispatcherTimer.Start();
+        }
+
+        private void dispatcherTimer_Tick(object sender, EventArgs e)
+        {
+            float fps = framectr - prevframectr;
+            Title = $"{framectr} : {fps}";
+            prevframectr = framectr;
         }
 
         public void EmulatorLoop()
@@ -38,7 +54,6 @@ namespace ElkCSharp
 
                 var imgcv = new ImageSourceConverter();
 
-                int framectr = 0;
 
                 while (true)
                 {
@@ -48,8 +63,8 @@ namespace ElkCSharp
 
                         ScreenImg.Source = elk.ULA.ScreenBitmap.ToBitmapSource();
 
-                        Title = $"{framectr}";
                         framectr++;
+
                     });
                 }
             } catch (Exception ex)
