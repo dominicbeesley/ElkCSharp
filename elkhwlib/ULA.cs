@@ -170,11 +170,11 @@ namespace ElkHWLib
                     if ((val & 0x70) != 0)
                     {
                         if ((val & 0x10) != 0)
-                            _isr &= (byte)(ISR_MASK_DISPEND);
+                            _isr &= (byte)(ISR_MASK_DISPEND ^ 0xFF);
                         if ((val & 0x20) != 0)
-                            _isr &= (byte)(ISR_MASK_RTC);
+                            _isr &= (byte)(ISR_MASK_RTC ^ 0xFF);
                         if ((val & 0x40) != 0)
-                            _isr &= (byte)(ISR_MASK_TONE_DETECT);
+                            _isr &= (byte)(ISR_MASK_TONE_DETECT ^ 0xFF);
                         UpdateInterrupts();
                     }
 
@@ -183,7 +183,8 @@ namespace ElkHWLib
                     if (ROM_ExtBank >= 0xC)
                     {
                         ROM_External = true;
-                    } else if ((val & 0xC) == 0x8)
+                    }
+                    else if ((val & 0xC) == 0x8)
                     {
                         ROM_External = false;
                         ROM_IntBank = ROM_ExtBank;

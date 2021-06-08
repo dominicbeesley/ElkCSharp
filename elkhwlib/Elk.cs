@@ -74,7 +74,16 @@ namespace ElkHWLib
             } 
             else if ((addr & 0x8000) != 0)
             {
-                dat = _rom_basic[addr & 0x3FFF];
+                if (!ULA.ROM_External)
+                {
+                    if ((ULA.ROM_IntBank & 2) != 0)
+                        dat = _rom_basic[addr & 0x3FFF];
+                    else
+                        dat = 0;
+                } else
+                {
+                    dat = CPU.DAT;
+                }
             } 
             else
             {

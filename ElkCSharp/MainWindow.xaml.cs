@@ -51,8 +51,8 @@ namespace ElkCSharp
             try
             {
                 Elk elk = new Elk();
-                //elk.DebugCycles = true;
-                //elk.Debug = true;
+                elk.DebugCycles = true;
+                elk.Debug = true;
 
                 var imgcv = new ImageSourceConverter();
 
