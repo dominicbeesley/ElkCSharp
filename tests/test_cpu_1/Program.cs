@@ -14,21 +14,19 @@ namespace test_cpu_1
 
         m6502_device cpu;
 
-        public bool Read(ushort addr, out byte dat, bool peek=false)
+        public void Read(ushort addr, out byte dat, bool peek=false)
         {
             dat = store[addr];
-			return true;
         }
 
-		public bool Write(ushort addr, byte dat)
+		public void Write(ushort addr, byte dat)
         {
             store[addr] = dat;
-			return true;
         }
 
 
 
-        const long MAXCYCLES = 100000000L;
+        const long MAXCYCLES = 1000000000L;
 
         static void Usage(TextWriter o, string msg, Exception ex = null) {
 	        if (msg != null)

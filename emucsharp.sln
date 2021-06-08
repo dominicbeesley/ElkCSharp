@@ -30,6 +30,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "test_cpu_1", "tests\test_cp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "test_cpu_dorman", "test_cpu_dorman\test_cpu_dorman.csproj", "{EBAAC8DD-4B6C-4F5D-83F4-2B852C9E0F80}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElkHWLib", "elkhwlib\ElkHWLib.csproj", "{69ED037E-72C2-45EE-80BE-DBFDA075D3A5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElkCSharp", "ElkCSharp\ElkCSharp.csproj", "{D83F0305-0E75-48DE-AFE3-0CF2B369DE7A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -48,6 +52,14 @@ Global
 		{EBAAC8DD-4B6C-4F5D-83F4-2B852C9E0F80}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EBAAC8DD-4B6C-4F5D-83F4-2B852C9E0F80}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EBAAC8DD-4B6C-4F5D-83F4-2B852C9E0F80}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69ED037E-72C2-45EE-80BE-DBFDA075D3A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69ED037E-72C2-45EE-80BE-DBFDA075D3A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69ED037E-72C2-45EE-80BE-DBFDA075D3A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69ED037E-72C2-45EE-80BE-DBFDA075D3A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D83F0305-0E75-48DE-AFE3-0CF2B369DE7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D83F0305-0E75-48DE-AFE3-0CF2B369DE7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D83F0305-0E75-48DE-AFE3-0CF2B369DE7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D83F0305-0E75-48DE-AFE3-0CF2B369DE7A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -12,7 +12,7 @@ namespace cpulib_65xx
     /// </summary>
     public interface ISYSCpu
     {
-        bool Read(ushort addr, out byte dat, bool peek=false);
-        bool Write(ushort addr, byte dat);
+        void Read(ushort addr, out byte dat, bool peek=false);
+        void Write(ushort addr, byte dat);
     }
 }

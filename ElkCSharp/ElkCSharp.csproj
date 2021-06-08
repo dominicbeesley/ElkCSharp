@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\cpulib_65xx\cpulib_65xx.csproj" />
+    <ProjectReference Include="..\elkhwlib\ElkHWLib.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+
 namespace cpulib_65xx {
 
 
@@ -192,11 +194,14 @@ namespace cpulib_65xx {
 			//TODO: halt needs to _not_ halt on writes for NMOS
 			if (!halt_state)
 			{
-				NextFn(this);
 				if (_rnw)
-					return SysCpu.Read(_addr, out _dat);
+					SysCpu.Read(_addr, out _dat);
 				else
-					return SysCpu.Write(_addr, _dat);
+					SysCpu.Write(_addr, _dat);
+
+				NextFn(this);
+
+				return true;
 			}
 			else {
 				return false;
@@ -517,7 +522,6 @@ namespace cpulib_65xx {
 
 
 		/* shared state functions */
-
 		protected static void m6502_device_postfetch(m6502_device cpu)
 		{
 			cpu._ir = cpu._dat;
