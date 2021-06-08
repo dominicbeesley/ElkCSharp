@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ElkHWLib
 {
-    public class Elk : ISYSCpu
+    public class Elk : ISYSCpu, IDisposable
     {
         private byte[] _mos;
         private byte[] _rom_basic;
@@ -16,6 +16,27 @@ namespace ElkHWLib
 
         public ULA ULA { get; }
         public m6502_device CPU { get; }
+        public bool DebugCycles { get; set; }
+        public bool Debug
+        {
+            get
+            {
+                return _debugStream != null;
+            }
+            set
+            {
+                if (value == true && _debugStream == null)
+                    _debugStream = File.CreateText(@"d:\temp\elksharp.txt");
+                else
+                {
+                    _debugStream.Dispose();
+                    _debugStream = null;
+                }
+            }
+        }
+
+        TextWriter _debugStream = null;
+        private bool disposedValue;
 
         public Elk()
         {
@@ -35,19 +56,21 @@ namespace ElkHWLib
         {
             if ((addr & 0xC000) == 0xC000)
             {
-                if (addr > 0xFC00 && addr < 0xFEFF)
+                if (addr >= 0xFC00 && addr < 0xFEFF)
                 {
-                    if (addr > 0xFE00 & addr < 0xFE0F)
+                    if ((addr & 0xFF00) == 0xFE00)
                     {
-                        dat = ULA.ReadReg(addr & 0xF);
+                        if (!ULA.ReadReg(addr, out dat))
+                        {
+                            dat = CPU.DAT;
+                        }
                     } else
                     {
                         // read of "empty" hardware returns previous DAT!?
                         dat = CPU.DAT;                  
                     }
-                }
-
-                dat = _mos[addr & 0x3FFF];
+                } else 
+                    dat = _mos[addr & 0x3FFF];
             } 
             else if ((addr & 0x8000) != 0)
             {
@@ -64,7 +87,20 @@ namespace ElkHWLib
             for (int i = 0; i < nTicks; i++)
             {
                 if (ULA.tick(CPU.ADDR))
+                {
                     CPU.tick();
+                    if (_debugStream != null)
+                    {
+                        if (DebugCycles || CPU.Sync)
+                        {
+                            _debugStream.WriteLine($"PC={CPU.PC:X4},A={CPU.A:X2},X={CPU.X:X2},Y={CPU.Y:X2},P={CPU.P:X2}({CPU.FlagsToString(CPU.P)}),ADDR={CPU.ADDR:X4},DAT={CPU.DAT:X2}");
+                        }
+                        if (CPU.Sync)
+                        {
+                            _debugStream.WriteLine(CPU.Disassemble(CPU.PC));
+                        }
+                    }
+                }
             }
         }
 
@@ -96,6 +132,41 @@ namespace ElkHWLib
             }
 
             return ret;
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    if (_debugStream != null)
+                    {                        
+                        _debugStream.Dispose();
+                        _debugStream = null;
+                    }
+
+                    ULA.Dispose();
+                }
+
+                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
+                // TODO: set large fields to null
+                disposedValue = true;
+            }
+        }
+
+        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        // ~Elk()
+        // {
+        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        //     Dispose(disposing: false);
+        // }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }

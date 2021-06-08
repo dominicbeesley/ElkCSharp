@@ -194,12 +194,14 @@ namespace cpulib_65xx {
 			//TODO: halt needs to _not_ halt on writes for NMOS
 			if (!halt_state)
 			{
+
+				NextFn(this);
+
 				if (_rnw)
 					SysCpu.Read(_addr, out _dat);
 				else
 					SysCpu.Write(_addr, _dat);
 
-				NextFn(this);
 
 				return true;
 			}

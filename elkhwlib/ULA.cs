@@ -4,8 +4,22 @@ using System.Drawing.Imaging;
 
 namespace ElkHWLib
 {
-    public unsafe class ULA
+    public unsafe class ULA : IDisposable
     {
+        public const byte ISR_MASK_MASTER = 0x01;
+        public const byte ISR_MASK_RESET = 0x02;
+        public const byte ISR_MASK_DISPEND = 0x04;
+        public const byte ISR_MASK_RTC = 0x08;
+        public const byte ISR_MASK_RXFULL = 0x10;
+        public const byte ISR_MASK_TXEMPTY = 0x20;
+        public const byte ISR_MASK_TONE_DETECT = 0x40;
+        public const byte ISR_MASK_NOTUSED = 0x80;
+
+        private byte _isr;
+        private byte _ier;
+        private byte _cas_shr;
+
+
         //our own copy of ram
         private byte[] _ram = new byte[32768];
 
@@ -38,6 +52,7 @@ namespace ElkHWLib
         BitmapData bitMapData;
 
         byte* curbmpdata;
+        private bool disposedValue;
 
         public ULA()
         {
@@ -55,12 +70,10 @@ namespace ElkHWLib
             }
             ScreenBitmap.Palette = pal;
 
-            SetMode(0);
-
-            ScreenStart = 0x3000;
-
             bitMapData = ScreenBitmap.LockBits(new Rectangle(Point.Empty, ScreenBitmap.Size), ImageLockMode.WriteOnly, PixelFormat.Format8bppIndexed);
             curbmpdata = (byte *)bitMapData.Scan0;
+
+            Reset();
         }
 
         private void SetMode(int mode)
@@ -72,13 +85,38 @@ namespace ElkHWLib
             CurModeBytesPerCharRow = ((mode & 4) > 0)?(ushort)320:(ushort)640;
         }
 
-        internal byte ReadReg(int v)
+        public void Reset()
         {
-            switch (v & 0xF)
+            SetMode(0);
+
+            ScreenStart = 0x3000;
+
+            _isr = ISR_MASK_RESET | ISR_MASK_NOTUSED;
+        }
+
+        public bool ReadReg(ushort addr, out byte dat)
+        {
+            switch (addr & 0xF)
             {
+                case 0:
+                    dat = ReadRegISR();
+                    return true;
+
+                case 4:
+                    dat = _cas_shr;
+                    return true;
+
                 default:
-                    return 0;
+                    dat = 0xFF;
+                    return false;
             }
+        }
+
+        protected byte ReadRegISR()
+        {
+            byte ret = _isr;
+            _isr &= ISR_MASK_RESET ^ 0xFF;
+            return ret;
         }
 
         public void RamWrite(ushort addr, byte val)
@@ -110,7 +148,7 @@ namespace ElkHWLib
                 {
                     for (int i = 0; i < 8; i++)
                     {
-                        curbmpdata[ScreenX + i] = 0;
+                        curbmpdata[ScreenX + i] = 4;
                     }
                 }
             }
@@ -155,5 +193,33 @@ namespace ElkHWLib
             return true;
         }
 
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    ScreenBitmap?.Dispose();
+                }
+
+                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
+                // TODO: set large fields to null
+                disposedValue = true;
+            }
+        }
+
+        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
+        // ~ULA()
+        // {
+        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        //     Dispose(disposing: false);
+        // }
+
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
     }
 }
