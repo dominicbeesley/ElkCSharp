@@ -6,6 +6,7 @@ namespace ElkHWLib
 {
     public unsafe class ULA : IDisposable
     {
+
         public const byte ISR_MASK_MASTER = 0x01;
         public const byte ISR_MASK_RESET = 0x02;
         public const byte ISR_MASK_DISPEND = 0x04;

@@ -10,6 +10,8 @@ namespace ElkHWLib
 {
     public class Elk : ISYSCpu, IDisposable
     {
+        private byte[] KeyMatrix = new byte[14];
+
         private byte[] _mos;
         private byte[] _rom_basic;
         private byte[] _ram;
@@ -79,7 +81,21 @@ namespace ElkHWLib
                     if ((ULA.ROM_IntBank & 2) != 0)
                         dat = _rom_basic[addr & 0x3FFF];
                     else
-                        dat = 0;
+                    {
+                        //keyboard read
+                        ushort m = 1;
+                        byte ret = 0;
+                        for (int i = 0; i <14; i++)
+                        {
+                            if ((addr & m) == 0)
+                            {
+                                ret |= KeyMatrix[i];
+                            }
+
+                            m <<= 1;
+                        }
+                        dat = ret;
+                    }
                 } else
                 {
                     dat = CPU.DAT;
@@ -146,6 +162,12 @@ namespace ElkHWLib
 
             return ret;
         }
+
+        public void UpdateKeys(byte[] matrix)
+        {
+            matrix.CopyTo(KeyMatrix, 0);
+        }
+
 
         protected virtual void Dispose(bool disposing)
         {
