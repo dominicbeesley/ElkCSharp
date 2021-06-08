@@ -48,11 +48,17 @@ namespace ElkHWLib
 
         public bool OddNotEven { get; private set; }
 
+        public EventHandler IRQChange;
+
 
         BitmapData bitMapData;
 
         byte* curbmpdata;
         private bool disposedValue;
+
+        public bool ROM_External { get; private set; }
+        public byte ROM_IntBank { get; private set; }
+        public byte ROM_ExtBank { get; private set; }
 
         public ULA()
         {
@@ -89,9 +95,27 @@ namespace ElkHWLib
         {
             SetMode(0);
 
-            ScreenStart = 0x6000;
-
             _isr = ISR_MASK_RESET | ISR_MASK_NOTUSED;
+            _ier = 0;
+
+            //not sure what the actual reset state is of these - this is a guess!
+            ROM_External = false;
+            ROM_ExtBank = ROM_IntBank = 10;
+        }
+
+        protected void UpdateInterrupts()
+        {
+            if ((_isr & _ier & 0x7C) != 0)
+            {
+                //irq on
+                _isr |= ISR_MASK_MASTER;                
+            } 
+            else
+            {
+                _isr &= (byte)(ISR_MASK_MASTER ^ 0xFF);
+            }
+            if (IRQChange != null)
+                IRQChange(this, EventArgs.Empty);
         }
 
         public bool ReadReg(ushort addr, out byte dat)
@@ -122,6 +146,54 @@ namespace ElkHWLib
         public void RamWrite(ushort addr, byte val)
         {
             _ram[addr & 0x7FFF] = val;
+        }
+
+        public void WriteReg(ushort addr, byte val)
+        {
+            switch (addr & 0xF)
+            {
+                case 0:
+                    _ier = (byte)(val & 0x7E);
+                    UpdateInterrupts();
+                    break;
+                case 2:
+                    ScreenStart = (ushort)((ScreenStart & 0x7E00) | ((val & 0xE0) << 1));
+                    break;
+                case 3:
+                    ScreenStart = (ushort)((ScreenStart & 0x01E0) | ((val & 0x3F) << 9));
+                    break;
+                case 4:
+                    _cas_shr = val;
+                    break;
+                case 5:
+                    // clear interrupts
+                    if ((val & 0x70) != 0)
+                    {
+                        if ((val & 0x10) != 0)
+                            _isr &= (byte)(ISR_MASK_DISPEND);
+                        if ((val & 0x20) != 0)
+                            _isr &= (byte)(ISR_MASK_RTC);
+                        if ((val & 0x40) != 0)
+                            _isr &= (byte)(ISR_MASK_TONE_DETECT);
+                        UpdateInterrupts();
+                    }
+
+                    //rom faffery - more or less lifted from Elkulator
+                    ROM_ExtBank = (byte)(val & 0x0F);
+                    if (ROM_ExtBank >= 0xC)
+                    {
+                        ROM_External = true;
+                    } else if ((val & 0xC) == 0x8)
+                    {
+                        ROM_External = false;
+                        ROM_IntBank = ROM_ExtBank;
+                    }
+
+
+                    break;
+
+
+            }
         }
 
         /// <summary>

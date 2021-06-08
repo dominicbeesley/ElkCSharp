@@ -106,7 +106,11 @@ namespace ElkHWLib
 
         public void Write(ushort addr, byte dat)
         {
-            if ((addr & 0x8000) == 0)
+            if ((addr & 0xFF00) == 0xFE00)
+            {
+                ULA.WriteReg(addr, dat);
+            }
+            else if ((addr & 0x8000) == 0)
             {
                 _ram[addr] = dat;
                 ULA.RamWrite(addr, dat);
