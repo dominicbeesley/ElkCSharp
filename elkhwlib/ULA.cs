@@ -61,6 +61,8 @@ namespace ElkHWLib
         public byte ROM_IntBank { get; private set; }
         public byte ROM_ExtBank { get; private set; }
 
+        public bool IRQ { get { return (_isr & ISR_MASK_MASTER) != 0; } }
+
         public ULA()
         {
             ScreenBitmap = new Bitmap(640, 256, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
@@ -236,6 +238,15 @@ namespace ElkHWLib
             {
                 ScreenX = 0;
                 ScreenY++;
+                if (ScreenY == 99)
+                {
+                    _isr |= ISR_MASK_RTC;
+                    UpdateInterrupts();
+                } else if (ScreenY == CurModeEndY)
+                {
+                    _isr |= ISR_MASK_DISPEND;
+                    UpdateInterrupts();
+                }
                 if (ScreenY > ((OddNotEven) ? 312 : 313))
                 {
                     ScreenY = 0;

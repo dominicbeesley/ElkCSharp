@@ -48,6 +48,10 @@ namespace ElkHWLib
             CPU.start();
             CPU.reset();
 
+            ULA.IRQChange += (o, e) => { 
+                CPU.execute_set_input(cpu_device.cpu_65xx_inputlines.INPUT_LINE_IRQ0, ULA.IRQ ? cpu_device.cpu_65xx_inputstate.ASSERT_LINE : cpu_device.cpu_65xx_inputstate.CLEAR_LINE); 
+            };
+
 
             _mos = LoadRom(0x4000, "d:\\downloads\\ELK100");
             _rom_basic = LoadRom(0x4000, "d:\\downloads\\B_BASIC200");
