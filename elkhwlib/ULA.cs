@@ -196,9 +196,14 @@ namespace ElkHWLib
 
                     break;
 
+                case 7:
+                    SetMode((val & 0x38) >> 3);
+                    break;
 
             }
         }
+
+        private byte vduval;
 
         /// <summary>
         /// 
@@ -215,14 +220,82 @@ namespace ElkHWLib
                     if (CurAddr >= 0x8000)
                         CurAddr = (ushort)(CurAddr - CurModeModeLen);
 
-                    byte val = _ram[CurAddr];
-
-                    for (int i = 0; i < 8; i++)
+                    if (Mode == 0 || Mode == 3)
                     {
-                        curbmpdata[ScreenX + i] = ((val & 0x80) != 0) ? (byte)7 : (byte)0;
-                        val = (byte)(val << 1);
+                        vduval = _ram[CurAddr];
+
+                        for (int i = 0; i < 8; i++)
+                        {
+                            curbmpdata[ScreenX + i] = ((vduval & 0x80) != 0) ? (byte)7 : (byte)0;
+                            vduval = (byte)(vduval << 1);
+                        }
+                        CurAddr += 8;
                     }
-                    CurAddr += 8;
+                    else if (Mode == 1)
+                    {
+                        vduval = _ram[CurAddr];
+
+                        for (int i = 0; i < 4; i++)
+                        {
+                            byte c;
+                            switch(vduval & 0x88)
+                            {
+                                case 0x88:
+                                    c = 0x7;
+                                    break;
+                                case 0x80:
+                                    c = 0x3;
+                                    break;
+                                case 0x08:
+                                    c = 0x1;
+                                    break;
+                                default:
+                                    c = 0;
+                                    break;
+                            }
+                            curbmpdata[ScreenX + i * 2] = c;
+                            curbmpdata[ScreenX + i * 2 + 1] = c;
+                            vduval = (byte)(vduval << 1);
+                        }
+                        CurAddr += 8;
+                    }
+                    else if (Mode == 2)
+                    {
+                        vduval = _ram[CurAddr];
+
+                        for (int i = 0; i < 2; i++)
+                        {
+                            byte c = (byte)(
+                                ((vduval & 0x80) >> 4) |
+                                ((vduval & 0x20) >> 3) |
+                                ((vduval & 0x08) >> 2) |
+                                ((vduval & 0x02) >> 1)
+                                );
+
+                            curbmpdata[ScreenX + i * 4] = c;
+                            curbmpdata[ScreenX + i * 4 + 1] = c;
+                            curbmpdata[ScreenX + i * 4 + 2] = c;
+                            curbmpdata[ScreenX + i * 4 + 3] = c;
+                            vduval = (byte)(vduval << 1);
+                        }
+                        CurAddr += 8;
+                    }
+                    else if (Mode == 4 || Mode == 6 || Mode == 7)
+                    {
+                        if ((ScreenX & 8) != 0)
+                        {
+                            vduval = _ram[CurAddr];
+                            CurAddr += 8;
+                        }
+
+                        for (int i = 0; i < 4; i++)
+                        {
+                            byte c = ((vduval & 0x80) != 0) ? (byte)7 : (byte)0;
+                            curbmpdata[ScreenX + i * 2] = c;
+                            curbmpdata[ScreenX + i * 2 + 1] = c;
+                            vduval = (byte)(vduval << 1);
+                        }
+                    }
                 }
                 else
                 {
