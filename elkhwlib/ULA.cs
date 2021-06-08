@@ -71,7 +71,7 @@ namespace ElkHWLib
             ScreenBitmap.Palette = pal;
 
             bitMapData = ScreenBitmap.LockBits(new Rectangle(Point.Empty, ScreenBitmap.Size), ImageLockMode.WriteOnly, PixelFormat.Format8bppIndexed);
-            curbmpdata = (byte *)bitMapData.Scan0;
+            curbmpdata = (byte*)bitMapData.Scan0;
 
             Reset();
         }
@@ -82,14 +82,14 @@ namespace ElkHWLib
             CurModeCharScanLines = char_scanlines_per_mode[mode];
             CurModeEndY = mode_end_scanline_per_mode[mode];
             CurModeModeLen = modelens_per_mode[mode];
-            CurModeBytesPerCharRow = ((mode & 4) > 0)?(ushort)320:(ushort)640;
+            CurModeBytesPerCharRow = ((mode & 4) > 0) ? (ushort)320 : (ushort)640;
         }
 
         public void Reset()
         {
             SetMode(0);
 
-            ScreenStart = 0x3000;
+            ScreenStart = 0x6000;
 
             _isr = ISR_MASK_RESET | ISR_MASK_NOTUSED;
         }
@@ -129,14 +129,18 @@ namespace ElkHWLib
         /// </summary>
         /// <param name="cpu_addr"></param>
         /// <returns>True if cpu can execute this tick</returns>
-        public bool tick(ushort cpu_addr)
+        public bool Tick(ushort cpu_addr)
         {
             //TODO: Mode 0 only!
             if (ScreenX <= 640 - 8 && ScreenY < CurModeEndY)
             {
                 if (CharScanLine < 8)
                 {
+                    if (CurAddr >= 0x8000)
+                        CurAddr = (ushort)(CurAddr - CurModeModeLen);
+
                     byte val = _ram[CurAddr];
+
                     for (int i = 0; i < 8; i++)
                     {
                         curbmpdata[ScreenX + i] = ((val & 0x80) != 0) ? (byte)7 : (byte)0;
@@ -148,13 +152,13 @@ namespace ElkHWLib
                 {
                     for (int i = 0; i < 8; i++)
                     {
-                        curbmpdata[ScreenX + i] = 4;
+                        curbmpdata[ScreenX + i] = 0;
                     }
                 }
             }
 
             ScreenX += 8;
-            if (ScreenX > 1024)
+            if (ScreenX >= 1024)
             {
                 ScreenX = 0;
                 ScreenY++;
@@ -178,12 +182,9 @@ namespace ElkHWLib
                         CharScanLine = 0;
 
                         CurCharRowAddr += CurModeBytesPerCharRow;
-                        if (CurCharRowAddr >= 0x8000)
-                        {
-                            CurCharRowAddr -= CurModeModeLen;
-                        }
                         CurAddr = CurCharRowAddr;
-                    } else
+                    }
+                    else
                     {
                         CurAddr = (ushort)(CurCharRowAddr + CharScanLine);
                     }

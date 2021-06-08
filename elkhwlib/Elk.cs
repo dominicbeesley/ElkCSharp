@@ -78,7 +78,7 @@ namespace ElkHWLib
             } 
             else
             {
-                dat = _ram[addr & 0x3FFF];   
+                dat = _ram[addr & 0x7FFF];   
             }
         }
 
@@ -86,7 +86,7 @@ namespace ElkHWLib
         {
             for (int i = 0; i < nTicks; i++)
             {
-                if (ULA.tick(CPU.ADDR))
+                if (ULA.Tick(CPU.ADDR))
                 {
                     CPU.tick();
                     if (_debugStream != null)
