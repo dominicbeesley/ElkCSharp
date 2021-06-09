@@ -225,14 +225,12 @@ namespace ElkHWLib
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="cpu_addr"></param>
-        /// <returns>True if cpu can execute this tick</returns>
-        public bool Tick(ushort cpu_addr)
+        /// <returns>True if cpu can execute this tick from RAM - in effect a 1MHz clock stretched during hires modes</returns>
+        public bool Tick()
         {
             bool ret = (ScreenX & 8) != 0;
 
             //TODO: Palette
-            //TODO: cpu stalls
 
             if (ScreenX <= 640 - 8 && ScreenY < CurModeEndY)
             {
@@ -373,7 +371,7 @@ namespace ElkHWLib
                 }
             }
 
-            return ret | ((cpu_addr & 0x8000) != 0);
+            return ret;
         }
 
         protected virtual void Dispose(bool disposing)

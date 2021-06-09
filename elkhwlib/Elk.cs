@@ -120,12 +120,35 @@ namespace ElkHWLib
             }
         }
 
+        bool prevCPU1MHz = false;
+
         public void DoTicks(int nTicks)
         {
             for (int i = 0; i < nTicks; i++)
             {
-                if (ULA.Tick(CPU.ADDR))
+                bool cpuEN = ULA.Tick();
+                bool ram = (CPU.ADDR & 0x8000) == 0;
+                bool go = false;
+                
+                if (ram & prevCPU1MHz)
                 {
+                    if (cpuEN)
+                    {
+                        go = true;
+                    }
+                } 
+                else if (ram)
+                {
+                    prevCPU1MHz = true;
+                } 
+                else if (!ram)
+                {
+                    prevCPU1MHz = false;
+                    go = true;
+                }
+
+
+                if (go) {
                     CPU.tick();
                     if (_debugStream != null)
                     {
