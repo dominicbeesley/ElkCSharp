@@ -74,6 +74,8 @@ namespace ElkCSharp
                 //elk.DebugCycles = true;
                 //elk.Debug = true;
 
+                var x = new UEFLib.UEFChunker(@"D:\downloads\Firetrack_E.gz.uef", true);
+
                 var imgcv = new ImageSourceConverter();
 
 

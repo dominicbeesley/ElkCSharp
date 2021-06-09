@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "UEFCatalogue": {
+      "commandName": "Project",
+      "commandLineArgs": "d:\\downloads\\Firetrack_E.gz.uef"
+    }
+  }
+}
