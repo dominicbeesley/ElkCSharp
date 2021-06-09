@@ -85,7 +85,7 @@ namespace ElkHWLib
             bitMapData = ScreenBitmap.LockBits(new Rectangle(Point.Empty, ScreenBitmap.Size), ImageLockMode.WriteOnly, PixelFormat.Format8bppIndexed);
             curbmpdata = (byte*)bitMapData.Scan0;
 
-            Reset();
+            Reset(true);
         }
 
         private void SetMode(int mode)
@@ -97,16 +97,22 @@ namespace ElkHWLib
             CurModeBytesPerCharRow = ((mode & 4) > 0) ? (ushort)320 : (ushort)640;
         }
 
-        public void Reset()
+        public void Reset(bool hard)
         {
-            SetMode(0);
 
-            _isr = ISR_MASK_RESET | ISR_MASK_NOTUSED;
+            if (hard)
+                _isr = ISR_MASK_RESET | ISR_MASK_NOTUSED;
+            else
+                _isr = ISR_MASK_NOTUSED;
+
             _ier = 0;
 
             //not sure what the actual reset state is of these - this is a guess!
             ROM_External = false;
             ROM_ExtBank = ROM_IntBank = 10;
+
+            SetMode(0);
+            CurAddr = 0;
         }
 
         protected void UpdateInterrupts()

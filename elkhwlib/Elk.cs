@@ -46,17 +46,24 @@ namespace ElkHWLib
             ULA = new ULA();
             CPU = new m6502_device(this);
 
-            CPU.start();
-            CPU.reset();
+            Reset(true);
 
-            ULA.IRQChange += (o, e) => { 
-                CPU.execute_set_input(cpu_device.cpu_65xx_inputlines.INPUT_LINE_IRQ0, ULA.IRQ ? cpu_device.cpu_65xx_inputstate.ASSERT_LINE : cpu_device.cpu_65xx_inputstate.CLEAR_LINE); 
+            ULA.IRQChange += (o, e) => {
+                CPU.execute_set_input(cpu_device.cpu_65xx_inputlines.INPUT_LINE_IRQ0, ULA.IRQ ? cpu_device.cpu_65xx_inputstate.ASSERT_LINE : cpu_device.cpu_65xx_inputstate.CLEAR_LINE);
             };
 
 
             _mos = LoadRom(0x4000, "d:\\downloads\\ELK100");
             _rom_basic = LoadRom(0x4000, "d:\\downloads\\B_BASIC200");
             _ram = new byte[0x8000];
+
+        }
+
+        public void Reset(bool hard) { 
+            
+            CPU.start();
+            CPU.reset();
+            ULA.Reset(hard);
 
         }
 

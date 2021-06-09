@@ -10,6 +10,7 @@
     <ProjectReference Include="..\cpulib_65xx\cpulib_65xx.csproj" />
     <ProjectReference Include="..\elkhwlib\ElkHWLib.csproj" />
     <ProjectReference Include="..\UEFLib\UEFLib.csproj" />
+    <ProjectReference Include="..\WPFStuff\WPFStuff.csproj" />
   </ItemGroup>
 
 </Project>

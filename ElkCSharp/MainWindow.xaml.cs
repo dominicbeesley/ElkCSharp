@@ -61,7 +61,7 @@ namespace ElkCSharp
             //elk.DebugCycles = true;
             //elk.Debug = true;
 
-            ViewModel = new ElkModel();
+            ViewModel = new ElkModel(Elk);
 
             this.DataContext = ViewModel;
 
@@ -91,7 +91,10 @@ namespace ElkCSharp
                 
                 while (true)
                 {
-                    Elk.DoTicks(40000);
+                    lock (Elk)
+                    {
+                        Elk.DoTicks(40000);
+                    }
                     Dispatcher.Invoke(() =>
                     {
 
@@ -128,16 +131,27 @@ namespace ElkCSharp
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            for (int i = 0; i < 14; i++)
+            if (e.Key == Key.F12)
             {
-                for (int j = 0; j <4; j++)
+                lock(Elk)
                 {
-                    if (KeyBoardLayout[i][j] == e.Key)
+                    Elk.Reset(false);
+                }
+            }
+            else
+            {
+
+                for (int i = 0; i < 14; i++)
+                {
+                    for (int j = 0; j < 4; j++)
                     {
-                        KeyMatrix[i] |= (byte)(1 << j);
-                        KeysChanged = true;
+                        if (KeyBoardLayout[i][j] == e.Key)
+                        {
+                            KeyMatrix[i] |= (byte)(1 << j);
+                            KeysChanged = true;
+                        }
+
                     }
-                    
                 }
             }
         }

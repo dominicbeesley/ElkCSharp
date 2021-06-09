@@ -14,7 +14,7 @@
         <StackPanel DockPanel.Dock="Top">
             <Menu>
                 <MenuItem Header="_File">
-
+                    <MenuItem Header="Hard Reset" Command="{Binding CmdHardReset}" />
                 </MenuItem>
             </Menu>
         </StackPanel>
