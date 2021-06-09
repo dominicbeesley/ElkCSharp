@@ -86,7 +86,7 @@ namespace ElkCSharp
             try
             {
 
-                var x = new UEFLib.UEFChunker(@"D:\downloads\Firetrack_E.gz.uef", true);
+                var x = new UEFLib.UEFChunkReader(@"D:\downloads\Firetrack_E.gz.uef", true);
 
                 
                 while (true)

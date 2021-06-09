@@ -7,11 +7,20 @@ namespace UEFCatalogue
     {
         static void Main(string[] args)
         {
-            using (var uef = new UEFChunker(args[0], false))
+            byte[] buf = new byte[8];
+
+
+            using (var uef = new UEFChunkReader(args[0], false))
             {
                 while (uef.NextChunk())
                 {
                     Console.WriteLine($"ID={uef.ChunkID:X2}, Length={uef.LeftInChunk:X4}");
+                    int x = uef.Read(buf, 0, 8);
+                    for (int i = 0; i < x; i++)
+                    {
+                        Console.Write($" {buf[i]:X2}");
+                    }
+                    Console.WriteLine();
                 }
             }
         }

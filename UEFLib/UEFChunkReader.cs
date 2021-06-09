@@ -5,7 +5,10 @@ using System.Text;
 
 namespace UEFLib
 {
-    public class UEFChunker : IDisposable
+    /// <summary>
+    /// Open a possibly gzip'd uef and iterate through chunks
+    /// </summary>
+    public class UEFChunkReader : IDisposable
     {
 
         //note data doesn't contain the 12 byte header marker
@@ -19,7 +22,7 @@ namespace UEFLib
 
         public bool Wrap { get; private init; }
 
-        public UEFChunker(string filename, bool wrap)
+        public UEFChunkReader(string filename, bool wrap)
         {
             Stream stream = new FileStream(filename, FileMode.Open, FileAccess.Read);
             try
@@ -119,6 +122,25 @@ namespace UEFLib
             // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// read upto len bytes into array from current chunk
+        /// </summary>
+        /// <param name="buf">the buffer to read to</param>
+        /// <param name="start">start index to read to in buffer</param>
+        /// <param name="len">maximum number of bytes to read</param>
+        /// <returns>number of bytes read or 0 for end of chunk, -1 for no current chunk</returns>
+        public int Read(byte [] buf, int start, int len)
+        {
+            if (!InChunk)
+                return -1;
+            if (len > LeftInChunk)
+                len = LeftInChunk;
+
+            int n = _data.Read(buf, start, len);
+            LeftInChunk = LeftInChunk - n;
+            return n;
         }
     }
 }
