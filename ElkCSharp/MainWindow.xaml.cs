@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 
 using ElkHWLib;
 using cpulib_65xx;
+using System.IO;
 
 namespace ElkCSharp
 {
@@ -34,7 +35,7 @@ namespace ElkCSharp
             new Key [] { Key.Right, Key.End, Key.None, Key.Space},
             new Key [] { Key.Left, Key.Down, Key.Return, Key.Delete},
             new Key [] { Key.Subtract, Key.Up, Key.Oem1, Key.None},
-            new Key [] { Key.D0, Key.P, Key.Oem3, Key.None},
+            new Key [] { Key.D0, Key.P, Key.Oem3, Key.Oem2},
             new Key [] { Key.D9, Key.O, Key.L, Key.OemPeriod},
             new Key [] { Key.D8, Key.I, Key.K, Key.OemComma},
             new Key [] { Key.D7, Key.U, Key.J, Key.M},
@@ -78,7 +79,7 @@ namespace ElkCSharp
 
                 var imgcv = new ImageSourceConverter();
 
-
+                
                 while (true)
                 {
                     elk.DoTicks(40000);
@@ -93,6 +94,14 @@ namespace ElkCSharp
                         {
                             elk.UpdateKeys(KeyMatrix);
                             KeysChanged = false;
+                        }
+
+                        if (framectr == 100)
+                        {
+                            //TEST:
+                            byte[] testprog = File.ReadAllBytes(@"d:\downloads\HOGELKTI");
+                            testprog.CopyTo(elk.RAM, 0xE00);
+                            elk.ULA.SyncRAM(elk.RAM);
                         }
 
                     });

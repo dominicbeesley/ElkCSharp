@@ -16,6 +16,7 @@ namespace ElkHWLib
         private byte[] _rom_basic;
         private byte[] _ram;
 
+        public byte [] RAM { get { return _ram; } }
         public ULA ULA { get; }
         public m6502_device CPU { get; }
         public bool DebugCycles { get; set; }
@@ -56,6 +57,7 @@ namespace ElkHWLib
             _mos = LoadRom(0x4000, "d:\\downloads\\ELK100");
             _rom_basic = LoadRom(0x4000, "d:\\downloads\\B_BASIC200");
             _ram = new byte[0x8000];
+
         }
 
         public void Read(ushort addr, out byte dat, bool peek = false)

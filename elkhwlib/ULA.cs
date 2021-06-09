@@ -151,6 +151,12 @@ namespace ElkHWLib
             _ram[addr & 0x7FFF] = val;
         }
 
+        public void SyncRAM(byte[] ram)
+        {
+            ram.CopyTo(_ram, 0);
+        }
+
+
         public void WriteReg(ushort addr, byte val)
         {
             switch (addr & 0xF)
@@ -212,6 +218,8 @@ namespace ElkHWLib
         /// <returns>True if cpu can execute this tick</returns>
         public bool Tick(ushort cpu_addr)
         {
+            bool ret = (ScreenX & 8) != 0;
+
             //TODO: Palette
             //TODO: cpu stalls
 
@@ -225,6 +233,7 @@ namespace ElkHWLib
                     if (Mode == 0 || Mode == 3)
                     {
                         vduval = _ram[CurAddr];
+                        ret = false;
 
                         for (int i = 0; i < 8; i++)
                         {
@@ -236,6 +245,7 @@ namespace ElkHWLib
                     else if (Mode == 1)
                     {
                         vduval = _ram[CurAddr];
+                        ret = false;
 
                         for (int i = 0; i < 4; i++)
                         {
@@ -264,6 +274,7 @@ namespace ElkHWLib
                     else if (Mode == 2)
                     {
                         vduval = _ram[CurAddr];
+                        ret = false;
 
                         for (int i = 0; i < 2; i++)
                         {
@@ -306,7 +317,7 @@ namespace ElkHWLib
                         curbmpdata[ScreenX + i] = 0;
                     }
                 }
-            }
+            } 
 
             ScreenX += 8;
             if (ScreenX >= 1024)
@@ -351,7 +362,7 @@ namespace ElkHWLib
                 }
             }
 
-            return true;
+            return ret | ((cpu_addr & 0x8000) != 0);
         }
 
         protected virtual void Dispose(bool disposing)
