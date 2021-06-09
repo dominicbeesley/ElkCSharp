@@ -212,7 +212,9 @@ namespace ElkHWLib
         /// <returns>True if cpu can execute this tick</returns>
         public bool Tick(ushort cpu_addr)
         {
-            //TODO: Mode 0 only!
+            //TODO: Palette
+            //TODO: cpu stalls
+
             if (ScreenX <= 640 - 8 && ScreenY < CurModeEndY)
             {
                 if (CharScanLine < 8)
@@ -282,7 +284,7 @@ namespace ElkHWLib
                     }
                     else if (Mode == 4 || Mode == 6 || Mode == 7)
                     {
-                        if ((ScreenX & 8) != 0)
+                        if ((ScreenX & 8) == 0)
                         {
                             vduval = _ram[CurAddr];
                             CurAddr += 8;
