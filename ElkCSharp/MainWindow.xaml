@@ -8,9 +8,32 @@
         Title="MainWindow" Height="600" Width="800"
         KeyDown="Window_KeyDown"
         KeyUp="Window_KeyUp"
+        Background="{ StaticResource Retro_Brush_BG}"
         >
-    <Grid>
-        <Image x:Name="ScreenImg" HorizontalAlignment="Left" Height="512" Margin="10,10,0,0" VerticalAlignment="Top" Width="640" Stretch="Fill" UseLayoutRounding="false" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+    <DockPanel>
+        <StackPanel DockPanel.Dock="Top">
+            <Menu>
+                <MenuItem Header="_File">
 
-    </Grid>
+                </MenuItem>
+            </Menu>
+        </StackPanel>
+        <StackPanel DockPanel.Dock="Bottom" FlowDirection="LeftToRight" Orientation="Horizontal">
+            <local:ucLED DataContext="{Binding CapsLockLED }" />
+            <local:ucLED DataContext="{Binding MotorLED }" />
+        </StackPanel>
+        <Image 
+            x:Name="ScreenImg" 
+            HorizontalAlignment="Stretch" 
+            Height="512" 
+            Margin="10,10,0,0" 
+            VerticalAlignment="Stretch" 
+            Width="640" 
+            Stretch="Fill" 
+            UseLayoutRounding="false" 
+            RenderOptions.BitmapScalingMode="NearestNeighbor"           
+            Source="{Binding ScreenSource }"            
+            />
+        
+    </DockPanel>
 </Window>

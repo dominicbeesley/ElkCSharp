@@ -1,0 +1,57 @@
+﻿<UserControl x:Class="ElkCSharp.ucLED"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ElkCSharp"
+             mc:Ignorable="d" 
+             d:DesignHeight="24" d:DesignWidth="120"
+             Background="Transparent"
+             xmlns:viewmodel="clr-namespace:ElkCSharp.ViewModel"
+             xmlns:sampledata="clr-namespace:ElkCSharp.ViewModel.Sample"
+             d:DataContext="{ x:Static sampledata:DesignTimeSampleData.LED }"
+             >
+    <UserControl.Resources>
+        <viewmodel:Bool2Opacity_ValueConverter x:Key="bool2opacity" />
+    </UserControl.Resources>
+    <Grid Width="120" Height="24">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="96" />
+            <ColumnDefinition Width="24" />
+        </Grid.ColumnDefinitions>
+        <Border Grid.Column="0" BorderBrush="AliceBlue" BorderThickness="2" Height="24">
+            <TextBlock  Text="{Binding Name}" Name="tbLabel" VerticalAlignment="Center"
+                Style="{StaticResource Retro_TextBlock_LED_Label}" />
+        </Border>
+        <Border                
+                    Grid.Column="1" 
+                    CornerRadius="2"
+                    BorderBrush="{StaticResource Retro_Brush_Label}"
+                    BorderThickness="1"
+                    >
+            <Rectangle 
+                DataContext="{Binding Path=Lit, NotifyOnTargetUpdated=True}" 
+                Fill="{StaticResource Retro_Brush_LED}" 
+                Margin="2,2,2,2" 
+                RadiusX="1" 
+                RadiusY="1" 
+                Opacity="{Binding Converter={ StaticResource bool2opacity}}">
+                <Rectangle.Triggers>
+                    <EventTrigger RoutedEvent="Binding.TargetUpdated">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ColorAnimation 
+                                    Duration="0:0:2.5" 
+                                    From="{StaticResource Retro_Color_FG_Flash}" 
+                                    To="{StaticResource Retro_Color_Label}" 
+                                    Storyboard.TargetName="tbLabel" 
+                                    Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)"
+                                    />
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </Rectangle.Triggers>
+            </Rectangle>
+        </Border>
+    </Grid>
+</UserControl>

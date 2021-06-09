@@ -16,6 +16,8 @@ using System.Windows.Shapes;
 using ElkHWLib;
 using cpulib_65xx;
 using System.IO;
+using ElkCSharp.ViewModel;
+
 
 namespace ElkCSharp
 {
@@ -24,8 +26,11 @@ namespace ElkCSharp
     /// </summary>
     public partial class MainWindow : Window
     {
+
+        protected Elk Elk { get; init; }
+        protected ElkModel ViewModel { get; init; }
+
         int framectr = 0;
-        int timerctr = 0;
         int prevframectr = 0;
 
         bool KeysChanged = false;
@@ -52,6 +57,15 @@ namespace ElkCSharp
         {
             InitializeComponent();
 
+            Elk = new Elk();
+            //elk.DebugCycles = true;
+            //elk.Debug = true;
+
+            ViewModel = new ElkModel();
+
+            this.DataContext = ViewModel;
+
+
             Task.Run(() => EmulatorLoop());
 
             System.Windows.Threading.DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
@@ -71,28 +85,25 @@ namespace ElkCSharp
         {
             try
             {
-                Elk elk = new Elk();
-                //elk.DebugCycles = true;
-                //elk.Debug = true;
 
                 var x = new UEFLib.UEFChunker(@"D:\downloads\Firetrack_E.gz.uef", true);
-
-                var imgcv = new ImageSourceConverter();
 
                 
                 while (true)
                 {
-                    elk.DoTicks(40000);
+                    Elk.DoTicks(40000);
                     Dispatcher.Invoke(() =>
                     {
 
-                        ScreenImg.Source = elk.ULA.ScreenBitmap.ToBitmapSource();
+                        ViewModel.UpdateScreen(Elk.ULA.ScreenBitmap);
+                        ViewModel.CapsLockLED.Lit = Elk.ULA.CapsLock;
+                        ViewModel.MotorLED.Lit = Elk.ULA.Motor;
 
                         framectr++;
 
                         if (KeysChanged)
                         {
-                            elk.UpdateKeys(KeyMatrix);
+                            Elk.UpdateKeys(KeyMatrix);
                             KeysChanged = false;
                         }
 
@@ -100,8 +111,8 @@ namespace ElkCSharp
                         {
                             //TEST:
                             byte[] testprog = File.ReadAllBytes(@"d:\downloads\HOGELKTI");
-                            testprog.CopyTo(elk.RAM, 0xE00);
-                            elk.ULA.SyncRAM(elk.RAM);
+                            testprog.CopyTo(Elk.RAM, 0xE00);
+                            Elk.ULA.SyncRAM(Elk.RAM);
                         }
 
                     });

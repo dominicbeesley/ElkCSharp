@@ -63,6 +63,9 @@ namespace ElkHWLib
 
         public bool IRQ { get { return (_isr & ISR_MASK_MASTER) != 0; } }
 
+        public bool CapsLock { get; private set; }
+        public bool Motor { get; private set; }
+
         public ULA()
         {
             ScreenBitmap = new Bitmap(640, 256, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
@@ -204,6 +207,8 @@ namespace ElkHWLib
 
                 case 7:
                     SetMode((val & 0x38) >> 3);
+                    CapsLock = (val & 0x80) != 0;
+                    Motor = (val & 0x40) != 0;
                     break;
 
             }
