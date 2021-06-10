@@ -2,7 +2,7 @@
   "profiles": {
     "UEFCatalogue": {
       "commandName": "Project",
-      "commandLineArgs": "d:\\downloads\\Firetrack_E.gz.uef"
+      "commandLineArgs": "d:\\downloads\\Snapper_E.uef"
     }
   }
 }

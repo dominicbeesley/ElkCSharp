@@ -60,6 +60,7 @@ namespace ElkCSharp
             Elk = new Elk();
             //elk.DebugCycles = true;
             //elk.Debug = true;
+            Elk.ULA.UEF = new UEFLib.UEFTapeStreamer(@"d:\downloads\Firetrack_E.gz.uef", true);
 
             ViewModel = new ElkModel(Elk);
 

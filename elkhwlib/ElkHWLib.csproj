@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\cpulib_65xx\cpulib_65xx.csproj" />
+    <ProjectReference Include="..\UEFLib\UEFLib.csproj" />
   </ItemGroup>
 
 </Project>

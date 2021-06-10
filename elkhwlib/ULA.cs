@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using UEFLib;
 
 namespace ElkHWLib
 {
@@ -16,9 +17,12 @@ namespace ElkHWLib
         public const byte ISR_MASK_TONE_DETECT = 0x40;
         public const byte ISR_MASK_NOTUSED = 0x80;
 
+        public enum CassetteMode { Input = 0, Sound = 1, Output = 2, None = 3 }
+
         private byte _isr;
         private byte _ier;
-        private byte _cas_shr;
+        private ushort _cas_shr;       
+        private CassetteMode _cas_mode;
 
 
         //our own copy of ram
@@ -65,6 +69,8 @@ namespace ElkHWLib
 
         public bool CapsLock { get; private set; }
         public bool Motor { get; private set; }
+        public UEFTapeStreamer UEF { get; set; }
+        
 
         public ULA()
         {
@@ -139,7 +145,9 @@ namespace ElkHWLib
                     return true;
 
                 case 4:
-                    dat = _cas_shr;
+                    dat = (byte)_cas_shr;
+                    _isr &= (byte)(ISR_MASK_RXFULL ^ 0xFF);
+                    UpdateInterrupts();
                     return true;
 
                 default:
@@ -182,6 +190,8 @@ namespace ElkHWLib
                     break;
                 case 4:
                     _cas_shr = val;
+                    _isr &= (byte)(ISR_MASK_TXEMPTY ^ 0xFF);
+                    UpdateInterrupts();
                     break;
                 case 5:
                     // clear interrupts
@@ -221,6 +231,10 @@ namespace ElkHWLib
         }
 
         private byte vduval;
+
+        private int uefTicks = 0;
+        private int hiToneTicks = 0;
+        private int cas_bits_left = 0;
 
         /// <summary>
         /// 
@@ -302,7 +316,40 @@ namespace ElkHWLib
                         }
                         CurAddr += 8;
                     }
-                    else if (Mode == 4 || Mode == 6 || Mode == 7)
+                    else if (Mode == 5)
+                    {
+                        if ((ScreenX & 8) == 0)
+                        {
+                            vduval = _ram[CurAddr];
+                            CurAddr += 8;
+                        }
+
+                        for (int i = 0; i < 2; i++)
+                        {
+                            byte c;
+                            switch (vduval & 0x88)
+                            {
+                                case 0x88:
+                                    c = 0x7;
+                                    break;
+                                case 0x80:
+                                    c = 0x3;
+                                    break;
+                                case 0x08:
+                                    c = 0x1;
+                                    break;
+                                default:
+                                    c = 0;
+                                    break;
+                            }
+                            curbmpdata[ScreenX + i * 4] = c;
+                            curbmpdata[ScreenX + i * 4 + 1] = c;
+                            curbmpdata[ScreenX + i * 4 + 2] = c;
+                            curbmpdata[ScreenX + i * 4 + 3] = c;
+                            vduval = (byte)(vduval << 1);
+                        }
+                    }
+                    else //(Mode == 4 || Mode == 6 || Mode == 7)
                     {
                         if ((ScreenX & 8) == 0)
                         {
@@ -318,6 +365,7 @@ namespace ElkHWLib
                             vduval = (byte)(vduval << 1);
                         }
                     }
+
                 }
                 else
                 {
@@ -367,6 +415,46 @@ namespace ElkHWLib
                     else
                     {
                         CurAddr = (ushort)(CurCharRowAddr + CharScanLine);
+                    }
+                }
+            }
+
+            if (uefTicks-- < 0)
+            {
+                uefTicks = 1666;
+                if (UEF != null && _cas_mode == CassetteMode.Input && Motor)
+                {
+                    UEFTapeBit bit = UEF.Tick();
+
+                    //read a bit from the cassette
+                    if (cas_bits_left > 0)
+                    {
+                        _cas_shr = (ushort)((_cas_shr >> 1) | ((bit == UEFTapeBit.LowTone) ? 0 : 0x100));
+                        
+                        cas_bits_left--;
+                        if (cas_bits_left == 0)
+                        {
+                            _isr |= ISR_MASK_RXFULL;
+                            UpdateInterrupts();
+                        }
+                    } else
+                    {
+                        if (bit == UEFTapeBit.HighTone)
+                        {
+                            hiToneTicks++;
+                            if (hiToneTicks == 60)
+                            {
+                                _isr |= ISR_MASK_TONE_DETECT;
+                                UpdateInterrupts();
+                            }
+                        } else
+                        {
+                            hiToneTicks = 0;
+                            if (bit == UEFTapeBit.LowTone)
+                            {
+                                cas_bits_left = 9;
+                            }
+                        }
                     }
                 }
             }
