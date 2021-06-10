@@ -23,6 +23,25 @@ namespace UEFCatalogue
                     Console.WriteLine();
                 }
             }
+
+            using (var tape = new UEFTapeStreamer(args[0], false))
+            {
+                for (int i = 0; i < 30000; i++)
+                {
+                    switch (tape.Tick())
+                    {
+                        case UEFTapeBit.HighTone:
+                            Console.Write("1");
+                            break;
+                        case UEFTapeBit.LowTone:
+                            Console.Write("0");
+                            break;
+                        default:
+                            Console.Write(".");
+                            break;
+                    }
+                }
+            }
         }
     }
 }

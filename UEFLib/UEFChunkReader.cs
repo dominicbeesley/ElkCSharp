@@ -18,6 +18,7 @@ namespace UEFLib
         public bool InChunk { get; private set; }
         public int LeftInChunk { get; private set; }
         public ushort ChunkID { get; private set; }
+        public int ChunkIndex { get; private set; }
         public ushort UEFVersion { get; private init; }
 
         public bool Wrap { get; private init; }
@@ -55,15 +56,23 @@ namespace UEFLib
 
                 _data = new MemoryStream();
                 stream.CopyTo(_data);
-                _data.Position = 0;
 
-                InChunk = false;
+                Rewind();
+
 
             } finally
             {
                 if (stream != null)
                     stream.Dispose();
             }            
+        }
+
+        public void Rewind()
+        {
+            _data.Position = 0;
+
+            InChunk = false;
+            ChunkIndex = -1;
         }
 
         public bool NextChunk()
@@ -77,7 +86,7 @@ namespace UEFLib
             int l = _data.Read(header, 0, 6);
             if (l == 0 && Wrap)
             {
-                _data.Position = 0;
+                Rewind();
                 l = _data.Read(header, 0, 6);
             }
             else if (l == 0)
@@ -88,6 +97,7 @@ namespace UEFLib
             InChunk = true;
             ChunkID = BitConverter.ToUInt16(header, 0);
             LeftInChunk = BitConverter.ToInt32(header, 2);
+            ChunkIndex++;
             return true;
         }
 
