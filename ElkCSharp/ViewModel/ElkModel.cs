@@ -55,6 +55,15 @@ namespace ElkCSharp.ViewModel
         public LEDModel MotorLED { get { return _motorLED; } }
         public BiLEDModel TapeToneBiLED { get { return _tapeToneBiLED; } }
 
+        private bool _goFast;
+        public bool GoFast { 
+            get { return _goFast; } 
+            set
+            {
+                _goFast = value;
+                RaisePropertyChangedEvent();
+            }
+        }
         internal void UpdateScreen(Bitmap screenBmp)
         {
             ScreenSource = screenBmp.ToBitmapSource();

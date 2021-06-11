@@ -19,6 +19,10 @@ using System.IO;
 using ElkCSharp.ViewModel;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+using System.Threading;
+using Utility;
 
 namespace ElkCSharp
 {
@@ -28,11 +32,20 @@ namespace ElkCSharp
     public partial class MainWindow : Window
     {
 
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool AllocConsole();
+
         protected Elk Elk { get; init; }
         protected ElkModel ViewModel { get; init; }
 
         int framectr = 0;
         int prevframectr = 0;
+
+        Thread emuThread;
+        CancellationTokenSource emuTaskCancel = new CancellationTokenSource();
+
+        Bitmap bmpCopy;
 
         bool KeysChanged = false;
         byte[] KeyMatrix = new byte[14];
@@ -58,6 +71,10 @@ namespace ElkCSharp
         {
             InitializeComponent();
 
+            AllocConsole();
+
+            bmpCopy = new Bitmap(640, 256, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
+
             Elk = new Elk();
             //elk.DebugCycles = true;
             //elk.Debug = true;
@@ -67,8 +84,9 @@ namespace ElkCSharp
 
             this.DataContext = ViewModel;
 
-
-            Task.Run(() => EmulatorLoop());
+            emuThread = new Thread(() => EmulatorLoop(emuTaskCancel.Token));
+            emuThread.Priority = ThreadPriority.AboveNormal;
+            emuThread.Start();
 
             System.Windows.Threading.DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
             dispatcherTimer.Tick += dispatcherTimer_Tick;
@@ -83,49 +101,76 @@ namespace ElkCSharp
             prevframectr = framectr;
         }
 
-        public void EmulatorLoop()
+        public void EmulatorLoop(CancellationToken cancelToken)
         {
             try
             {
 
                 var x = new UEFLib.UEFChunkReader(@"D:\downloads\Firetrack_E.gz.uef", true);
 
-                using (var bmpCopy = new Bitmap(640, 256, System.Drawing.Imaging.PixelFormat.Format8bppIndexed))
+                ColorPalette pal = bmpCopy.Palette;
+                // this is the _physical_ palette, the logical to physical mapping is done in the rasterizer
+                for (int i = 0; i < 256; i++)
                 {
-                    ColorPalette pal = bmpCopy.Palette;
-                    // this is the _physical_ palette, the logical to physical mapping is done in the rasterizer
-                    for (int i = 0; i < 256; i++)
+                    pal.Entries[i] = System.Drawing.Color.FromArgb(
+                        ((i & 1) != 0) ? 255 : 0,
+                        ((i & 2) != 0) ? 255 : 0,
+                        ((i & 4) != 0) ? 255 : 0
+                        );
+                }
+                bmpCopy.Palette = pal;
+
+                Stopwatch sw = new Stopwatch();
+                sw.Start();
+                long mymillis = 0;
+                long prevmillis = 0;
+                while (!cancelToken.IsCancellationRequested)
+                {
+
+                    long mil = sw.ElapsedMilliseconds;
+                    long delay = mymillis - mil;
+                    if (delay > 0 & delay < 10000 && !ViewModel.GoFast)
                     {
-                        pal.Entries[i] = System.Drawing.Color.FromArgb(
-                            ((i & 1) != 0) ? 255 : 0,
-                            ((i & 2) != 0) ? 255 : 0,
-                            ((i & 4) != 0) ? 255 : 0
-                            );
+                        Thread.Sleep((int)(delay));
                     }
-                    bmpCopy.Palette = pal;
+                    else
+                    {
+                        //we're slow, resync
+                        mymillis = mil;
+                    }
 
+                    lock (Elk)
+                    {
+                        Elk.DoTicks(40000);
+                        mymillis += 20;
+                    }
 
-                    while (true)
+                    if (!ViewModel.GoFast || mil - prevmillis > 15)
                     {
 
-                        lock (Elk)
+                        lock (bmpCopy)
                         {
-                            Elk.DoTicks(40000);
+                            var bmpdData = bmpCopy.LockBits(new System.Drawing.Rectangle(0, 0, 640, 256), ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
+                            try
+                            {
+                                System.Runtime.InteropServices.Marshal.Copy(Elk.ULA.ScreenData, 0, bmpdData.Scan0, 640 * 256);
+                            }
+                            finally
+                            {
+                                bmpCopy.UnlockBits(bmpdData);
+                            }
                         }
 
-                        var bmpdData = bmpCopy.LockBits(new System.Drawing.Rectangle(0,0,640,256), ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
-                        try
-                        {
-                            System.Runtime.InteropServices.Marshal.Copy(Elk.ULA.ScreenData, 0, bmpdData.Scan0, 640 * 256);
-                        } finally
-                        {
-                            bmpCopy.UnlockBits(bmpdData);
-                        }
-
-                        Dispatcher.Invoke(() =>
+                        Dispatcher.BeginInvoke(new Action(() =>
                         {
 
-                            ViewModel.UpdateScreen(bmpCopy);
+                            if (bmpCopy != null)
+                            {
+                                lock (bmpCopy)
+                                {
+                                    ViewModel.UpdateScreen(bmpCopy);
+                                }
+                            }
                             ViewModel.CapsLockLED.Lit = Elk.ULA.CapsLock;
                             ViewModel.MotorLED.Lit = Elk.ULA.Motor;
                             ViewModel.TapeToneBiLED.Red = (byte)(Elk.ULA.LoToneDetect >> 8);
@@ -141,14 +186,19 @@ namespace ElkCSharp
 
                             if (framectr == 100)
                             {
-                                    //TEST:
-                                    byte[] testprog = File.ReadAllBytes(@"d:\downloads\HOGELKTI");
+                            //TEST:
+                            byte[] testprog = File.ReadAllBytes(@"d:\downloads\HOGELKTI");
                                 testprog.CopyTo(Elk.RAM, 0xE00);
                                 Elk.ULA.SyncRAM(Elk.RAM);
                             }
 
-                        });
+                        }));
+                        prevmillis = mil;
+                    } else
+                    {
+                        framectr++;
                     }
+
                 }
             }
             catch (TaskCanceledException)
@@ -206,6 +256,15 @@ namespace ElkCSharp
                 }
             }
 
+        }
+
+        private void Window_Closed(object sender, EventArgs e)
+        {
+            emuTaskCancel.Cancel();
+            emuThread.Join(1000);
+            var b = bmpCopy;
+            bmpCopy = null;
+            b.Dispose();
         }
     }
 }

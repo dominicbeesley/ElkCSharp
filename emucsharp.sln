@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31313.79
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cpulib_65xx", "cpulib_65xx\cpulib_65xx.csproj", "{FA131546-95A9-4894-99B1-C1897F4E1996}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "cpulib_65xx", "cpulib_65xx\cpulib_65xx.csproj", "{FA131546-95A9-4894-99B1-C1897F4E1996}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test_asm", "test_asm", "{64E6F592-E350-4A39-BE54-4FAB2CF14197}"
 	ProjectSection(SolutionItems) = preProject
@@ -26,26 +26,28 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dorman", "dorman", "{B04B9E
 		test_asm\dorman\report.i65 = test_asm\dorman\report.i65
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "test_cpu_1", "tests\test_cpu_1\test_cpu_1.csproj", "{56068E1B-C29A-4863-9C98-F39103542929}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "test_cpu_1", "tests\test_cpu_1\test_cpu_1.csproj", "{56068E1B-C29A-4863-9C98-F39103542929}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "test_cpu_dorman", "test_cpu_dorman\test_cpu_dorman.csproj", "{EBAAC8DD-4B6C-4F5D-83F4-2B852C9E0F80}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "test_cpu_dorman", "test_cpu_dorman\test_cpu_dorman.csproj", "{EBAAC8DD-4B6C-4F5D-83F4-2B852C9E0F80}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElkHWLib", "elkhwlib\ElkHWLib.csproj", "{69ED037E-72C2-45EE-80BE-DBFDA075D3A5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ElkHWLib", "elkhwlib\ElkHWLib.csproj", "{69ED037E-72C2-45EE-80BE-DBFDA075D3A5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElkCSharp", "ElkCSharp\ElkCSharp.csproj", "{D83F0305-0E75-48DE-AFE3-0CF2B369DE7A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ElkCSharp", "ElkCSharp\ElkCSharp.csproj", "{D83F0305-0E75-48DE-AFE3-0CF2B369DE7A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UEFLib", "UEFLib\UEFLib.csproj", "{EC1BF40C-BE83-48AB-8610-041CBD9C9532}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UEFLib", "UEFLib\UEFLib.csproj", "{EC1BF40C-BE83-48AB-8610-041CBD9C9532}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{B4569CBD-D7AB-4887-8F8A-71CBC5F52F18}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UEFCatalogue", "UEFCatalogue\UEFCatalogue.csproj", "{5B64B4D3-31E6-4CD9-91DE-0EAB8176884E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UEFCatalogue", "UEFCatalogue\UEFCatalogue.csproj", "{5B64B4D3-31E6-4CD9-91DE-0EAB8176884E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{66C683EA-2D20-4AA4-B293-E0151824DE23}"
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WPFStuff", "WPFStuff\WPFStuff.csproj", "{2370448B-8ECD-4980-BED9-5DEDA20E10B3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WPFStuff", "WPFStuff\WPFStuff.csproj", "{2370448B-8ECD-4980-BED9-5DEDA20E10B3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utility", "Utility\Utility.csproj", "{121DB17F-8438-45C4-A58C-1E859140E059}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -85,6 +87,10 @@ Global
 		{2370448B-8ECD-4980-BED9-5DEDA20E10B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2370448B-8ECD-4980-BED9-5DEDA20E10B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2370448B-8ECD-4980-BED9-5DEDA20E10B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{121DB17F-8438-45C4-A58C-1E859140E059}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{121DB17F-8438-45C4-A58C-1E859140E059}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{121DB17F-8438-45C4-A58C-1E859140E059}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{121DB17F-8438-45C4-A58C-1E859140E059}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
