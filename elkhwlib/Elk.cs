@@ -217,7 +217,6 @@ namespace ElkHWLib
                         _debugStream = null;
                     }
 
-                    ULA.Dispose();
                 }
 
                 // TODO: free unmanaged resources (unmanaged objects) and override finalizer

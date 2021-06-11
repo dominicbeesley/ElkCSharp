@@ -5,7 +5,7 @@ using UEFLib;
 
 namespace ElkHWLib
 {
-    public unsafe class ULA : IDisposable
+    public unsafe class ULA
     {
 
         public const byte ISR_MASK_MASTER = 0x01;
@@ -49,16 +49,14 @@ namespace ElkHWLib
 
         public ushort CurModeBytesPerCharRow { get; private set; }
 
-        public Bitmap ScreenBitmap { get; }
+        public byte [] ScreenData { get; init; }       
+        public int screenDataIX { get; private set; }
 
         public bool OddNotEven { get; private set; }
 
         public EventHandler IRQChange;
 
 
-        BitmapData bitMapData;
-
-        byte* curbmpdata;
         private bool disposedValue;
 
         public bool ROM_External { get; private set; }
@@ -76,22 +74,7 @@ namespace ElkHWLib
 
         public ULA()
         {
-            ScreenBitmap = new Bitmap(640, 256, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
-
-            ColorPalette pal = ScreenBitmap.Palette;
-            // this is the _physical_ palette, the logical to physical mapping is done in the rasterizer
-            for (int i = 0; i < 256; i++)
-            {
-                pal.Entries[i] = Color.FromArgb(
-                    ((i & 1) != 0) ? 255 : 0,
-                    ((i & 2) != 0) ? 255 : 0,
-                    ((i & 4) != 0) ? 255 : 0
-                    );
-            }
-            ScreenBitmap.Palette = pal;
-
-            bitMapData = ScreenBitmap.LockBits(new Rectangle(Point.Empty, ScreenBitmap.Size), ImageLockMode.WriteOnly, PixelFormat.Format8bppIndexed);
-            curbmpdata = (byte*)bitMapData.Scan0;
+            ScreenData = new byte[640 * 256];
 
             Reset(true);
         }
@@ -121,6 +104,7 @@ namespace ElkHWLib
 
             SetMode(0);
             CurAddr = 0;
+            screenDataIX = 0;
         }
 
         protected void UpdateInterrupts()
@@ -262,7 +246,7 @@ namespace ElkHWLib
 
                         for (int i = 0; i < 8; i++)
                         {
-                            curbmpdata[ScreenX + i] = ((vduval & 0x80) != 0) ? (byte)7 : (byte)0;
+                            ScreenData[screenDataIX++] = ((vduval & 0x80) != 0) ? (byte)7 : (byte)0;
                             vduval = (byte)(vduval << 1);
                         }
                         CurAddr += 8;
@@ -290,8 +274,8 @@ namespace ElkHWLib
                                     c = 0;
                                     break;
                             }
-                            curbmpdata[ScreenX + i * 2] = c;
-                            curbmpdata[ScreenX + i * 2 + 1] = c;
+                            ScreenData[screenDataIX++] = c;
+                            ScreenData[screenDataIX++] = c;
                             vduval = (byte)(vduval << 1);
                         }
                         CurAddr += 8;
@@ -310,10 +294,10 @@ namespace ElkHWLib
                                 ((vduval & 0x02) >> 1)
                                 );
 
-                            curbmpdata[ScreenX + i * 4] = c;
-                            curbmpdata[ScreenX + i * 4 + 1] = c;
-                            curbmpdata[ScreenX + i * 4 + 2] = c;
-                            curbmpdata[ScreenX + i * 4 + 3] = c;
+                            ScreenData[screenDataIX++] = c;
+                            ScreenData[screenDataIX++] = c;
+                            ScreenData[screenDataIX++] = c;
+                            ScreenData[screenDataIX++] = c;
                             vduval = (byte)(vduval << 1);
                         }
                         CurAddr += 8;
@@ -344,10 +328,10 @@ namespace ElkHWLib
                                     c = 0;
                                     break;
                             }
-                            curbmpdata[ScreenX + i * 4] = c;
-                            curbmpdata[ScreenX + i * 4 + 1] = c;
-                            curbmpdata[ScreenX + i * 4 + 2] = c;
-                            curbmpdata[ScreenX + i * 4 + 3] = c;
+                            ScreenData[screenDataIX++] = c;
+                            ScreenData[screenDataIX++] = c;
+                            ScreenData[screenDataIX++] = c;
+                            ScreenData[screenDataIX++] = c;
                             vduval = (byte)(vduval << 1);
                         }
                     }
@@ -362,8 +346,8 @@ namespace ElkHWLib
                         for (int i = 0; i < 4; i++)
                         {
                             byte c = ((vduval & 0x80) != 0) ? (byte)7 : (byte)0;
-                            curbmpdata[ScreenX + i * 2] = c;
-                            curbmpdata[ScreenX + i * 2 + 1] = c;
+                            ScreenData[screenDataIX++] = c;
+                            ScreenData[screenDataIX++] = c;
                             vduval = (byte)(vduval << 1);
                         }
                     }
@@ -373,7 +357,7 @@ namespace ElkHWLib
                 {
                     for (int i = 0; i < 8; i++)
                     {
-                        curbmpdata[ScreenX + i] = 0;
+                        ScreenData[screenDataIX++] = 0;
                     }
                 }
             } 
@@ -392,11 +376,11 @@ namespace ElkHWLib
                     _isr |= ISR_MASK_DISPEND;
                     UpdateInterrupts();
                 }
-                if (ScreenY > ((OddNotEven) ? 312 : 313))
+                if (ScreenY >= ((OddNotEven) ? 312 : 313))
                 {
                     ScreenY = 0;
                     OddNotEven = !OddNotEven;
-                    curbmpdata = (byte*)bitMapData.Scan0;
+                    screenDataIX = 0;
                     CurCharRowAddr = CurAddr = ScreenStart;
                     CharScanLine = 0;
                 }
@@ -405,7 +389,6 @@ namespace ElkHWLib
 
                     // next scan line
                     CharScanLine++;
-                    curbmpdata += bitMapData.Stride;
                     if (CharScanLine >= CurModeCharScanLines)
                     {
                         //next char row
@@ -470,34 +453,6 @@ namespace ElkHWLib
 
             return ret;
         }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    ScreenBitmap?.Dispose();
-                }
-
-                // TODO: free unmanaged resources (unmanaged objects) and override finalizer
-                // TODO: set large fields to null
-                disposedValue = true;
-            }
-        }
-
-        // // TODO: override finalizer only if 'Dispose(bool disposing)' has code to free unmanaged resources
-        // ~ULA()
-        // {
-        //     // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-        //     Dispose(disposing: false);
-        // }
-
-        public void Dispose()
-        {
-            // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
-            Dispose(disposing: true);
-            GC.SuppressFinalize(this);
-        }
+       
     }
 }

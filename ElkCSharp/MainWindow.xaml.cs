@@ -18,6 +18,7 @@ using cpulib_65xx;
 using System.IO;
 using ElkCSharp.ViewModel;
 using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace ElkCSharp
 {
@@ -89,52 +90,74 @@ namespace ElkCSharp
 
                 var x = new UEFLib.UEFChunkReader(@"D:\downloads\Firetrack_E.gz.uef", true);
 
-                using (var bmpCopy = new Bitmap(640, 512))
+                using (var bmpCopy = new Bitmap(640, 256, System.Drawing.Imaging.PixelFormat.Format8bppIndexed))
                 {
-                    using (var grCopy = Graphics.FromImage(bmpCopy))
+                    ColorPalette pal = bmpCopy.Palette;
+                    // this is the _physical_ palette, the logical to physical mapping is done in the rasterizer
+                    for (int i = 0; i < 256; i++)
                     {
-                        while (true)
+                        pal.Entries[i] = System.Drawing.Color.FromArgb(
+                            ((i & 1) != 0) ? 255 : 0,
+                            ((i & 2) != 0) ? 255 : 0,
+                            ((i & 4) != 0) ? 255 : 0
+                            );
+                    }
+                    bmpCopy.Palette = pal;
+
+
+                    while (true)
+                    {
+
+                        lock (Elk)
+                        {
+                            Elk.DoTicks(40000);
+                        }
+
+                        var bmpdData = bmpCopy.LockBits(new System.Drawing.Rectangle(0,0,640,256), ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
+                        try
+                        {
+                            System.Runtime.InteropServices.Marshal.Copy(Elk.ULA.ScreenData, 0, bmpdData.Scan0, 640 * 256);
+                        } finally
+                        {
+                            bmpCopy.UnlockBits(bmpdData);
+                        }
+
+                        Dispatcher.Invoke(() =>
                         {
 
-                            lock (Elk)
+                            ViewModel.UpdateScreen(bmpCopy);
+                            ViewModel.CapsLockLED.Lit = Elk.ULA.CapsLock;
+                            ViewModel.MotorLED.Lit = Elk.ULA.Motor;
+                            ViewModel.TapeToneBiLED.Red = (byte)(Elk.ULA.LoToneDetect >> 8);
+                            ViewModel.TapeToneBiLED.Green = (byte)(Elk.ULA.HiToneDetect >> 8);
+
+                            framectr++;
+
+                            if (KeysChanged)
                             {
-                                Elk.DoTicks(40000);
+                                Elk.UpdateKeys(KeyMatrix);
+                                KeysChanged = false;
                             }
 
-                            grCopy.DrawImage(Elk.ULA.ScreenBitmap, System.Drawing.Point.Empty);
-
-                            Dispatcher.Invoke(() =>
+                            if (framectr == 100)
                             {
-
-                                ViewModel.UpdateScreen(bmpCopy);
-                                ViewModel.CapsLockLED.Lit = Elk.ULA.CapsLock;
-                                ViewModel.MotorLED.Lit = Elk.ULA.Motor;
-                                ViewModel.TapeToneBiLED.Red = (byte)(Elk.ULA.LoToneDetect >> 8);
-                                ViewModel.TapeToneBiLED.Green = (byte)(Elk.ULA.HiToneDetect >> 8);
-
-                                framectr++;
-
-                                if (KeysChanged)
-                                {
-                                    Elk.UpdateKeys(KeyMatrix);
-                                    KeysChanged = false;
-                                }
-
-                                if (framectr == 100)
-                                {
                                     //TEST:
                                     byte[] testprog = File.ReadAllBytes(@"d:\downloads\HOGELKTI");
-                                    testprog.CopyTo(Elk.RAM, 0xE00);
-                                    Elk.ULA.SyncRAM(Elk.RAM);
-                                }
+                                testprog.CopyTo(Elk.RAM, 0xE00);
+                                Elk.ULA.SyncRAM(Elk.RAM);
+                            }
 
-                            });
-                        }
+                        });
                     }
                 }
             }
+            catch (TaskCanceledException)
+            {
+                return;
+            }
             catch (Exception ex)
             {
+
                 Dispatcher.Invoke(() =>
                 {
                     MessageBox.Show(ex.ToString());
