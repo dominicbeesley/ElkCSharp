@@ -8,6 +8,8 @@ namespace ElkHWLib
     public unsafe class ULA
     {
 
+        public byte [] palette;
+
         public const byte ISR_MASK_MASTER = 0x01;
         public const byte ISR_MASK_RESET = 0x02;
         public const byte ISR_MASK_DISPEND = 0x04;
@@ -75,8 +77,10 @@ namespace ElkHWLib
         public ULA()
         {
             ScreenData = new byte[640 * 256];
+            palette = new byte[16];
 
             Reset(true);
+
         }
 
         private void SetMode(int mode)
@@ -105,6 +109,12 @@ namespace ElkHWLib
             SetMode(0);
             CurAddr = 0;
             screenDataIX = 0;
+
+            //reset palette - not sure what the ULA actually gets reset to!?
+            for (int i = 0; i < 15; i++)
+            {
+                palette[i] = (byte)i;                     
+            }
         }
 
         protected void UpdateInterrupts()
@@ -213,6 +223,62 @@ namespace ElkHWLib
                     Motor = (val & 0x40) != 0;
                     break;
 
+                case 8:
+                    val = (byte)~val;
+                    palette[0] = (byte)((palette[0] & 0x3) | ((val & 0x10) >> 2));
+                    palette[2] = (byte)((palette[2] & 0x3) | ((val & 0x20) >> 3));
+                    palette[8] = (byte)((palette[8] & 0x1) | ((val & 0x40) >> 4) | ((val &0x04) >> 1));
+                    palette[10] = (byte)((palette[10] & 0x1) | ((val & 0x80) >> 5) | ((val & 0x08) >> 2));
+                    break;
+                case 9:
+                    val = (byte)~val;
+                    palette[0] = (byte)((palette[0] & 0x4) | ((val & 0x10) >> 3) | (val & 0x01));
+                    palette[2] = (byte)((palette[2] & 0x4) | ((val & 0x20) >> 4) | ((val & 0x02)>>1));
+                    palette[8] = (byte)((palette[8] & 0x6) | ((val & 0x04) >> 2));
+                    palette[10] = (byte)((palette[10] & 0x6) | ((val & 0x08) >> 3));
+                    break;
+                case 10:
+                    val = (byte)~val;
+                    palette[4] = (byte)((palette[4] & 0x3) | ((val & 0x10) >> 2));
+                    palette[6] = (byte)((palette[6] & 0x3) | ((val & 0x20) >> 3));
+                    palette[12] = (byte)((palette[12] & 0x1) | ((val & 0x40) >> 4) | ((val & 0x04) >> 1));
+                    palette[14] = (byte)((palette[14] & 0x1) | ((val & 0x80) >> 5) | ((val & 0x08) >> 2));
+                    break;
+                case 11:
+                    val = (byte)~val;
+                    palette[4] = (byte)((palette[4] & 0x4) | ((val & 0x10) >> 3) | (val & 0x01));
+                    palette[6] = (byte)((palette[6] & 0x4) | ((val & 0x20) >> 4) | ((val & 0x02) >> 1));
+                    palette[12] = (byte)((palette[12] & 0x6) | ((val & 0x04) >> 2));
+                    palette[14] = (byte)((palette[14] & 0x6) | ((val & 0x08) >> 3));
+                    break;
+                case 12:
+                    val = (byte)~val;
+                    palette[5] = (byte)((palette[5] & 0x3) | ((val & 0x10) >> 2));
+                    palette[7] = (byte)((palette[7] & 0x3) | ((val & 0x20) >> 3));
+                    palette[13] = (byte)((palette[13] & 0x1) | ((val & 0x40) >> 4) | ((val & 0x04) >> 1));
+                    palette[15] = (byte)((palette[15] & 0x1) | ((val & 0x80) >> 5) | ((val & 0x08) >> 2));
+                    break;
+                case 13:
+                    val = (byte)~val;
+                    palette[5] = (byte)((palette[5] & 0x4) | ((val & 0x10) >> 3) | (val & 0x01));
+                    palette[7] = (byte)((palette[7] & 0x4) | ((val & 0x20) >> 4) | ((val & 0x02) >> 1));
+                    palette[13] = (byte)((palette[13] & 0x6) | ((val & 0x04) >> 2));
+                    palette[15] = (byte)((palette[15] & 0x6) | ((val & 0x08) >> 3));
+                    break;
+                case 14:
+                    val = (byte)~val;
+                    palette[1] = (byte)((palette[1] & 0x3) | ((val & 0x10) >> 2));
+                    palette[3] = (byte)((palette[3] & 0x3) | ((val & 0x20) >> 3));
+                    palette[9] = (byte)((palette[9] & 0x1) | ((val & 0x40) >> 4) | ((val & 0x04) >> 1));
+                    palette[11] = (byte)((palette[11] & 0x1) | ((val & 0x80) >> 5) | ((val & 0x08) >> 2));
+                    break;
+                case 15:
+                    val = (byte)~val;
+                    palette[1] = (byte)((palette[1] & 0x4) | ((val & 0x10) >> 3) | (val & 0x01));
+                    palette[3] = (byte)((palette[3] & 0x4) | ((val & 0x20) >> 4) | ((val & 0x02) >> 1));
+                    palette[9] = (byte)((palette[9] & 0x6) | ((val & 0x04) >> 2));
+                    palette[11] = (byte)((palette[11] & 0x6) | ((val & 0x08) >> 3));
+                    break;
             }
         }
 
@@ -246,7 +312,7 @@ namespace ElkHWLib
 
                         for (int i = 0; i < 8; i++)
                         {
-                            ScreenData[screenDataIX++] = ((vduval & 0x80) != 0) ? (byte)7 : (byte)0;
+                            ScreenData[screenDataIX++] = ((vduval & 0x80) != 0) ? palette[8] : palette[0];
                             vduval = (byte)(vduval << 1);
                         }
                         CurAddr += 8;
@@ -262,16 +328,16 @@ namespace ElkHWLib
                             switch(vduval & 0x88)
                             {
                                 case 0x88:
-                                    c = 0x7;
+                                    c = palette[10];
                                     break;
                                 case 0x80:
-                                    c = 0x3;
+                                    c = palette[8];
                                     break;
                                 case 0x08:
-                                    c = 0x1;
+                                    c = palette[2];
                                     break;
                                 default:
-                                    c = 0;
+                                    c = palette[0];
                                     break;
                             }
                             ScreenData[screenDataIX++] = c;
@@ -287,12 +353,12 @@ namespace ElkHWLib
 
                         for (int i = 0; i < 2; i++)
                         {
-                            byte c = (byte)(
+                            byte c = palette[
                                 ((vduval & 0x80) >> 4) |
                                 ((vduval & 0x20) >> 3) |
                                 ((vduval & 0x08) >> 2) |
                                 ((vduval & 0x02) >> 1)
-                                );
+                                ];
 
                             ScreenData[screenDataIX++] = c;
                             ScreenData[screenDataIX++] = c;
@@ -316,16 +382,16 @@ namespace ElkHWLib
                             switch (vduval & 0x88)
                             {
                                 case 0x88:
-                                    c = 0x7;
+                                    c = palette[10];
                                     break;
                                 case 0x80:
-                                    c = 0x3;
+                                    c = palette[8];
                                     break;
                                 case 0x08:
-                                    c = 0x1;
+                                    c = palette[2];
                                     break;
                                 default:
-                                    c = 0;
+                                    c = palette[0];
                                     break;
                             }
                             ScreenData[screenDataIX++] = c;
@@ -345,7 +411,7 @@ namespace ElkHWLib
 
                         for (int i = 0; i < 4; i++)
                         {
-                            byte c = ((vduval & 0x80) != 0) ? (byte)7 : (byte)0;
+                            byte c = ((vduval & 0x80) != 0) ? palette[8] : palette[0];
                             ScreenData[screenDataIX++] = c;
                             ScreenData[screenDataIX++] = c;
                             vduval = (byte)(vduval << 1);
