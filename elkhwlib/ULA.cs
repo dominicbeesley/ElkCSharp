@@ -302,12 +302,10 @@ namespace ElkHWLib
             {
                 if (CharScanLine < 8)
                 {
-                    if (CurAddr >= 0x8000)
-                        CurAddr = (ushort)(CurAddr - CurModeModeLen);
 
                     if (Mode == 0 || Mode == 3)
                     {
-                        vduval = _ram[CurAddr];
+                        vduval = _ram[CurAddr & 0x7FFF];
                         ret = false;
 
                         for (int i = 0; i < 8; i++)
@@ -319,7 +317,7 @@ namespace ElkHWLib
                     }
                     else if (Mode == 1)
                     {
-                        vduval = _ram[CurAddr];
+                        vduval = _ram[CurAddr & 0x7FFF];
                         ret = false;
 
                         for (int i = 0; i < 4; i++)
@@ -348,7 +346,7 @@ namespace ElkHWLib
                     }
                     else if (Mode == 2)
                     {
-                        vduval = _ram[CurAddr];
+                        vduval = _ram[CurAddr & 0x7FFF];
                         ret = false;
 
                         for (int i = 0; i < 2; i++)
@@ -372,7 +370,7 @@ namespace ElkHWLib
                     {
                         if ((ScreenX & 8) == 0)
                         {
-                            vduval = _ram[CurAddr];
+                            vduval = _ram[CurAddr & 0x7FFF];
                             CurAddr += 8;
                         }
 
@@ -405,7 +403,7 @@ namespace ElkHWLib
                     {
                         if ((ScreenX & 8) == 0)
                         {
-                            vduval = _ram[CurAddr];
+                            vduval = _ram[CurAddr & 0x7FFF];
                             CurAddr += 8;
                         }
 
@@ -447,7 +445,10 @@ namespace ElkHWLib
                     ScreenY = 0;
                     OddNotEven = !OddNotEven;
                     screenDataIX = 0;
-                    CurCharRowAddr = CurAddr = ScreenStart;
+                    CurCharRowAddr = ScreenStart;
+                    if (CurCharRowAddr >= 0x8000)
+                        CurCharRowAddr = (ushort)(CurCharRowAddr - CurModeModeLen);
+                    CurAddr = CurCharRowAddr;
                     CharScanLine = 0;
                 }
                 else
@@ -461,6 +462,9 @@ namespace ElkHWLib
                         CharScanLine = 0;
 
                         CurCharRowAddr += CurModeBytesPerCharRow;
+                        if (CurCharRowAddr >= 0x8000)
+                            CurCharRowAddr = (ushort)(CurCharRowAddr - CurModeModeLen);
+
                         CurAddr = CurCharRowAddr;
                     }
                     else
