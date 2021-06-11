@@ -71,6 +71,8 @@ namespace ElkHWLib
         public bool Motor { get; private set; }
         public UEFTapeStreamer UEF { get; set; }
         
+        public ushort HiToneDetect { get; private set; }
+        public ushort LoToneDetect { get; private set; }
 
         public ULA()
         {
@@ -421,10 +423,17 @@ namespace ElkHWLib
 
             if (uefTicks-- < 0)
             {
+                HiToneDetect -= (ushort)(HiToneDetect >> 8);
+                LoToneDetect -= (ushort)(LoToneDetect >> 8);
                 uefTicks = 1666;
                 if (UEF != null && _cas_mode == CassetteMode.Input && Motor)
                 {
                     UEFTapeBit bit = UEF.Tick();
+
+                    if (bit == UEFTapeBit.LowTone)
+                        LoToneDetect += 255;
+                    else if (bit == UEFTapeBit.HighTone)
+                        HiToneDetect += 255;
 
                     //read a bit from the cassette
                     if (cas_bits_left > 0)
@@ -456,7 +465,7 @@ namespace ElkHWLib
                             }
                         }
                     }
-                }
+                } 
             }
 
             return ret;

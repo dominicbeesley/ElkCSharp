@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="ElkCSharp.ucLED"
+﻿<UserControl x:Class="ElkCSharp.ucBiLED"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -9,10 +9,10 @@
              Background="Transparent"
              xmlns:viewmodel="clr-namespace:ElkCSharp.ViewModel"
              xmlns:sampledata="clr-namespace:ElkCSharp.ViewModel.Sample"
-             d:DataContext="{ x:Static sampledata:DesignTimeSampleData.LED }"
+             d:DataContext="{ x:Static sampledata:DesignTimeSampleData.BiLED }"
              >
     <UserControl.Resources>
-        <viewmodel:Bool2Opacity_ValueConverter x:Key="bool2opacity" />
+        <viewmodel:HiLoToGreenRed_ValueConverter x:Key="hilo2rg" />
     </UserControl.Resources>
     <Grid Width="120" Height="24">
         <Grid.ColumnDefinitions>
@@ -30,12 +30,13 @@
                     BorderThickness="1"
                     >
             <Rectangle 
-                DataContext="{Binding Path=Lit, NotifyOnTargetUpdated=True}" 
-                Fill="{StaticResource Retro_Brush_LED}" 
+                DataContext="{Binding Path=BiLEDValue, NotifyOnTargetUpdated=True}" 
+                Fill="{Binding Converter={ StaticResource hilo2rg }}"
                 Margin="2,2,2,2" 
                 RadiusX="1" 
-                RadiusY="1" 
-                Opacity="{Binding Converter={ StaticResource bool2opacity}}">
+                RadiusY="1"
+                Opacity="1"
+                >
             </Rectangle>
         </Border>
     </Grid>

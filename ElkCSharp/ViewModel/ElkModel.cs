@@ -20,6 +20,7 @@ namespace ElkCSharp.ViewModel
 
         LEDModel _capsLockLED = new LEDModel() { Name = "Caps Lock" };
         LEDModel _motorLED = new LEDModel() { Name = "Motor" };
+        BiLEDModel _tapeToneBiLED = new BiLEDModel() { Name = "Tape Tone" };
 
         public ElkModel(Elk elk)
         {
@@ -52,6 +53,7 @@ namespace ElkCSharp.ViewModel
 
         public LEDModel CapsLockLED { get { return _capsLockLED; } }
         public LEDModel MotorLED { get { return _motorLED; } }
+        public BiLEDModel TapeToneBiLED { get { return _tapeToneBiLED; } }
 
         internal void UpdateScreen(Bitmap screenBmp)
         {

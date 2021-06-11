@@ -13,4 +13,17 @@
     <ProjectReference Include="..\WPFStuff\WPFStuff.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="ucBiLED.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="ucBiLED.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+
 </Project>

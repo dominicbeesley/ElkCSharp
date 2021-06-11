@@ -21,6 +21,7 @@
         <StackPanel DockPanel.Dock="Bottom" FlowDirection="LeftToRight" Orientation="Horizontal">
             <local:ucLED DataContext="{Binding CapsLockLED }" />
             <local:ucLED DataContext="{Binding MotorLED }" />
+            <local:ucBiLED DataContext="{Binding TapeToneBiLED }" />
         </StackPanel>
         <Image 
             x:Name="ScreenImg" 

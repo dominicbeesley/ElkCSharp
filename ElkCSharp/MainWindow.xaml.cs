@@ -17,7 +17,7 @@ using ElkHWLib;
 using cpulib_65xx;
 using System.IO;
 using ElkCSharp.ViewModel;
-
+using System.Drawing;
 
 namespace ElkCSharp
 {
@@ -89,39 +89,51 @@ namespace ElkCSharp
 
                 var x = new UEFLib.UEFChunkReader(@"D:\downloads\Firetrack_E.gz.uef", true);
 
-                
-                while (true)
+                using (var bmpCopy = new Bitmap(640, 512))
                 {
-                    lock (Elk)
+                    using (var grCopy = Graphics.FromImage(bmpCopy))
                     {
-                        Elk.DoTicks(40000);
+                        while (true)
+                        {
+
+                            lock (Elk)
+                            {
+                                Elk.DoTicks(40000);
+                            }
+
+                            grCopy.DrawImage(Elk.ULA.ScreenBitmap, System.Drawing.Point.Empty);
+
+                            Dispatcher.Invoke(() =>
+                            {
+
+                                ViewModel.UpdateScreen(bmpCopy);
+                                ViewModel.CapsLockLED.Lit = Elk.ULA.CapsLock;
+                                ViewModel.MotorLED.Lit = Elk.ULA.Motor;
+                                ViewModel.TapeToneBiLED.Red = (byte)(Elk.ULA.LoToneDetect >> 8);
+                                ViewModel.TapeToneBiLED.Green = (byte)(Elk.ULA.HiToneDetect >> 8);
+
+                                framectr++;
+
+                                if (KeysChanged)
+                                {
+                                    Elk.UpdateKeys(KeyMatrix);
+                                    KeysChanged = false;
+                                }
+
+                                if (framectr == 100)
+                                {
+                                    //TEST:
+                                    byte[] testprog = File.ReadAllBytes(@"d:\downloads\HOGELKTI");
+                                    testprog.CopyTo(Elk.RAM, 0xE00);
+                                    Elk.ULA.SyncRAM(Elk.RAM);
+                                }
+
+                            });
+                        }
                     }
-                    Dispatcher.Invoke(() =>
-                    {
-
-                        ViewModel.UpdateScreen(Elk.ULA.ScreenBitmap);
-                        ViewModel.CapsLockLED.Lit = Elk.ULA.CapsLock;
-                        ViewModel.MotorLED.Lit = Elk.ULA.Motor;
-
-                        framectr++;
-
-                        if (KeysChanged)
-                        {
-                            Elk.UpdateKeys(KeyMatrix);
-                            KeysChanged = false;
-                        }
-
-                        if (framectr == 100)
-                        {
-                            //TEST:
-                            byte[] testprog = File.ReadAllBytes(@"d:\downloads\HOGELKTI");
-                            testprog.CopyTo(Elk.RAM, 0xE00);
-                            Elk.ULA.SyncRAM(Elk.RAM);
-                        }
-
-                    });
                 }
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 Dispatcher.Invoke(() =>
                 {
@@ -134,7 +146,7 @@ namespace ElkCSharp
         {
             if (e.Key == Key.F12)
             {
-                lock(Elk)
+                lock (Elk)
                 {
                     Elk.Reset(false);
                 }
