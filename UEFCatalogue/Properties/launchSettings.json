@@ -2,7 +2,7 @@
   "profiles": {
     "UEFCatalogue": {
       "commandName": "Project",
-      "commandLineArgs": "d:\\downloads\\Snapper_E.uef"
+      "commandLineArgs": "d:\\downloads\\test.uef"
     }
   }
 }

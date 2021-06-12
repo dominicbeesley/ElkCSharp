@@ -78,7 +78,7 @@ namespace ElkCSharp
             Elk = new Elk();
             //elk.DebugCycles = true;
             //elk.Debug = true;
-            Elk.ULA.UEF = new UEFLib.UEFTapeStreamer(@"d:\downloads\Firetrack_E.gz.uef", true);
+            Elk.ULA.UEF = new UEFLib.UEFTapeStreamer(@"d:\downloads\test.uef", true);
 
             ViewModel = new ElkModel(Elk);
 
@@ -105,9 +105,6 @@ namespace ElkCSharp
         {
             try
             {
-
-                var x = new UEFLib.UEFChunkReader(@"D:\downloads\Firetrack_E.gz.uef", true);
-
                 ColorPalette pal = bmpCopy.Palette;
                 // this is the _physical_ palette, the logical to physical mapping is done in the rasterizer
                 for (int i = 0; i < 256; i++)
