@@ -15,6 +15,7 @@ namespace ElkHWLib
         private byte[] _mos;
         private byte[] _rom_basic;
         private byte[] _ram;
+        private byte[][] _roms;
 
         public byte [] RAM { get { return _ram; } }
         public ULA ULA { get; }
@@ -56,6 +57,12 @@ namespace ElkHWLib
             _mos = LoadRom(0x4000, "d:\\downloads\\ELK100");
             _rom_basic = LoadRom(0x4000, "d:\\downloads\\B_BASIC200");
             _ram = new byte[0x8000];
+            _roms = new byte[16][];
+            _roms[0] = LoadRom(0x4000, "d:\\downloads\\palette-2015-09-19.rom");
+            for (int i = 1; i<16; i++)
+            {
+                _roms[i] = new byte[0x4000];
+            }
 
         }
 
@@ -111,7 +118,8 @@ namespace ElkHWLib
                     }
                 } else
                 {
-                    dat = CPU.DAT;
+
+                    dat = _roms[ULA.ROM_ExtBank][addr & 0x3FFF];
                 }
             } 
             else
