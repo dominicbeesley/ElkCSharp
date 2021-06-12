@@ -25,6 +25,7 @@ namespace UEFLib
 
         public UEFChunkReader(string filename, bool wrap)
         {
+            Wrap = wrap;
             Stream stream = new FileStream(filename, FileMode.Open, FileAccess.Read);
             try
             {
