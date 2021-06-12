@@ -305,7 +305,7 @@ namespace ElkHWLib
 
                     if (Mode == 0 || Mode == 3)
                     {
-                        vduval = _ram[CurAddr & 0x7FFF];
+                        vduval = getvidram();
                         ret = false;
 
                         for (int i = 0; i < 8; i++)
@@ -317,7 +317,7 @@ namespace ElkHWLib
                     }
                     else if (Mode == 1)
                     {
-                        vduval = _ram[CurAddr & 0x7FFF];
+                        vduval = getvidram();
                         ret = false;
 
                         for (int i = 0; i < 4; i++)
@@ -346,7 +346,7 @@ namespace ElkHWLib
                     }
                     else if (Mode == 2)
                     {
-                        vduval = _ram[CurAddr & 0x7FFF];
+                        vduval = getvidram();
                         ret = false;
 
                         for (int i = 0; i < 2; i++)
@@ -370,7 +370,7 @@ namespace ElkHWLib
                     {
                         if ((ScreenX & 8) == 0)
                         {
-                            vduval = _ram[CurAddr & 0x7FFF];
+                            vduval = getvidram();
                             CurAddr += 8;
                         }
 
@@ -403,7 +403,7 @@ namespace ElkHWLib
                     {
                         if ((ScreenX & 8) == 0)
                         {
-                            vduval = _ram[CurAddr & 0x7FFF];
+                            vduval = getvidram();
                             CurAddr += 8;
                         }
 
@@ -524,5 +524,13 @@ namespace ElkHWLib
             return ret;
         }
        
+
+        byte getvidram()
+        {
+            ushort tempaddr = CurAddr;
+            if (tempaddr >= 0x8000)
+                tempaddr -= CurModeModeLen;
+            return _ram[tempaddr];
+        }
     }
 }
