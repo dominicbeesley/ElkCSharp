@@ -170,8 +170,8 @@ namespace ElkCSharp
                             }
                             ViewModel.CapsLockLED.Lit = Elk.ULA.CapsLock;
                             ViewModel.MotorLED.Lit = Elk.ULA.Motor;
-                            ViewModel.TapeToneBiLED.Red = (byte)(Elk.ULA.LoToneDetect >> 8);
-                            ViewModel.TapeToneBiLED.Green = (byte)(Elk.ULA.HiToneDetect >> 8);
+                            ViewModel.TapeToneBiLED.Red = Elk.ULA.LoToneDetect>8192?(byte)255:(byte)0;
+                            ViewModel.TapeToneBiLED.Green = Elk.ULA.HiToneDetect > 8192 ? (byte)255 : (byte)0;
 
                             framectr++;
 
