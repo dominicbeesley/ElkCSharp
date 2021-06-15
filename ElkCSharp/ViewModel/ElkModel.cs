@@ -56,6 +56,9 @@ namespace ElkCSharp.ViewModel
         public BiLEDModel TapeToneBiLED { get { return _tapeToneBiLED; } }
 
         private bool _goFast;
+        /// <summary>
+        /// Run emulation flat out
+        /// </summary>
         public bool GoFast { 
             get { return _goFast; } 
             set
@@ -64,6 +67,21 @@ namespace ElkCSharp.ViewModel
                 RaisePropertyChangedEvent();
             }
         }
+
+        private bool _goFastTape;
+        public bool GoFastTape
+        {
+            get { return _goFastTape; }
+            set
+            {
+                if (_goFastTape != value)
+                {
+                    _goFastTape = value;
+                    RaisePropertyChangedEvent();
+                }
+            }
+        }
+
         internal void UpdateScreen(Bitmap screenBmp)
         {
             ScreenSource = screenBmp.ToBitmapSource();

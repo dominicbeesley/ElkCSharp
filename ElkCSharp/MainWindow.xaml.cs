@@ -124,9 +124,11 @@ namespace ElkCSharp
                 while (!cancelToken.IsCancellationRequested)
                 {
 
+                    bool fast = ViewModel.GoFast || (Elk.ULA.Motor && ViewModel.GoFastTape);
+
                     long mil = sw.ElapsedMilliseconds;
                     long delay = mymillis - mil;
-                    if (delay > 0 & delay < 10000 && !ViewModel.GoFast)
+                    if (delay > 0 & delay < 10000 && !fast)
                     {
                         Thread.Sleep((int)(delay));
                     }
@@ -142,7 +144,7 @@ namespace ElkCSharp
                         mymillis += 20;
                     }
 
-                    if (!ViewModel.GoFast || mil - prevmillis > 15)
+                    if (!fast || mil - prevmillis > 15)
                     {
 
                         lock (bmpCopy)

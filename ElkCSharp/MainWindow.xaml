@@ -18,6 +18,7 @@
                 </MenuItem>
                 <MenuItem Header="_Speed">
                     <MenuItem Header="Fast" IsCheckable="True" IsChecked="{Binding GoFast, Mode=TwoWay}" />
+                    <MenuItem Header="Fast tape" IsCheckable="True" IsChecked="{Binding GoFastTape, Mode=TwoWay}" />
                 </MenuItem>
             </Menu>
         </StackPanel>
