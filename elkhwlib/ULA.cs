@@ -8,7 +8,20 @@ namespace ElkHWLib
     public unsafe class ULA
     {
 
-        public byte [] palette;
+        /// <summary>
+        /// Logical to physical colour translation, this indexes each of the 16 logical colours to
+        /// a physical 3 bit colour (in BGR order)
+        /// 
+        /// <list>
+        ///     <item>In 2 colour modes indexes 0, 8 are used</item>
+        ///     <item>In 4 colour modes indexes 0, 2, 8, 10 are used</item>
+        ///     <item>In 16 colour modes all indexes map naturally</item>
+        /// </list>
+        /// 
+        /// 
+        /// 
+        /// </summary>
+        public byte[] Palette { get; init; }
 
         public const byte ISR_MASK_MASTER = 0x01;
         public const byte ISR_MASK_RESET = 0x02;
@@ -34,50 +47,127 @@ namespace ElkHWLib
         private readonly ushort[] modelens_per_mode = new ushort[] { 0x5000, 0x5000, 0x5000, 0x4000, 0x2800, 0x2800, 0x2000, 0x2000 };
         private readonly ushort[] mode_end_scanline_per_mode = new ushort[] { 256, 256, 256, 250, 256, 256, 250, 250 };
 
+        /// <summary>
+        /// Scan line within the current character row
+        /// </summary>
         public int CharScanLine { get; private set; }
+        /// <summary>
+        /// The raster X position, possibly outside the screen bitmap. The screen bitmap is always 640 pixels wide, each scan line is 1024 pixels. ScreenX increases by 8 on each 2MHz tick
+        /// </summary>
         public int ScreenX { get; private set; }
+        /// <summary>
+        /// The raster Y position, possibly outside the screen bitmap. The screen bitmap is always 256 pixels high, each frame is either 312 or 313 pixels. ScreenY increases every 128 2MHz ticks
+        /// </summary>
         public int ScreenY { get; private set; }
 
+        /// <summary>
+        /// Current screen mode
+        /// </summary>
         public int Mode { get; private set; }
 
+        /// <summary>
+        /// Number of scan lines in a character row, 8 in normal modes, 10 in Venetian (modes 3, 6)
+        /// </summary>
         public int CurModeCharScanLines { get; private set; }
+
+        /// <summary>
+        /// The current screen mode length in bytes 
+        /// </summary>
         public ushort CurModeModeLen { get; private set; }
+
+        /// <summary>
+        /// The last displayed line in the current screen mode
+        /// </summary>
         public int CurModeEndY { get; private set; }
 
+        /// <summary>
+        /// The start address of the screen, which will wrap when it passes 0x8000
+        /// </summary>
         public ushort ScreenStart { get; private set; }
 
+        /// <summary>
+        /// The current raster screen address
+        /// </summary>
         public ushort CurAddr { get; private set; }
+
+        /// <summary>
+        /// The current raster screen address of the current character row
+        /// </summary>
         public ushort CurCharRowAddr { get; private set; }
 
+        /// <summary>
+        /// The number of bytes in a character row in the current mode
+        /// </summary>
         public ushort CurModeBytesPerCharRow { get; private set; }
 
+        /// <summary>
+        /// The screen bitmap, this is a bitmap in a top-left to bottom-right (raster) order. Each byte should hold 0-7 for each pixel. The stride is 640 and there are 256 rows.
+        /// </summary>
         public byte [] ScreenData { get; init; }       
+        /// <summary>
+        /// Current index into the ScreenData bitmap
+        /// </summary>
         public int screenDataIX { get; private set; }
 
+        /// <summary>
+        /// Whether the current frame is Odd (312 lines) or Even (313 lines)
+        /// </summary>
         public bool OddNotEven { get; private set; }
 
+        /// <summary>
+        /// This event fires when the IRQ status of the ULA changes
+        /// </summary>
         public EventHandler IRQChange;
 
-
-        private bool disposedValue;
-
+        /// <summary>
+        /// 0x8000-0xBFFF refers to an external ROM
+        /// </summary>
         public bool ROM_External { get; private set; }
+        /// <summary>
+        /// The index for internal ROM/keyboard
+        /// </summary>
         public byte ROM_IntBank { get; private set; }
+        /// <summary>
+        /// The index for external ROM
+        /// </summary>
         public byte ROM_ExtBank { get; private set; }
 
+        /// <summary>
+        /// The ULA's IRQ status (true is IRQ asserted)
+        /// </summary>
         public bool IRQ { get { return (_isr & ISR_MASK_MASTER) != 0; } }
 
+        /// <summary>
+        /// Caps Lock light
+        /// </summary>
         public bool CapsLock { get; private set; }
+
+        /// <summary>
+        /// Cassette motor active
+        /// </summary>
         public bool Motor { get; private set; }
+
+        /// <summary>
+        /// Can be set to A UEF tape stream
+        /// </summary>
         public UEFTapeStreamer UEF { get; set; }
         
+        /// <summary>
+        /// Indication that high tones have been read from a tape - this is a crudely low-pass filtered indication
+        /// </summary>
         public ushort HiToneDetect { get; private set; }
+        /// <summary>
+        /// Indication that low tones have been read from a tape - this is a crudely low-pass filtered indication
+        /// </summary>
         public ushort LoToneDetect { get; private set; }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public ULA()
         {
             ScreenData = new byte[640 * 256];
-            palette = new byte[16];
+            Palette = new byte[16];
 
             Reset(true);
 
@@ -92,6 +182,11 @@ namespace ElkHWLib
             CurModeBytesPerCharRow = ((mode & 4) > 0) ? (ushort)320 : (ushort)640;
         }
 
+
+        /// <summary>
+        /// Reset the ULA
+        /// </summary>
+        /// <param name="hard">When true, sets the reset flag as if power had been reset rather than break pressed.</param>
         public void Reset(bool hard)
         {
 
@@ -113,7 +208,7 @@ namespace ElkHWLib
             //reset palette - not sure what the ULA actually gets reset to!?
             for (int i = 0; i < 15; i++)
             {
-                palette[i] = (byte)i;                     
+                Palette[i] = (byte)i;                     
             }
         }
 
@@ -132,6 +227,14 @@ namespace ElkHWLib
                 IRQChange(this, EventArgs.Empty);
         }
 
+        /// <summary>
+        /// Performs a register read
+        /// </summary>
+        /// <param name="addr">The address to read from (only the lower nybble is inspected, addresses wrap)</param>
+        /// <param name="dat">The data that is read if any</param>
+        /// <returns>true if data returned, if false the emulation should leave the CPU's data bus set to its previous value</returns>
+        /// <remarks>Note: reading registers has side-effects (i.e. clearing ISR), for displaying register values in a debugger another method should be used</remarks>
+        /// 
         public bool ReadReg(ushort addr, out byte dat)
         {
             switch (addr & 0xF)
@@ -159,17 +262,33 @@ namespace ElkHWLib
             return ret;
         }
 
+        /// <summary>
+        /// Write the ULA's copy of RAM
+        /// </summary>
+        /// <param name="addr">address to write to (wraps to lowest 15 bits)</param>
+        /// <param name="val">data to write</param>
+        /// <remarks>The ula holds its own copy of ram, this must be kept in sync with the CPU's copy</remarks>
         public void RamWrite(ushort addr, byte val)
         {
             _ram[addr & 0x7FFF] = val;
         }
 
+        /// <summary>
+        /// update the local copy of ram from the passed byte array
+        /// </summary>
+        /// <param name="ram"></param>
         public void SyncRAM(byte[] ram)
         {
             ram.CopyTo(_ram, 0);
         }
 
 
+        /// <summary>
+        /// Write to a register
+        /// </summary>
+        /// <param name="addr">The address to read from (only the lower nybble is inspected, addresses wrap)</param>
+        /// <param name="val">The data to write</param>
+        /// <remarks>Note: writing to register using this function has side effects</remarks>
         public void WriteReg(ushort addr, byte val)
         {
             switch (addr & 0xF)
@@ -225,59 +344,59 @@ namespace ElkHWLib
 
                 case 8:
                     val = (byte)~val;
-                    palette[0] = (byte)((palette[0] & 0x3) | ((val & 0x10) >> 2));
-                    palette[2] = (byte)((palette[2] & 0x3) | ((val & 0x20) >> 3));
-                    palette[8] = (byte)((palette[8] & 0x1) | ((val & 0x40) >> 4) | ((val &0x04) >> 1));
-                    palette[10] = (byte)((palette[10] & 0x1) | ((val & 0x80) >> 5) | ((val & 0x08) >> 2));
+                    Palette[0] = (byte)((Palette[0] & 0x3) | ((val & 0x10) >> 2));
+                    Palette[2] = (byte)((Palette[2] & 0x3) | ((val & 0x20) >> 3));
+                    Palette[8] = (byte)((Palette[8] & 0x1) | ((val & 0x40) >> 4) | ((val &0x04) >> 1));
+                    Palette[10] = (byte)((Palette[10] & 0x1) | ((val & 0x80) >> 5) | ((val & 0x08) >> 2));
                     break;
                 case 9:
                     val = (byte)~val;
-                    palette[0] = (byte)((palette[0] & 0x4) | ((val & 0x10) >> 3) | (val & 0x01));
-                    palette[2] = (byte)((palette[2] & 0x4) | ((val & 0x20) >> 4) | ((val & 0x02)>>1));
-                    palette[8] = (byte)((palette[8] & 0x6) | ((val & 0x04) >> 2));
-                    palette[10] = (byte)((palette[10] & 0x6) | ((val & 0x08) >> 3));
+                    Palette[0] = (byte)((Palette[0] & 0x4) | ((val & 0x10) >> 3) | (val & 0x01));
+                    Palette[2] = (byte)((Palette[2] & 0x4) | ((val & 0x20) >> 4) | ((val & 0x02)>>1));
+                    Palette[8] = (byte)((Palette[8] & 0x6) | ((val & 0x04) >> 2));
+                    Palette[10] = (byte)((Palette[10] & 0x6) | ((val & 0x08) >> 3));
                     break;
                 case 10:
                     val = (byte)~val;
-                    palette[4] = (byte)((palette[4] & 0x3) | ((val & 0x10) >> 2));
-                    palette[6] = (byte)((palette[6] & 0x3) | ((val & 0x20) >> 3));
-                    palette[12] = (byte)((palette[12] & 0x1) | ((val & 0x40) >> 4) | ((val & 0x04) >> 1));
-                    palette[14] = (byte)((palette[14] & 0x1) | ((val & 0x80) >> 5) | ((val & 0x08) >> 2));
+                    Palette[4] = (byte)((Palette[4] & 0x3) | ((val & 0x10) >> 2));
+                    Palette[6] = (byte)((Palette[6] & 0x3) | ((val & 0x20) >> 3));
+                    Palette[12] = (byte)((Palette[12] & 0x1) | ((val & 0x40) >> 4) | ((val & 0x04) >> 1));
+                    Palette[14] = (byte)((Palette[14] & 0x1) | ((val & 0x80) >> 5) | ((val & 0x08) >> 2));
                     break;
                 case 11:
                     val = (byte)~val;
-                    palette[4] = (byte)((palette[4] & 0x4) | ((val & 0x10) >> 3) | (val & 0x01));
-                    palette[6] = (byte)((palette[6] & 0x4) | ((val & 0x20) >> 4) | ((val & 0x02) >> 1));
-                    palette[12] = (byte)((palette[12] & 0x6) | ((val & 0x04) >> 2));
-                    palette[14] = (byte)((palette[14] & 0x6) | ((val & 0x08) >> 3));
+                    Palette[4] = (byte)((Palette[4] & 0x4) | ((val & 0x10) >> 3) | (val & 0x01));
+                    Palette[6] = (byte)((Palette[6] & 0x4) | ((val & 0x20) >> 4) | ((val & 0x02) >> 1));
+                    Palette[12] = (byte)((Palette[12] & 0x6) | ((val & 0x04) >> 2));
+                    Palette[14] = (byte)((Palette[14] & 0x6) | ((val & 0x08) >> 3));
                     break;
                 case 12:
                     val = (byte)~val;
-                    palette[5] = (byte)((palette[5] & 0x3) | ((val & 0x10) >> 2));
-                    palette[7] = (byte)((palette[7] & 0x3) | ((val & 0x20) >> 3));
-                    palette[13] = (byte)((palette[13] & 0x1) | ((val & 0x40) >> 4) | ((val & 0x04) >> 1));
-                    palette[15] = (byte)((palette[15] & 0x1) | ((val & 0x80) >> 5) | ((val & 0x08) >> 2));
+                    Palette[5] = (byte)((Palette[5] & 0x3) | ((val & 0x10) >> 2));
+                    Palette[7] = (byte)((Palette[7] & 0x3) | ((val & 0x20) >> 3));
+                    Palette[13] = (byte)((Palette[13] & 0x1) | ((val & 0x40) >> 4) | ((val & 0x04) >> 1));
+                    Palette[15] = (byte)((Palette[15] & 0x1) | ((val & 0x80) >> 5) | ((val & 0x08) >> 2));
                     break;
                 case 13:
                     val = (byte)~val;
-                    palette[5] = (byte)((palette[5] & 0x4) | ((val & 0x10) >> 3) | (val & 0x01));
-                    palette[7] = (byte)((palette[7] & 0x4) | ((val & 0x20) >> 4) | ((val & 0x02) >> 1));
-                    palette[13] = (byte)((palette[13] & 0x6) | ((val & 0x04) >> 2));
-                    palette[15] = (byte)((palette[15] & 0x6) | ((val & 0x08) >> 3));
+                    Palette[5] = (byte)((Palette[5] & 0x4) | ((val & 0x10) >> 3) | (val & 0x01));
+                    Palette[7] = (byte)((Palette[7] & 0x4) | ((val & 0x20) >> 4) | ((val & 0x02) >> 1));
+                    Palette[13] = (byte)((Palette[13] & 0x6) | ((val & 0x04) >> 2));
+                    Palette[15] = (byte)((Palette[15] & 0x6) | ((val & 0x08) >> 3));
                     break;
                 case 14:
                     val = (byte)~val;
-                    palette[1] = (byte)((palette[1] & 0x3) | ((val & 0x10) >> 2));
-                    palette[3] = (byte)((palette[3] & 0x3) | ((val & 0x20) >> 3));
-                    palette[9] = (byte)((palette[9] & 0x1) | ((val & 0x40) >> 4) | ((val & 0x04) >> 1));
-                    palette[11] = (byte)((palette[11] & 0x1) | ((val & 0x80) >> 5) | ((val & 0x08) >> 2));
+                    Palette[1] = (byte)((Palette[1] & 0x3) | ((val & 0x10) >> 2));
+                    Palette[3] = (byte)((Palette[3] & 0x3) | ((val & 0x20) >> 3));
+                    Palette[9] = (byte)((Palette[9] & 0x1) | ((val & 0x40) >> 4) | ((val & 0x04) >> 1));
+                    Palette[11] = (byte)((Palette[11] & 0x1) | ((val & 0x80) >> 5) | ((val & 0x08) >> 2));
                     break;
                 case 15:
                     val = (byte)~val;
-                    palette[1] = (byte)((palette[1] & 0x4) | ((val & 0x10) >> 3) | (val & 0x01));
-                    palette[3] = (byte)((palette[3] & 0x4) | ((val & 0x20) >> 4) | ((val & 0x02) >> 1));
-                    palette[9] = (byte)((palette[9] & 0x6) | ((val & 0x04) >> 2));
-                    palette[11] = (byte)((palette[11] & 0x6) | ((val & 0x08) >> 3));
+                    Palette[1] = (byte)((Palette[1] & 0x4) | ((val & 0x10) >> 3) | (val & 0x01));
+                    Palette[3] = (byte)((Palette[3] & 0x4) | ((val & 0x20) >> 4) | ((val & 0x02) >> 1));
+                    Palette[9] = (byte)((Palette[9] & 0x6) | ((val & 0x04) >> 2));
+                    Palette[11] = (byte)((Palette[11] & 0x6) | ((val & 0x08) >> 3));
                     break;
             }
         }
@@ -289,9 +408,9 @@ namespace ElkHWLib
         private int cas_bits_left = 0;
 
         /// <summary>
-        /// 
+        /// Perform a 2MHz tick
         /// </summary>
-        /// <returns>True if cpu can execute this tick from RAM - in effect a 1MHz clock stretched during hires modes</returns>
+        /// <returns>True if cpu can execute this tick from RAM - in effect a 1MHz clock stretched during the active part of the raster in hires modes</returns>
         public bool Tick()
         {
             bool ret = (ScreenX & 8) != 0;
@@ -310,7 +429,7 @@ namespace ElkHWLib
 
                         for (int i = 0; i < 8; i++)
                         {
-                            ScreenData[screenDataIX++] = ((vduval & 0x80) != 0) ? palette[8] : palette[0];
+                            ScreenData[screenDataIX++] = ((vduval & 0x80) != 0) ? Palette[8] : Palette[0];
                             vduval = (byte)(vduval << 1);
                         }
                         CurAddr += 8;
@@ -326,16 +445,16 @@ namespace ElkHWLib
                             switch(vduval & 0x88)
                             {
                                 case 0x88:
-                                    c = palette[10];
+                                    c = Palette[10];
                                     break;
                                 case 0x80:
-                                    c = palette[8];
+                                    c = Palette[8];
                                     break;
                                 case 0x08:
-                                    c = palette[2];
+                                    c = Palette[2];
                                     break;
                                 default:
-                                    c = palette[0];
+                                    c = Palette[0];
                                     break;
                             }
                             ScreenData[screenDataIX++] = c;
@@ -351,7 +470,7 @@ namespace ElkHWLib
 
                         for (int i = 0; i < 2; i++)
                         {
-                            byte c = palette[
+                            byte c = Palette[
                                 ((vduval & 0x80) >> 4) |
                                 ((vduval & 0x20) >> 3) |
                                 ((vduval & 0x08) >> 2) |
@@ -380,16 +499,16 @@ namespace ElkHWLib
                             switch (vduval & 0x88)
                             {
                                 case 0x88:
-                                    c = palette[10];
+                                    c = Palette[10];
                                     break;
                                 case 0x80:
-                                    c = palette[8];
+                                    c = Palette[8];
                                     break;
                                 case 0x08:
-                                    c = palette[2];
+                                    c = Palette[2];
                                     break;
                                 default:
-                                    c = palette[0];
+                                    c = Palette[0];
                                     break;
                             }
                             ScreenData[screenDataIX++] = c;
@@ -409,7 +528,7 @@ namespace ElkHWLib
 
                         for (int i = 0; i < 4; i++)
                         {
-                            byte c = ((vduval & 0x80) != 0) ? palette[8] : palette[0];
+                            byte c = ((vduval & 0x80) != 0) ? Palette[8] : Palette[0];
                             ScreenData[screenDataIX++] = c;
                             ScreenData[screenDataIX++] = c;
                             vduval = (byte)(vduval << 1);
