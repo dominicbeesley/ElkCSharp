@@ -298,9 +298,9 @@ namespace ElkHWLib
 
             //TODO: Palette
 
-            if (ScreenX <= 640 - 8 && ScreenY < CurModeEndY)
+            if (ScreenX <= 640 - 8 && ScreenY < 256)
             {
-                if (CharScanLine < 8)
+                if (CharScanLine < 8 && ScreenY < CurModeEndY)
                 {
 
                     if (Mode == 0 || Mode == 3)
