@@ -415,8 +415,6 @@ namespace ElkHWLib
         {
             bool ret = (ScreenX & 8) != 0;
 
-            //TODO: Palette
-
             if (ScreenX <= 640 - 8 && ScreenY < 256)
             {
                 if (CharScanLine < 8 && ScreenY < CurModeEndY)
