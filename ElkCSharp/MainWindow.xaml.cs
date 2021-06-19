@@ -23,6 +23,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
 using Utility;
+using System.Collections.Concurrent;
 
 namespace ElkCSharp
 {
@@ -67,6 +68,11 @@ namespace ElkCSharp
             new Key [] { Key.Escape, Key.CapsLock, Key.LeftCtrl, Key.LeftShift}
         };
 
+        /// <summary>
+        /// This should be locked when making changes to the emulation from outside the emulatorloop thread
+        /// </summary>
+        protected object emuLock = new object();
+
         public MainWindow()
         {
             InitializeComponent();
@@ -78,7 +84,6 @@ namespace ElkCSharp
             Elk = new Elk();
             //elk.DebugCycles = true;
             //elk.Debug = true;
-            Elk.ULA.UEF = new UEFLib.UEFTapeStreamer(@"d:\downloads\test.uef", true);
 
             ViewModel = new ElkModel(Elk);
 
@@ -141,8 +146,8 @@ namespace ElkCSharp
                     lock (Elk)
                     {
                         Elk.DoTicks(40000);
-                        mymillis += 20;
                     }
+                    mymillis += 20;
 
                     if (!fast || mil - prevmillis > 15)
                     {

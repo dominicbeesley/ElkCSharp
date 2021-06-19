@@ -15,6 +15,10 @@
             <Menu>
                 <MenuItem Header="_File">
                     <MenuItem Header="Hard Reset" Command="{Binding CmdHardReset}" />
+                    <Separator />
+                    <MenuItem Header="Load _Tape" Command="{Binding CmdTapeLoad}" />
+                    <MenuItem Header="Rewind Tape" Command="{Binding CmdTapeRewind}"/>
+                    <MenuItem Header="Eject Tape" Command="{Binding CmdTapeEject}"/>
                 </MenuItem>
                 <MenuItem Header="_Speed">
                     <MenuItem Header="Fast" IsCheckable="True" IsChecked="{Binding GoFast, Mode=TwoWay}" />
@@ -27,11 +31,11 @@
             <local:ucLED DataContext="{Binding MotorLED }" />
             <local:ucBiLED DataContext="{Binding TapeToneBiLED }" />
         </StackPanel>
-        <Image 
+        <Image             
             x:Name="ScreenImg" 
             HorizontalAlignment="Stretch" 
             Height="512" 
-            Margin="10,10,0,0" 
+            Margin="0,0,0,0" 
             VerticalAlignment="Stretch" 
             Width="640" 
             Stretch="Fill" 

@@ -74,6 +74,7 @@ namespace UEFLib
 
             InChunk = false;
             ChunkIndex = -1;
+            LeftInChunk = 0;
         }
 
         public bool NextChunk()

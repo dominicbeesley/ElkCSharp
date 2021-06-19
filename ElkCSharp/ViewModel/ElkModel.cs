@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using ElkHWLib;
+using Microsoft.Win32;
 using WPFStuff;
 
 namespace ElkCSharp.ViewModel
@@ -15,8 +16,13 @@ namespace ElkCSharp.ViewModel
     public class ElkModel : ObservableObject
     {
         public ICommand CmdHardReset { get; }
+        public ICommand CmdTapeLoad { get; }
+
+        public ICommand CmdTapeRewind { get; }
+        public ICommand CmdTapeEject { get; }
 
         Elk _elk;
+        object _emuLock;
 
         LEDModel _capsLockLED = new LEDModel() { Name = "Caps Lock" };
         LEDModel _motorLED = new LEDModel() { Name = "Motor" };
@@ -38,6 +44,63 @@ namespace ElkCSharp.ViewModel
                 "Hard Reset",
                 Command_Exception
                 );
+
+            CmdTapeLoad = new RelayCommand(
+                o =>
+                {
+                    var dlg = new OpenFileDialog();
+                    dlg.Filter = "UEF Files|*.uef";
+                    if (dlg.ShowDialog() ?? false)
+                    {
+                        lock (_elk)
+                        {
+                            try
+                            {
+                                _elk.ULA.UEF?.Dispose();
+                                _elk.ULA.UEF = new UEFLib.UEFTapeStreamer(dlg.FileName, true);
+                            } catch (Exception)
+                            {
+                                _elk.ULA.UEF = null;
+                                throw;
+                            }
+
+                        }
+                    }
+
+                },
+                o => true,
+                "Load Tape",
+                Command_Exception
+            );
+
+            CmdTapeRewind = new RelayCommand(
+                o =>
+                {
+                    lock (_elk)
+                    {
+                        _elk.ULA?.UEF?.Rewind();
+                    }
+                },
+                o => _elk.ULA.UEF != null,
+                "Rewind Tape",
+                Command_Exception
+                ) ;
+
+            CmdTapeEject = new RelayCommand(
+                o =>
+                {
+                    lock (_elk)
+                    {
+                        var old = _elk.ULA.UEF;
+                        _elk.ULA.UEF = null;
+                        old.Dispose();
+                    }
+                },
+                o => _elk.ULA.UEF != null,
+                "Eject Tape",
+                Command_Exception
+                );
+
         }
 
         BitmapSource _screenSource = null;

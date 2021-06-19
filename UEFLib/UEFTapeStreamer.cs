@@ -28,6 +28,15 @@ namespace UEFLib
             _bitsLeft = 0;
         }
 
+        public void Rewind()
+        {
+            _chunkReader.Rewind();
+            _curBit = UEFTapeBit.Blank;
+            _repeat = 0;
+            _bitsLeft = 0;
+            _curDataByte = 0;
+        }
+
         UEFTapeBit doNextImplicit()
         {
             //next byte with implicit start/stop bits 0x100
