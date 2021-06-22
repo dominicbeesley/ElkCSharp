@@ -46,7 +46,9 @@ namespace ElkCSharp
         Thread emuThread;
         CancellationTokenSource emuTaskCancel = new CancellationTokenSource();
 
-        Bitmap bmpCopy;
+        private const int N_BUFFERS = 4;
+        Bitmap[] bmpCopy;
+        volatile UInt32 bmpCopySwitch;
 
         bool KeysChanged = false;
         byte[] KeyMatrix = new byte[14];
@@ -79,7 +81,24 @@ namespace ElkCSharp
 
             AllocConsole();
 
-            bmpCopy = new Bitmap(640, 256, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
+            bmpCopy = new Bitmap[N_BUFFERS];
+            for (int i = 0; i < N_BUFFERS; i++)
+            {
+                bmpCopy[i] = new Bitmap(640, 256, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
+            }
+
+            ColorPalette pal = bmpCopy[0].Palette;
+            // this is the _physical_ palette, the logical to physical mapping is done in the rasterizer
+            for (int i = 0; i < 256; i++)
+            {
+                pal.Entries[i] = System.Drawing.Color.FromArgb(
+                    ((i & 1) != 0) ? 255 : 0,
+                    ((i & 2) != 0) ? 255 : 0,
+                    ((i & 4) != 0) ? 255 : 0
+                    );
+            }
+            bmpCopy.ToList().ForEach(o => o.Palette = pal);
+
 
             Elk = new Elk();
             //elk.DebugCycles = true;
@@ -97,6 +116,27 @@ namespace ElkCSharp
             dispatcherTimer.Tick += dispatcherTimer_Tick;
             dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
             dispatcherTimer.Start();
+
+            CompositionTarget.Rendering += CompositionTarget_Rendering;
+        }
+
+
+        
+        private void CompositionTarget_Rendering(object sender, EventArgs e)
+        {
+
+            var ix = (bmpCopySwitch-1) % N_BUFFERS;
+            if (ix < 0) ix += N_BUFFERS;
+
+            var bmp = bmpCopy[ix];
+            if (bmp != null)
+            {
+                lock (bmp)
+                {
+                    ViewModel.UpdateScreen(bmp);
+                }
+            }
+            Console.Write(ix);
         }
 
         private void dispatcherTimer_Tick(object sender, EventArgs e)
@@ -110,17 +150,6 @@ namespace ElkCSharp
         {
             try
             {
-                ColorPalette pal = bmpCopy.Palette;
-                // this is the _physical_ palette, the logical to physical mapping is done in the rasterizer
-                for (int i = 0; i < 256; i++)
-                {
-                    pal.Entries[i] = System.Drawing.Color.FromArgb(
-                        ((i & 1) != 0) ? 255 : 0,
-                        ((i & 2) != 0) ? 255 : 0,
-                        ((i & 4) != 0) ? 255 : 0
-                        );
-                }
-                bmpCopy.Palette = pal;
 
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
@@ -132,75 +161,82 @@ namespace ElkCSharp
                     bool fast = ViewModel.GoFast || (Elk.ULA.Motor && ViewModel.GoFastTape);
 
                     long mil = sw.ElapsedMilliseconds;
-                    long delay = mymillis - mil;
-                    if (delay > 0 & delay < 10000 && !fast)
-                    {
-                        Thread.Sleep((int)(delay));
-                    }
-                    else
-                    {
-                        //we're slow, resync
-                        mymillis = mil;
-                    }
-
-                    lock (Elk)
-                    {
-                        Elk.DoTicks(40000);
-                    }
-                    mymillis += 20;
-
-                    if (!fast || mil - prevmillis > 15)
+                    /*                    long delay = mymillis - mil;
+                                        if (delay > 0 & delay < 10000 && !fast)
+                                        {
+                                            Thread.Sleep((int)(delay));
+                                        }
+                                        else
+                                        {
+                                            //we're slow, resync
+                                            mymillis = mil;
+                                        }
+                    */
+                    Thread.Sleep(0);
+                    long tt = mil - mymillis;
+                    if (fast | tt > 20)
                     {
 
-                        lock (bmpCopy)
+
+                        lock (Elk)
                         {
-                            var bmpdData = bmpCopy.LockBits(new System.Drawing.Rectangle(0, 0, 640, 256), ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
-                            try
-                            {
-                                System.Runtime.InteropServices.Marshal.Copy(Elk.ULA.ScreenData, 0, bmpdData.Scan0, 640 * 256);
-                            }
-                            finally
-                            {
-                                bmpCopy.UnlockBits(bmpdData);
-                            }
+                            Elk.DoTicks(40000);
                         }
+                        mymillis += 20;
 
-                        Dispatcher.BeginInvoke(new Action(() =>
+                        if (!fast || mil - prevmillis > 100)
                         {
 
-                            if (bmpCopy != null)
+                            var ix = Interlocked.Increment(ref bmpCopySwitch) % N_BUFFERS;
+                            var bmp = bmpCopy[ix];
+                            lock (bmp)
                             {
-                                lock (bmpCopy)
+                                var bmpdData = bmp.LockBits(new System.Drawing.Rectangle(0, 0, 640, 256), ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
+                                try
                                 {
-                                    ViewModel.UpdateScreen(bmpCopy);
+                                    System.Runtime.InteropServices.Marshal.Copy(Elk.ULA.ScreenData, 0, bmpdData.Scan0, 640 * 256);
+                                }
+                                finally
+                                {
+                                    bmp.UnlockBits(bmpdData);
                                 }
                             }
-                            ViewModel.CapsLockLED.Lit = Elk.ULA.CapsLock;
-                            ViewModel.MotorLED.Lit = Elk.ULA.Motor;
-                            ViewModel.TapeToneBiLED.Red = Elk.ULA.LoToneDetect>8192?(byte)255:(byte)0;
-                            ViewModel.TapeToneBiLED.Green = Elk.ULA.HiToneDetect > 8192 ? (byte)255 : (byte)0;
 
+                            Dispatcher.BeginInvoke(new Action(() =>
+                            {
+                                ViewModel.CapsLockLED.Lit = Elk.ULA.CapsLock;
+                                ViewModel.MotorLED.Lit = Elk.ULA.Motor;
+                                ViewModel.TapeToneBiLED.Red = Elk.ULA.LoToneDetect > 8192 ? (byte)255 : (byte)0;
+                                ViewModel.TapeToneBiLED.Green = Elk.ULA.HiToneDetect > 8192 ? (byte)255 : (byte)0;
+
+                                framectr++;
+
+                                if (KeysChanged)
+                                {
+                                    Elk.UpdateKeys(KeyMatrix);
+                                    KeysChanged = false;
+                                }
+
+                                if (framectr == 100)
+                                {
+                                //TEST:
+                                byte[] testprog = File.ReadAllBytes(@"d:\downloads\HOGELKTI");
+                                    testprog.CopyTo(Elk.RAM, 0xE00);
+                                    Elk.ULA.SyncRAM(Elk.RAM);
+                                }
+
+                            }));
+                            prevmillis = mil;
+                        }
+                        else
+                        {
                             framectr++;
+                        }
 
-                            if (KeysChanged)
-                            {
-                                Elk.UpdateKeys(KeyMatrix);
-                                KeysChanged = false;
-                            }
-
-                            if (framectr == 100)
-                            {
-                            //TEST:
-                            byte[] testprog = File.ReadAllBytes(@"d:\downloads\HOGELKTI");
-                                testprog.CopyTo(Elk.RAM, 0xE00);
-                                Elk.ULA.SyncRAM(Elk.RAM);
-                            }
-
-                        }));
-                        prevmillis = mil;
-                    } else
-                    {
-                        framectr++;
+                        if (tt > 1000 || tt < -1000)
+                        {
+                            mymillis = mil;
+                        }
                     }
 
                 }
@@ -266,9 +302,10 @@ namespace ElkCSharp
         {
             emuTaskCancel.Cancel();
             emuThread.Join(1000);
-            var b = bmpCopy;
+
+            bmpCopy.ToList().ForEach(o => o?.Dispose());
             bmpCopy = null;
-            b.Dispose();
+
         }
     }
 }
