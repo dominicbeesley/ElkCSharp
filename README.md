@@ -2,9 +2,9 @@
 An Experimental C# Emulator
 
 ## Emulation notes
-In most emulations (at least the ones I've seen) the emulation proceeds either 
+In most emulations (at least the ones I'm familiar with) the emulation proceeds either 
 instruction-by-instruction or groups of instructions and then hardware is updated 
-to "catch up". This makes for a more efficient emulation but makes exploring tricky
+to "catch up". This possibly makes for a more efficient emulation but makes exploring tricky
 timing issues more difficult. As this emulator is more of a simulator for exploring
 hardware (SCSI/Blitter/ULA) I have decided to make this emulator update hardware on
 each 2MHz cycle - this may change if I run into performance problems later but
