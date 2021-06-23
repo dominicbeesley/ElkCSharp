@@ -22,7 +22,6 @@ namespace ElkCSharp.ViewModel
         public ICommand CmdTapeEject { get; }
 
         Elk _elk;
-        object _emuLock;
 
         LEDModel _capsLockLED = new LEDModel() { Name = "Caps Lock" };
         LEDModel _motorLED = new LEDModel() { Name = "Motor" };

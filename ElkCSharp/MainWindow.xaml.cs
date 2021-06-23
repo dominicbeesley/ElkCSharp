@@ -52,23 +52,7 @@ namespace ElkCSharp
 
         bool KeysChanged = false;
         byte[] KeyMatrix = new byte[14];
-        Key[][] KeyBoardLayout = new Key[14][]
-        {
-            new Key [] { Key.Right, Key.End, Key.None, Key.Space},
-            new Key [] { Key.Left, Key.Down, Key.Return, Key.Delete},
-            new Key [] { Key.Subtract, Key.Up, Key.Oem1, Key.None},
-            new Key [] { Key.D0, Key.P, Key.Oem3, Key.Oem2},
-            new Key [] { Key.D9, Key.O, Key.L, Key.OemPeriod},
-            new Key [] { Key.D8, Key.I, Key.K, Key.OemComma},
-            new Key [] { Key.D7, Key.U, Key.J, Key.M},
-            new Key [] { Key.D6, Key.Y, Key.H, Key.N},
-            new Key [] { Key.D5, Key.T, Key.G, Key.B},
-            new Key [] { Key.D4, Key.R, Key.F, Key.V},
-            new Key [] { Key.D3, Key.E, Key.D, Key.C},
-            new Key [] { Key.D2, Key.W, Key.S, Key.X},
-            new Key [] { Key.D1, Key.Q, Key.A, Key.Z},
-            new Key [] { Key.Escape, Key.CapsLock, Key.LeftCtrl, Key.LeftShift}
-        };
+        ElkCSharpSettings.Settings settings;
 
         /// <summary>
         /// This should be locked when making changes to the emulation from outside the emulatorloop thread
@@ -81,43 +65,54 @@ namespace ElkCSharp
 
             AllocConsole();
 
-            bmpCopy = new Bitmap[N_BUFFERS];
-            for (int i = 0; i < N_BUFFERS; i++)
+            try
             {
-                bmpCopy[i] = new Bitmap(640, 256, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
-            }
+                var myDir = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+                var settingsDir = System.IO.Path.Join(myDir, "Settings");
+                settings = ElkCSharpSettings.SettingsFactory.LoadSettings(System.IO.Path.Combine(settingsDir, "settings.xml"));
 
-            ColorPalette pal = bmpCopy[0].Palette;
-            // this is the _physical_ palette, the logical to physical mapping is done in the rasterizer
-            for (int i = 0; i < 256; i++)
+                bmpCopy = new Bitmap[N_BUFFERS];
+                for (int i = 0; i < N_BUFFERS; i++)
+                {
+                    bmpCopy[i] = new Bitmap(640, 256, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
+                }
+
+                ColorPalette pal = bmpCopy[0].Palette;
+                // this is the _physical_ palette, the logical to physical mapping is done in the rasterizer
+                for (int i = 0; i < 256; i++)
+                {
+                    pal.Entries[i] = System.Drawing.Color.FromArgb(
+                        ((i & 1) != 0) ? 255 : 0,
+                        ((i & 2) != 0) ? 255 : 0,
+                        ((i & 4) != 0) ? 255 : 0
+                        );
+                }
+                bmpCopy.ToList().ForEach(o => o.Palette = pal);
+
+
+                Elk = new Elk();
+                //elk.DebugCycles = true;
+                //elk.Debug = true;
+
+                ViewModel = new ElkModel(Elk);
+
+                this.DataContext = ViewModel;
+
+                emuThread = new Thread(() => EmulatorLoop(emuTaskCancel.Token));
+                emuThread.Priority = ThreadPriority.AboveNormal;
+                emuThread.Start();
+
+                System.Windows.Threading.DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
+                dispatcherTimer.Tick += dispatcherTimer_Tick;
+                dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
+                dispatcherTimer.Start();
+
+                CompositionTarget.Rendering += CompositionTarget_Rendering;
+            } catch (Exception ex)
             {
-                pal.Entries[i] = System.Drawing.Color.FromArgb(
-                    ((i & 1) != 0) ? 255 : 0,
-                    ((i & 2) != 0) ? 255 : 0,
-                    ((i & 4) != 0) ? 255 : 0
-                    );
+                MessageBox.Show($"An exception occurred\n{ex.ToString()}", $"ERROR:{ex.Message}", MessageBoxButton.OK, MessageBoxImage.Error);
+                Close();
             }
-            bmpCopy.ToList().ForEach(o => o.Palette = pal);
-
-
-            Elk = new Elk();
-            //elk.DebugCycles = true;
-            //elk.Debug = true;
-
-            ViewModel = new ElkModel(Elk);
-
-            this.DataContext = ViewModel;
-
-            emuThread = new Thread(() => EmulatorLoop(emuTaskCancel.Token));
-            emuThread.Priority = ThreadPriority.AboveNormal;
-            emuThread.Start();
-
-            System.Windows.Threading.DispatcherTimer dispatcherTimer = new System.Windows.Threading.DispatcherTimer();
-            dispatcherTimer.Tick += dispatcherTimer_Tick;
-            dispatcherTimer.Interval = new TimeSpan(0, 0, 1);
-            dispatcherTimer.Start();
-
-            CompositionTarget.Rendering += CompositionTarget_Rendering;
         }
 
 
@@ -266,44 +261,43 @@ namespace ElkCSharp
             }
             else
             {
-
-                for (int i = 0; i < 14; i++)
+                ElkCSharpSettings.KeyMap.KeyDef keydef;
+                if (FindKeyDef(e.Key, out keydef))
                 {
-                    for (int j = 0; j < 4; j++)
-                    {
-                        if (KeyBoardLayout[i][j] == e.Key)
-                        {
-                            KeyMatrix[i] |= (byte)(1 << j);
-                            KeysChanged = true;
-                        }
-
-                    }
+                    KeyMatrix[keydef.Col] |= (byte)(1 << keydef.Row);
+                    KeysChanged = true;
                 }
             }
         }
 
         private void Window_KeyUp(object sender, KeyEventArgs e)
         {
-            for (int i = 0; i < 14; i++)
+            ElkCSharpSettings.KeyMap.KeyDef keydef;
+            if (FindKeyDef(e.Key, out keydef))
             {
-                for (int j = 0; j < 4; j++)
-                {
-                    if (KeyBoardLayout[i][j] == e.Key)
-                    {
-                        KeyMatrix[i] &= (byte)((1 << j) ^ 0xF);
-                        KeysChanged = true;
-                    }
-                }
+                KeyMatrix[keydef.Col] &= (byte)((1 << keydef.Row) ^ 0xF);
+                KeysChanged = true;
             }
+        }
 
+        private bool FindKeyDef(Key k, out ElkCSharpSettings.KeyMap.KeyDef keydef)
+        {
+            ElkCSharpSettings.KeyMap.KeyDef? ret = settings.KeyMappings.FirstOrDefault()?.Keys.Where(kd => kd.Key == k).FirstOrDefault();
+            if (ret != null)
+            {
+                keydef = (ElkCSharpSettings.KeyMap.KeyDef)ret;
+                return true;
+            }
+            keydef = ElkCSharpSettings.KeyMap.KeyDef.Empty;
+            return false;
         }
 
         private void Window_Closed(object sender, EventArgs e)
         {
             emuTaskCancel.Cancel();
-            emuThread.Join(1000);
+            emuThread?.Join(1000);
 
-            bmpCopy.ToList().ForEach(o => o?.Dispose());
+            bmpCopy?.ToList()?.ForEach(o => o?.Dispose());
             bmpCopy = null;
 
         }

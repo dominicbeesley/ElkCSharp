@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\cpulib_65xx\cpulib_65xx.csproj" />
+    <ProjectReference Include="..\ElkCSharpSettings\ElkCSharpSettings.csproj" />
     <ProjectReference Include="..\elkhwlib\ElkHWLib.csproj" />
     <ProjectReference Include="..\UEFLib\UEFLib.csproj" />
     <ProjectReference Include="..\Utility\Utility.csproj" />
@@ -18,6 +19,12 @@
     <Compile Update="ucBiLED.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Settings\settings.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
