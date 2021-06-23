@@ -17,7 +17,7 @@ of the cpu's microcode. The perl script inspects the code and turns it into C#
 source-code. The code is split up into a number of methods, one per cpu cycle - this
 is done by spotting read/write calls in the microcode. 
 
-The cpu class then executes these microcode steps, one per tick. At the end of each 
+The cpu class then executes these pseudo-microcode steps, one per tick. At the end of each 
 tick the generated code sets a (new to c#9) method pointer to point to the next
 microcode step to by executed on the next tick.
 After each microcode step has executed a read or write is performed by calling the
