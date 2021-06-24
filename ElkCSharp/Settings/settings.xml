@@ -2,7 +2,7 @@
 <elk:settings xmlns:elk="http://dossytronics.com/ElkCSharp/Settings">
   <elk:machinedef name="#default">
 		<elk:romset>
-			<elk:romdef number="0" load="roms/palette-2015-09-19.rom" />
+      <elk:romdef number="0" writeenable="true" />
       <elk:romdef number="1" writeenable="true" />
 			<elk:romdef number="10" load="roms/B_BASIC200.rom" />
 			<elk:romdef number="16" load="roms/ELK100.mos" />
