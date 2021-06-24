@@ -93,7 +93,7 @@ namespace ElkCSharp
 
                 Elk = new Elk();
                 //elk.DebugCycles = true;
-                //elk.Debug = true;
+                //elk.Debug = true;                
 
                 settings.MachineDefs.First().RomDefs.ToList().ForEach(rd =>
                 {
@@ -104,6 +104,7 @@ namespace ElkCSharp
                 });
 
                 ViewModel = new ElkModel(Elk);
+                ViewModel.GoFastTape = true;
 
                 this.DataContext = ViewModel;
 
