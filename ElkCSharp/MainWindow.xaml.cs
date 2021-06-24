@@ -64,7 +64,7 @@ namespace ElkCSharp
         {
             InitializeComponent();
 
-            AllocConsole();
+            //AllocConsole();
 
             try
             {
@@ -140,7 +140,6 @@ namespace ElkCSharp
                     ViewModel.UpdateScreen(bmp);
                 }
             }
-            Console.Write(ix);
         }
 
         private void dispatcherTimer_Tick(object sender, EventArgs e)
