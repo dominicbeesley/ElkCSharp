@@ -199,7 +199,7 @@ namespace ElkHWLib
 
             //not sure what the actual reset state is of these - this is a guess!
             ROM_External = false;
-            ROM_ExtBank = ROM_IntBank = 10;
+            ROM_ExtBank = ROM_IntBank = Elk.ROMNO_BASIC;
 
             SetMode(0);
             CurAddr = 0;

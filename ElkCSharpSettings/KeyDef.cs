@@ -7,27 +7,25 @@ using System.Windows.Input;
 
 namespace ElkCSharpSettings
 {
-
-    public class KeyMap
+    public struct KeyDef
     {
-        public struct KeyDef
+        private static KeyDef _empty = new KeyDef() { Key = Key.None, Col = -1, Row = -1 };
+        public static KeyDef Empty { get { return _empty; } }
+        public Key Key { get; init; }
+        public int Row { get; init; }
+        public int Col { get; init; }
+
+        public static bool operator ==(KeyDef a, KeyDef b) => a.Key == b.Key;
+        public static bool operator !=(KeyDef a, KeyDef b) => a.Key != b.Key;
+
+        public override bool Equals(object obj)
         {
-            private static KeyDef _empty = new KeyDef() { Key = Key.None, Col = -1, Row = -1 };
-            public static KeyDef Empty { get { return _empty; } }
-            public Key Key { get; init; }
-            public int Row { get; init; }
-            public int Col { get; init; }
+            return ((obj as KeyDef?) ?? _empty) == this;
         }
-
-
-        public string Name { get; init; }
-
-        public IList<KeyDef> Keys { get; init; }
-
-        public KeyMap()
+        public override int GetHashCode()
         {
-            Keys = new List<KeyDef>();
+            return Key.GetHashCode();
         }
-
     }
+
 }

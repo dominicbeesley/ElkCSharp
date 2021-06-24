@@ -19,6 +19,11 @@ namespace ElkCSharpSettings
                 ret.KeyMappings.Add(LoadKeyMap(elkm, ns));
             }
 
+            foreach (XmlElement elkmac in elSettings.SelectNodes("elk:machinedef", ns))
+            {
+                ret.MachineDefs.Add(LoadMachineDef(elkmac, ns));
+            }
+
             return ret;
         }
 
@@ -29,40 +34,52 @@ namespace ElkCSharpSettings
             doc.Load(filename);
 
             if (doc?.DocumentElement?.NamespaceURI != SetingsNamespaces.ns_settings)
-                throw new ArgumentException("Missing elk:settings element");
+                throw new SettingsLoadException(doc.DocumentElement, "Missing elk:settings element", null);
 
             return LoadSettings(doc.DocumentElement, SetingsNamespaces.GetNamspaceManager());
         }
 
-        public static XmlElement SaveSettings(Settings settings, XmlDocument doc)
+        internal static MachineDef LoadMachineDef(XmlElement elkmac, XmlNamespaceManager ns)
         {
-            var ret = doc.CreateElement("settings", SetingsNamespaces.ns_settings);
-            foreach (var km in settings.KeyMappings)
+            var ret = new MachineDef() { Name = elkmac.GetAttribute("name") };
+            try
             {
-                ret.AppendChild(SaveKeyMapping(km, doc));
+                foreach (XmlElement elrd in elkmac.SelectNodes("elk:romset/elk:romdef", ns))
+                {
+                    try
+                    {
+                        int num = int.Parse(elrd.GetAttribute("number"));
+                        if (num < 0 || num > 16)
+                            throw new ArgumentException($"Rom number {num} out of range 0<=x<=16");
+                        if (ret.RomDefs.Where(m => m.Number == num).Any())
+                            throw new ArgumentException($"Rom number {num} already defined");
+
+                        bool we = Xml2Bool(elrd.GetAttribute("writeenable"));
+                        string load = elrd.GetAttribute("load");
+
+                        ret.RomDefs.Add(new RomDef()
+                        {
+                            Number = num,
+                            Load = load,
+                            WriteEnable = we
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new SettingsLoadException(elrd, $"Error loading rom def in machine={ret.Name}", ex);
+                    }
+
+                }
+            }
+            catch (SettingsLoadException)
+            {
+                throw;
+            }
+            catch (Exception ex)
+            {
+                new SettingsLoadException(elkmac, $"Error loading machinedef {ret.Name}: {ex.Message}", ex);
             }
             return ret;
-        }
-
-        internal static XmlNode SaveKeyMapping(KeyMap km, XmlDocument doc)
-        {
-            var ret = doc.CreateElement("elk", "keymap", SetingsNamespaces.ns_settings);
-            ret.SetAttribute("name", km.Name);
-            foreach(var k in km.Keys) {
-                var elk = doc.CreateElement("elk", "keydef", SetingsNamespaces.ns_settings);
-                elk.SetAttribute("winkey", k.Key.ToString());
-                elk.SetAttribute("row", k.Row.ToString());
-                elk.SetAttribute("col", k.Col.ToString());
-            }
-            return ret;
-        }
-
-        public static void SaveSettings(Settings settings, string filename)
-        {
-            var ns = SetingsNamespaces.GetNamspaceManager();
-            XmlDocument doc = new XmlDocument();
-            doc.AppendChild(SaveSettings(settings, doc));
-            doc.Save(filename);
         }
 
         internal static KeyMap LoadKeyMap(XmlElement el, XmlNamespaceManager ns)
@@ -110,14 +127,24 @@ namespace ElkCSharpSettings
                     }
 
 
-                    ret.Keys.Add(new KeyMap.KeyDef() { Key = (Key)k, Col = (int)col, Row = (int)row });
+                    ret.Keys.Add(new KeyDef() { Key = (Key)k, Col = (int)col, Row = (int)row });
                 }
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 throw new ArgumentException($"Error loading keymap {ret.Name}: {ex.Message}", ex);
             }
             return ret;
         }
 
+        private static bool Xml2Bool(string xmlstr)
+        {
+            if (string.IsNullOrEmpty(xmlstr) || xmlstr == "0" || xmlstr.ToLower() == "false")
+                return false;
+            else if (xmlstr == "1" || xmlstr.ToLower() == "true")
+                return true;
+            else
+                throw new ArgumentException($"Bad boolean value \"{xmlstr}\"");
+        }
     }
 }

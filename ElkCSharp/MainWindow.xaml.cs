@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 using ElkHWLib;
+using ElkCSharpSettings;
 using cpulib_65xx;
 using System.IO;
 using ElkCSharp.ViewModel;
@@ -52,7 +53,7 @@ namespace ElkCSharp
 
         bool KeysChanged = false;
         byte[] KeyMatrix = new byte[14];
-        ElkCSharpSettings.Settings settings;
+        Settings settings;
 
         /// <summary>
         /// This should be locked when making changes to the emulation from outside the emulatorloop thread
@@ -69,7 +70,7 @@ namespace ElkCSharp
             {
                 var myDir = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
                 var settingsDir = System.IO.Path.Join(myDir, "Settings");
-                settings = ElkCSharpSettings.SettingsFactory.LoadSettings(System.IO.Path.Combine(settingsDir, "settings.xml"));
+                settings = SettingsFactory.LoadSettings(System.IO.Path.Combine(settingsDir, "settings.xml"));
 
                 bmpCopy = new Bitmap[N_BUFFERS];
                 for (int i = 0; i < N_BUFFERS; i++)
@@ -93,6 +94,14 @@ namespace ElkCSharp
                 Elk = new Elk();
                 //elk.DebugCycles = true;
                 //elk.Debug = true;
+
+                settings.MachineDefs.First().RomDefs.ToList().ForEach(rd =>
+                {
+                    if (!string.IsNullOrEmpty(rd.Load))
+                        Elk.LoadRom(rd.Number, System.IO.Path.Combine(myDir, rd.Load));
+
+                    Elk.RomWriteEnable[rd.Number] = rd.WriteEnable;
+                });
 
                 ViewModel = new ElkModel(Elk);
 
@@ -212,14 +221,6 @@ namespace ElkCSharp
                                     KeysChanged = false;
                                 }
 
-                                if (framectr == 100)
-                                {
-                                //TEST:
-                                byte[] testprog = File.ReadAllBytes(@"d:\downloads\HOGELKTI");
-                                    testprog.CopyTo(Elk.RAM, 0xE00);
-                                    Elk.ULA.SyncRAM(Elk.RAM);
-                                }
-
                             }));
                             prevmillis = mil;
                         }
@@ -261,7 +262,7 @@ namespace ElkCSharp
             }
             else
             {
-                ElkCSharpSettings.KeyMap.KeyDef keydef;
+                KeyDef keydef;
                 if (FindKeyDef(e.Key, out keydef))
                 {
                     KeyMatrix[keydef.Col] |= (byte)(1 << keydef.Row);
@@ -272,7 +273,7 @@ namespace ElkCSharp
 
         private void Window_KeyUp(object sender, KeyEventArgs e)
         {
-            ElkCSharpSettings.KeyMap.KeyDef keydef;
+            KeyDef keydef;
             if (FindKeyDef(e.Key, out keydef))
             {
                 KeyMatrix[keydef.Col] &= (byte)((1 << keydef.Row) ^ 0xF);
@@ -280,16 +281,10 @@ namespace ElkCSharp
             }
         }
 
-        private bool FindKeyDef(Key k, out ElkCSharpSettings.KeyMap.KeyDef keydef)
+        private bool FindKeyDef(Key k, out KeyDef keydef)
         {
-            ElkCSharpSettings.KeyMap.KeyDef? ret = settings.KeyMappings.FirstOrDefault()?.Keys.Where(kd => kd.Key == k).FirstOrDefault();
-            if (ret != null)
-            {
-                keydef = (ElkCSharpSettings.KeyMap.KeyDef)ret;
-                return true;
-            }
-            keydef = ElkCSharpSettings.KeyMap.KeyDef.Empty;
-            return false;
+            keydef = settings.KeyMappings.FirstOrDefault()?.Keys.Where(kd => kd.Key == k).FirstOrDefault() ?? KeyDef.Empty;
+            return keydef != KeyDef.Empty;
         }
 
         private void Window_Closed(object sender, EventArgs e)

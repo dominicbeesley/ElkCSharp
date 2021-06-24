@@ -22,6 +22,15 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Roms\B_BASIC200.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Roms\ELK100.mos">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Roms\palette-2015-09-19.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Settings\settings.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

@@ -10,10 +10,12 @@ namespace ElkCSharpSettings
     public class Settings
     {
         public IList<KeyMap> KeyMappings { get; init; }
+        public IList<MachineDef> MachineDefs { get; init; }
 
         public Settings()
         {
             KeyMappings = new List<KeyMap>();
+            MachineDefs = new List<MachineDef>();
         }
 
 

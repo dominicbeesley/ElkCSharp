@@ -1,5 +1,14 @@
 <?xml version="1.0"?>
 <elk:settings xmlns:elk="http://dossytronics.com/ElkCSharp/Settings">
+  <elk:machinedef name="#default">
+		<elk:romset>
+			<elk:romdef number="0" load="roms/palette-2015-09-19.rom" />
+      <elk:romdef number="1" writeenable="true" />
+			<elk:romdef number="10" load="roms/B_BASIC200.rom" />
+			<elk:romdef number="16" load="roms/ELK100.mos" />
+		</elk:romset>
+    
+  </elk:machinedef>
 	<elk:keymap name="#default">
 		<elk:keydef winkey="Right" col="0" row="0" />
 		<elk:keydef winkey="End" col="0" row="1" />
@@ -58,6 +67,8 @@
 		<elk:keydef winkey="Escape" col="13" row="0" />
 		<elk:keydef winkey="CapsLock" col="13" row="1" />
 		<elk:keydef winkey="LeftCtrl" col="13" row="2" />
-		<elk:keydef winkey="LeftShift" col="13" row="3" />
-	</elk:keymap>
+    <elk:keydef winkey="RightCtrl" col="13" row="2" />
+    <elk:keydef winkey="LeftShift" col="13" row="3" />
+    <elk:keydef winkey="RightShift" col="13" row="3" />
+  </elk:keymap>
 </elk:settings>

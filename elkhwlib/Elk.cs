@@ -10,14 +10,17 @@ namespace ElkHWLib
 {
     public class Elk : ISYSCpu, IDisposable
     {
+        public static readonly byte ROMNO_BASIC = 10;
+        public static readonly byte ROMNO_KEYBOARD = 12;
+        public static readonly byte ROMNO_MOS = 16;
+
         private byte[] KeyMatrix = new byte[14];
 
-        private byte[] _mos;
-        private byte[] _rom_basic;
-        private byte[] _ram;
-        private byte[][] _roms;
+        public byte[] Ram { get; init; }
+        public byte[][] Roms { get; init; }
+        public bool[] RomWriteEnable { get; init; }
 
-        public byte [] RAM { get { return _ram; } }
+        public byte [] RAM { get { return Ram; } }
         public ULA ULA { get; }
         public m6502_device CPU { get; }
         public bool DebugCycles { get; set; }
@@ -54,14 +57,12 @@ namespace ElkHWLib
             };
 
 
-            _mos = LoadRom(0x4000, "d:\\downloads\\ELK100");
-            _rom_basic = LoadRom(0x4000, "d:\\downloads\\B_BASIC200");
-            _ram = new byte[0x8000];
-            _roms = new byte[16][];
-            _roms[0] = LoadRom(0x4000, "d:\\downloads\\palette-2015-09-19.rom");
-            for (int i = 1; i<16; i++)
+            Ram = new byte[0x8000];
+            Roms = new byte[17][];
+            RomWriteEnable = new bool[17];
+            for (int i = 0; i<=16; i++)
             {
-                _roms[i] = new byte[0x4000];
+                Roms[i] = new byte[0x4000];
             }
 
         }
@@ -92,14 +93,14 @@ namespace ElkHWLib
                         dat = CPU.DAT;                  
                     }
                 } else 
-                    dat = _mos[addr & 0x3FFF];
+                    dat = Roms[ROMNO_MOS][addr & 0x3FFF];
             } 
             else if ((addr & 0x8000) != 0)
             {
                 if (!ULA.ROM_External)
                 {
                     if ((ULA.ROM_IntBank & 2) != 0)
-                        dat = _rom_basic[addr & 0x3FFF];
+                        dat = Roms[ROMNO_BASIC][addr & 0x3FFF];
                     else
                     {
                         //keyboard read
@@ -119,12 +120,12 @@ namespace ElkHWLib
                 } else
                 {
 
-                    dat = _roms[ULA.ROM_ExtBank][addr & 0x3FFF];
+                    dat = Roms[ULA.ROM_ExtBank][addr & 0x3FFF];
                 }
             } 
             else
             {
-                dat = _ram[addr & 0x7FFF];   
+                dat = Ram[addr & 0x7FFF];   
             }
         }
 
@@ -181,14 +182,15 @@ namespace ElkHWLib
             }
             else if ((addr & 0x8000) == 0)
             {
-                _ram[addr] = dat;
+                Ram[addr] = dat;
                 ULA.RamWrite(addr, dat);
             }
         }
 
-        public byte [] LoadRom(int len, string filename)
+        public void LoadRom(int romno, string filename)
         {
-            byte[] ret = new byte[len];
+
+            const int len = 0x4000;
 
             using (var fs = new FileStream(filename, FileMode.Open, FileAccess.Read))
             {
@@ -196,15 +198,13 @@ namespace ElkHWLib
                 while (i < len)
                 {
                     int ll = len - i;
-                    int s = fs.Read(ret, i, ll);
+                    int s = fs.Read(Roms[romno], i, ll);
                     if (s < 0)
                         break;
                     else
                         i += s;
                 }
             }
-
-            return ret;
         }
 
         public void UpdateKeys(byte[] matrix)
