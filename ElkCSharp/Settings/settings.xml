@@ -23,7 +23,8 @@
     <elk:keydef winkey="OemMinus" col="2" row="0" />
     <elk:keydef winkey="Up" col="2" row="1" />
 		<elk:keydef winkey="Oem3" col="2" row="2" />
-		<elk:keydef winkey="None" col="2" row="3" />
+    <elk:keydef winkey="Oem7" col="2" row="2" />
+    <elk:keydef winkey="None" col="2" row="3" />
 		<elk:keydef winkey="D0" col="3" row="0" />
 		<elk:keydef winkey="P" col="3" row="1" />
 		<elk:keydef winkey="Oem1" col="3" row="2" />
