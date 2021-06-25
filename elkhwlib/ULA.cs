@@ -36,7 +36,7 @@ namespace ElkHWLib
 
         private byte _isr;
         private byte _ier;
-        private ushort _cas_shr;       
+        private ushort _cas_shr;
         private CassetteMode _cas_mode;
 
 
@@ -103,7 +103,7 @@ namespace ElkHWLib
         /// <summary>
         /// The screen bitmap, this is a bitmap in a top-left to bottom-right (raster) order. Each byte should hold 0-7 for each pixel. The stride is 640 and there are 256 rows.
         /// </summary>
-        public byte [] ScreenData { get; init; }       
+        public byte[] ScreenData { get; init; }
         /// <summary>
         /// Current index into the ScreenData bitmap
         /// </summary>
@@ -151,7 +151,7 @@ namespace ElkHWLib
         /// Can be set to A UEF tape stream
         /// </summary>
         public UEFTapeStreamer UEF { get; set; }
-        
+
         /// <summary>
         /// Indication that high tones have been read from a tape - this is a crudely low-pass filtered indication
         /// </summary>
@@ -208,7 +208,7 @@ namespace ElkHWLib
             //reset palette - not sure what the ULA actually gets reset to!?
             for (int i = 0; i < 15; i++)
             {
-                Palette[i] = (byte)i;                     
+                Palette[i] = (byte)i;
             }
         }
 
@@ -217,8 +217,8 @@ namespace ElkHWLib
             if ((_isr & _ier & 0x7C) != 0)
             {
                 //irq on
-                _isr |= ISR_MASK_MASTER;                
-            } 
+                _isr |= ISR_MASK_MASTER;
+            }
             else
             {
                 _isr &= (byte)(ISR_MASK_MASTER ^ 0xFF);
@@ -346,13 +346,13 @@ namespace ElkHWLib
                     val = (byte)~val;
                     Palette[0] = (byte)((Palette[0] & 0x3) | ((val & 0x10) >> 2));
                     Palette[2] = (byte)((Palette[2] & 0x3) | ((val & 0x20) >> 3));
-                    Palette[8] = (byte)((Palette[8] & 0x1) | ((val & 0x40) >> 4) | ((val &0x04) >> 1));
+                    Palette[8] = (byte)((Palette[8] & 0x1) | ((val & 0x40) >> 4) | ((val & 0x04) >> 1));
                     Palette[10] = (byte)((Palette[10] & 0x1) | ((val & 0x80) >> 5) | ((val & 0x08) >> 2));
                     break;
                 case 9:
                     val = (byte)~val;
                     Palette[0] = (byte)((Palette[0] & 0x4) | ((val & 0x10) >> 3) | (val & 0x01));
-                    Palette[2] = (byte)((Palette[2] & 0x4) | ((val & 0x20) >> 4) | ((val & 0x02)>>1));
+                    Palette[2] = (byte)((Palette[2] & 0x4) | ((val & 0x20) >> 4) | ((val & 0x02) >> 1));
                     Palette[8] = (byte)((Palette[8] & 0x6) | ((val & 0x04) >> 2));
                     Palette[10] = (byte)((Palette[10] & 0x6) | ((val & 0x08) >> 3));
                     break;
@@ -411,7 +411,7 @@ namespace ElkHWLib
         /// Perform a 2MHz tick
         /// </summary>
         /// <returns>True if cpu can execute this tick from RAM - in effect a 1MHz clock stretched during the active part of the raster in hires modes</returns>
-        public bool Tick()
+        public bool Tick(bool render)
         {
             bool ret = (ScreenX & 8) != 0;
 
@@ -419,129 +419,136 @@ namespace ElkHWLib
             {
                 if (CharScanLine < 8 && ScreenY < CurModeEndY)
                 {
-
-                    if (Mode == 0 || Mode == 3)
+                    if (render)
                     {
-                        vduval = getvidram();
-                        ret = false;
-
-                        for (int i = 0; i < 8; i++)
-                        {
-                            ScreenData[screenDataIX++] = ((vduval & 0x80) != 0) ? Palette[8] : Palette[0];
-                            vduval = (byte)(vduval << 1);
-                        }
-                        CurAddr += 8;
-                    }
-                    else if (Mode == 1)
-                    {
-                        vduval = getvidram();
-                        ret = false;
-
-                        for (int i = 0; i < 4; i++)
-                        {
-                            byte c;
-                            switch(vduval & 0x88)
-                            {
-                                case 0x88:
-                                    c = Palette[10];
-                                    break;
-                                case 0x80:
-                                    c = Palette[8];
-                                    break;
-                                case 0x08:
-                                    c = Palette[2];
-                                    break;
-                                default:
-                                    c = Palette[0];
-                                    break;
-                            }
-                            ScreenData[screenDataIX++] = c;
-                            ScreenData[screenDataIX++] = c;
-                            vduval = (byte)(vduval << 1);
-                        }
-                        CurAddr += 8;
-                    }
-                    else if (Mode == 2)
-                    {
-                        vduval = getvidram();
-                        ret = false;
-
-                        for (int i = 0; i < 2; i++)
-                        {
-                            byte c = Palette[
-                                ((vduval & 0x80) >> 4) |
-                                ((vduval & 0x20) >> 3) |
-                                ((vduval & 0x08) >> 2) |
-                                ((vduval & 0x02) >> 1)
-                                ];
-
-                            ScreenData[screenDataIX++] = c;
-                            ScreenData[screenDataIX++] = c;
-                            ScreenData[screenDataIX++] = c;
-                            ScreenData[screenDataIX++] = c;
-                            vduval = (byte)(vduval << 1);
-                        }
-                        CurAddr += 8;
-                    }
-                    else if (Mode == 5)
-                    {
-                        if ((ScreenX & 8) == 0)
+                        if (Mode == 0 || Mode == 3)
                         {
                             vduval = getvidram();
-                            CurAddr += 8;
-                        }
 
-                        for (int i = 0; i < 2; i++)
-                        {
-                            byte c;
-                            switch (vduval & 0x88)
+                            for (int i = 0; i < 8; i++)
                             {
-                                case 0x88:
-                                    c = Palette[10];
-                                    break;
-                                case 0x80:
-                                    c = Palette[8];
-                                    break;
-                                case 0x08:
-                                    c = Palette[2];
-                                    break;
-                                default:
-                                    c = Palette[0];
-                                    break;
+                                ScreenData[screenDataIX++] = ((vduval & 0x80) != 0) ? Palette[8] : Palette[0];
+                                vduval = (byte)(vduval << 1);
                             }
-                            ScreenData[screenDataIX++] = c;
-                            ScreenData[screenDataIX++] = c;
-                            ScreenData[screenDataIX++] = c;
-                            ScreenData[screenDataIX++] = c;
-                            vduval = (byte)(vduval << 1);
                         }
-                    }
-                    else //(Mode == 4 || Mode == 6 || Mode == 7)
-                    {
-                        if ((ScreenX & 8) == 0)
+                        else if (Mode == 1)
                         {
                             vduval = getvidram();
-                            CurAddr += 8;
+
+                            for (int i = 0; i < 4; i++)
+                            {
+                                byte c;
+                                switch (vduval & 0x88)
+                                {
+                                    case 0x88:
+                                        c = Palette[10];
+                                        break;
+                                    case 0x80:
+                                        c = Palette[8];
+                                        break;
+                                    case 0x08:
+                                        c = Palette[2];
+                                        break;
+                                    default:
+                                        c = Palette[0];
+                                        break;
+                                }
+                                ScreenData[screenDataIX++] = c;
+                                ScreenData[screenDataIX++] = c;
+                                vduval = (byte)(vduval << 1);
+                            }
+                        }
+                        else if (Mode == 2)
+                        {
+                            vduval = getvidram();
+
+                            for (int i = 0; i < 2; i++)
+                            {
+                                byte c = Palette[
+                                    ((vduval & 0x80) >> 4) |
+                                    ((vduval & 0x20) >> 3) |
+                                    ((vduval & 0x08) >> 2) |
+                                    ((vduval & 0x02) >> 1)
+                                    ];
+
+                                ScreenData[screenDataIX++] = c;
+                                ScreenData[screenDataIX++] = c;
+                                ScreenData[screenDataIX++] = c;
+                                ScreenData[screenDataIX++] = c;
+                                vduval = (byte)(vduval << 1);
+                            }
+                        }
+                        else if (Mode == 5)
+                        {
+                            if ((ScreenX & 8) == 0)
+                            {
+                                vduval = getvidram();
+                            }
+
+                            for (int i = 0; i < 2; i++)
+                            {
+                                byte c;
+                                switch (vduval & 0x88)
+                                {
+                                    case 0x88:
+                                        c = Palette[10];
+                                        break;
+                                    case 0x80:
+                                        c = Palette[8];
+                                        break;
+                                    case 0x08:
+                                        c = Palette[2];
+                                        break;
+                                    default:
+                                        c = Palette[0];
+                                        break;
+                                }
+                                ScreenData[screenDataIX++] = c;
+                                ScreenData[screenDataIX++] = c;
+                                ScreenData[screenDataIX++] = c;
+                                ScreenData[screenDataIX++] = c;
+                                vduval = (byte)(vduval << 1);
+                            }
+                        }
+                        else //(Mode == 4 || Mode == 6 || Mode == 7)
+                        {
+                            if ((ScreenX & 8) == 0)
+                            {
+                                vduval = getvidram();
+                            }
+
+                            for (int i = 0; i < 4; i++)
+                            {
+                                byte c = ((vduval & 0x80) != 0) ? Palette[8] : Palette[0];
+                                ScreenData[screenDataIX++] = c;
+                                ScreenData[screenDataIX++] = c;
+                                vduval = (byte)(vduval << 1);
+                            }
                         }
 
-                        for (int i = 0; i < 4; i++)
-                        {
-                            byte c = ((vduval & 0x80) != 0) ? Palette[8] : Palette[0];
-                            ScreenData[screenDataIX++] = c;
-                            ScreenData[screenDataIX++] = c;
-                            vduval = (byte)(vduval << 1);
-                        }
+                    }
+
+                    if ((Mode & 4) == 0 || (ScreenX & 8) == 0)
+                    {
+                        ret = false;
+                        CurAddr += 8;
                     }
 
                 }
                 else
                 {
-                    for (int i = 0; i < 8; i++)
+                    if (render)
                     {
-                        ScreenData[screenDataIX++] = 0;
+                        for (int i = 0; i < 8; i++)
+                        {
+                            ScreenData[screenDataIX++] = 0;
+                        }
                     }
                 }
-            } 
+
+                
+            }
+
 
             ScreenX += 8;
             if (ScreenX >= 1024)
@@ -552,7 +559,8 @@ namespace ElkHWLib
                 {
                     _isr |= ISR_MASK_RTC;
                     UpdateInterrupts();
-                } else if (ScreenY == CurModeEndY)
+                }
+                else if (ScreenY == CurModeEndY)
                 {
                     _isr |= ISR_MASK_DISPEND;
                     UpdateInterrupts();
@@ -609,14 +617,15 @@ namespace ElkHWLib
                     if (cas_bits_left > 0)
                     {
                         _cas_shr = (ushort)((_cas_shr >> 1) | ((bit == UEFTapeBit.LowTone) ? 0 : 0x100));
-                        
+
                         cas_bits_left--;
                         if (cas_bits_left == 0)
                         {
                             _isr |= ISR_MASK_RXFULL;
                             UpdateInterrupts();
                         }
-                    } else
+                    }
+                    else
                     {
                         if (bit == UEFTapeBit.HighTone)
                         {
@@ -626,7 +635,8 @@ namespace ElkHWLib
                                 _isr |= ISR_MASK_TONE_DETECT;
                                 UpdateInterrupts();
                             }
-                        } else
+                        }
+                        else
                         {
                             hiToneTicks = 0;
                             if (bit == UEFTapeBit.LowTone)
@@ -635,12 +645,12 @@ namespace ElkHWLib
                             }
                         }
                     }
-                } 
+                }
             }
 
             return ret;
         }
-       
+
 
         byte getvidram()
         {

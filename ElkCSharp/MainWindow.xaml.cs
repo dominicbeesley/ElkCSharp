@@ -181,14 +181,15 @@ namespace ElkCSharp
                     if (fast | tt > 20)
                     {
 
+                        bool render = !fast || mil - prevmillis > 100;
 
                         lock (Elk)
                         {
-                            Elk.DoTicks(40000);
+                            Elk.DoTicks(40000, render);
                         }
                         mymillis += 20;
 
-                        if (!fast || mil - prevmillis > 100)
+                        if (render)
                         {
 
                             var ix = Interlocked.Increment(ref bmpCopySwitch) % N_BUFFERS;

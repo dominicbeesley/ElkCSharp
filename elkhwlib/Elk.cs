@@ -131,11 +131,16 @@ namespace ElkHWLib
 
         bool prevCPU1MHz = false;
 
-        public void DoTicks(int nTicks)
+        /// <summary>
+        /// Run the emulation
+        /// </summary>
+        /// <param name="nTicks">Number of 2MHz ticks to perform</param>
+        /// <param name="render">If true then vide/sound are rendered</param>
+        public void DoTicks(int nTicks, bool render)
         {
             for (int i = 0; i < nTicks; i++)
             {
-                bool cpuEN = ULA.Tick();
+                bool cpuEN = ULA.Tick(render);
                 bool ram = (CPU.ADDR & 0x8000) == 0;
                 bool go = false;
                 
