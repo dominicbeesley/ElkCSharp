@@ -181,7 +181,7 @@ namespace ElkCSharp
                     if (fast | tt > 20)
                     {
 
-                        bool render = !fast || mil - prevmillis > 100;
+                        bool render = !fast || mil - prevmillis > 20;
 
                         lock (Elk)
                         {
