@@ -103,7 +103,7 @@ namespace ElkCSharp
                     Elk.RomWriteEnable[rd.Number] = rd.WriteEnable;
                 });
 
-                ViewModel = new ElkModel(Elk);
+                ViewModel = new ElkModel(Elk, settings);
                 ViewModel.GoFastTape = true;
 
                 this.DataContext = ViewModel;
@@ -266,7 +266,8 @@ namespace ElkCSharp
                 KeyDef keydef;
                 if (FindKeyDef(e.Key, out keydef))
                 {
-                    KeyMatrix[keydef.Col] |= (byte)(1 << keydef.Row);
+                    foreach (var km in keydef.KeyMatrices)
+                        KeyMatrix[km.Col] |= (byte)(1 << km.Row);
                     KeysChanged = true;
                 }
             }
@@ -277,14 +278,15 @@ namespace ElkCSharp
             KeyDef keydef;
             if (FindKeyDef(e.Key, out keydef))
             {
-                KeyMatrix[keydef.Col] &= (byte)((1 << keydef.Row) ^ 0xF);
+                foreach (var km in keydef.KeyMatrices)
+                    KeyMatrix[km.Col] &= (byte)((1 << km.Row) ^ 0xF);
                 KeysChanged = true;
             }
         }
 
         private bool FindKeyDef(Key k, out KeyDef keydef)
         {
-            keydef = settings.KeyMappings.FirstOrDefault()?.Keys.Where(kd => kd.Key == k).FirstOrDefault() ?? KeyDef.Empty;
+            keydef = settings.KeyMappings.FirstOrDefault()?.Keys.Where(kd => kd.WindowsKey == k).FirstOrDefault() ?? KeyDef.Empty;
             return keydef != KeyDef.Empty;
         }
 

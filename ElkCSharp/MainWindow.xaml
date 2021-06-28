@@ -24,6 +24,9 @@
                     <MenuItem Header="Fast" IsCheckable="True" IsChecked="{Binding GoFast, Mode=TwoWay}" />
                     <MenuItem Header="Fast tape" IsCheckable="True" IsChecked="{Binding GoFastTape, Mode=TwoWay}" />
                 </MenuItem>
+                <MenuItem Header="_Hardware">
+                    <MenuItem Header="_Keyboard" ItemsSource="{Binding KeyboardMenu}" />
+                </MenuItem>
             </Menu>
         </StackPanel>
         <StackPanel DockPanel.Dock="Bottom" FlowDirection="LeftToRight" Orientation="Horizontal">

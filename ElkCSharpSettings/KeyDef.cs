@@ -9,14 +9,13 @@ namespace ElkCSharpSettings
 {
     public struct KeyDef
     {
-        private static KeyDef _empty = new KeyDef() { Key = Key.None, Col = -1, Row = -1 };
+        private static KeyDef _empty = new KeyDef() { WindowsKey = Key.None, KeyMatrices = new KeyMatrix[0] };
         public static KeyDef Empty { get { return _empty; } }
-        public Key Key { get; init; }
-        public int Row { get; init; }
-        public int Col { get; init; }
+        public Key WindowsKey { get; init; }
+        public KeyMatrix[] KeyMatrices {get; init;}
 
-        public static bool operator ==(KeyDef a, KeyDef b) => a.Key == b.Key;
-        public static bool operator !=(KeyDef a, KeyDef b) => a.Key != b.Key;
+        public static bool operator ==(KeyDef a, KeyDef b) => a.WindowsKey == b.WindowsKey;
+        public static bool operator !=(KeyDef a, KeyDef b) => a.WindowsKey != b.WindowsKey;
 
         public override bool Equals(object obj)
         {
@@ -24,7 +23,7 @@ namespace ElkCSharpSettings
         }
         public override int GetHashCode()
         {
-            return Key.GetHashCode();
+            return WindowsKey.GetHashCode();
         }
     }
 

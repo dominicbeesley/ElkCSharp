@@ -10,6 +10,8 @@ using System.Windows.Media.Imaging;
 using ElkHWLib;
 using Microsoft.Win32;
 using WPFStuff;
+using ElkCSharpSettings;
+using System.Collections.ObjectModel;
 
 namespace ElkCSharp.ViewModel
 {
@@ -27,7 +29,16 @@ namespace ElkCSharp.ViewModel
         LEDModel _motorLED = new LEDModel() { Name = "Motor" };
         BiLEDModel _tapeToneBiLED = new BiLEDModel() { Name = "Tape Tone" };
 
-        public ElkModel(Elk elk)
+        public Settings Settings { get; init; }
+
+
+        public ObservableCollection<System.Windows.Controls.MenuItem> KeyboardMenu
+        {
+            get; init;
+        }
+
+
+        public ElkModel(Elk elk, Settings settings)
         {
             _elk = elk;
 
@@ -159,6 +170,5 @@ namespace ElkCSharp.ViewModel
                 );
 
         }
-
     }
 }

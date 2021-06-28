@@ -12,6 +12,7 @@ namespace ElkCSharpSettings
         public IList<KeyMap> KeyMappings { get; init; }
         public IList<MachineDef> MachineDefs { get; init; }
 
+        public KeyMap CurrentKeyMap { get; set; }
         public Settings()
         {
             KeyMappings = new List<KeyMap>();

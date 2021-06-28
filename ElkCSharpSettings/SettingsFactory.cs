@@ -24,6 +24,10 @@ namespace ElkCSharpSettings
                 ret.MachineDefs.Add(LoadMachineDef(elkmac, ns));
             }
 
+            var km = elSettings.GetAttribute("keymap");
+            ret.CurrentKeyMap = ret.KeyMappings.Where(k => k.Name == km).FirstOrDefault() ?? ret.KeyMappings.FirstOrDefault();
+            if (ret.CurrentKeyMap == null)
+                throw new SettingsLoadException(elSettings, "There is no keymap with a name that matches the keymap attribute", null);
             return ret;
         }
 
@@ -84,7 +88,7 @@ namespace ElkCSharpSettings
 
         internal static KeyMap LoadKeyMap(XmlElement el, XmlNamespaceManager ns)
         {
-            var ret = new KeyMap() { Name = el.GetAttribute("name") };
+            var ret = new KeyMap() { Name = el.GetAttribute("name"), Description = el.GetAttribute("description") };
             try
             {
                 foreach (XmlElement elkey in el.SelectNodes("elk:keydef", ns))
@@ -97,42 +101,49 @@ namespace ElkCSharpSettings
                     }
                     catch (Exception)
                     {
-                        throw new ArgumentException($"Bad key value \"{winkey}\"");
+                        throw new SettingsLoadException(elkey, $"Bad key value \"{winkey}\"");
                     }
 
-                    int col;
-                    var colstr = elkey.GetAttribute("col");
-                    try
+                    List<KeyMatrix> kms = new List<KeyMatrix>();
+                    foreach (XmlElement elkm in elkey.SelectNodes("elk:keymatrix", ns))
                     {
-                        col = Int32.Parse(colstr);
-                        if (col < 0 || col >= 14)
-                            throw new Exception();
-                    }
-                    catch (Exception)
-                    {
-                        throw new ArgumentException($"Bad key col \"{colstr}\"");
+
+                        int col;
+                        var colstr = elkm.GetAttribute("col");
+                        try
+                        {
+                            col = Int32.Parse(colstr);
+                            if (col < 0 || col >= 14)
+                                throw new Exception();
+                        }
+                        catch (Exception)
+                        {
+                            throw new SettingsLoadException(elkm, $"Bad key col \"{colstr}\"");
+                        }
+
+                        int row;
+                        var rowstr = elkm.GetAttribute("row");
+                        try
+                        {
+                            row = Int32.Parse(rowstr);
+                            if (row < 0 || row >= 4)
+                                throw new Exception();
+                        }
+                        catch (Exception)
+                        {
+                            throw new SettingsLoadException(elkm, $"Bad key row \"{rowstr}\"");
+                        }
+
+                        kms.Add(new KeyMatrix() { Col = col, Row = row });
                     }
 
-                    int row;
-                    var rowstr = elkey.GetAttribute("row");
-                    try
-                    {
-                        row = Int32.Parse(rowstr);
-                        if (row < 0 || row >= 4)
-                            throw new Exception();
-                    }
-                    catch (Exception)
-                    {
-                        throw new ArgumentException($"Bad key row \"{rowstr}\"");
-                    }
 
-
-                    ret.Keys.Add(new KeyDef() { Key = (Key)k, Col = (int)col, Row = (int)row });
+                    ret.Keys.Add(new KeyDef() { WindowsKey = (Key)k, KeyMatrices = kms.ToArray() });
                 }
             }
             catch (Exception ex)
             {
-                throw new ArgumentException($"Error loading keymap {ret.Name}: {ex.Message}", ex);
+                throw new SettingsLoadException(el, $"Error loading keymap {ret.Name}: {ex.Message}", ex);
             }
             return ret;
         }
