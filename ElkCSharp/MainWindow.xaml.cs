@@ -105,7 +105,7 @@ namespace ElkCSharp
 
                 ViewModel = new ElkModel(Elk, settings);
                 ViewModel.GoFastTape = true;
-
+                
                 this.DataContext = ViewModel;
 
                 emuThread = new Thread(() => EmulatorLoop(emuTaskCancel.Token));
@@ -163,6 +163,7 @@ namespace ElkCSharp
                 {
 
                     bool fast = ViewModel.GoFast || (Elk.ULA.Motor && ViewModel.GoFastTape);
+                    bool pause = !ViewModel.Active;
 
                     long mil = sw.ElapsedMilliseconds;
                     /*                    long delay = mymillis - mil;
@@ -178,7 +179,7 @@ namespace ElkCSharp
                     */
                     Thread.Sleep(0);
                     long tt = mil - mymillis;
-                    if (fast | tt > 20)
+                    if (!pause && (fast | tt > 20))
                     {
 
                         bool render = !fast || mil - prevmillis > 20;
@@ -298,6 +299,16 @@ namespace ElkCSharp
             bmpCopy?.ToList()?.ForEach(o => o?.Dispose());
             bmpCopy = null;
 
+        }
+
+        private void Window_Deactivated(object sender, EventArgs e)
+        {
+            ViewModel.WindowPause = true;
+        }
+
+        private void Window_Activated(object sender, EventArgs e)
+        {
+            ViewModel.WindowPause = false;
         }
     }
 }

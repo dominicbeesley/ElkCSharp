@@ -155,6 +155,72 @@ namespace ElkCSharp.ViewModel
             }
         }
 
+        private bool _userPause;
+        /// <summary>
+        /// User request pause using menu
+        /// </summary>
+        public bool UserPause
+        {
+            get { return _userPause; }
+            set
+            {
+                if (_userPause != value)
+                {
+                    _userPause = value;
+                    RaisePropertyChangedEvent();
+                    RaisePropertyChangedEvent(nameof(Active));
+                }
+            }
+        }
+
+        private bool _windowPause;
+        /// <summary>
+        /// Window deactiveated causes pause
+        /// </summary>
+        public bool WindowPause
+        {
+            get { return _windowPause; }
+            set
+            {
+                if (_windowPause != value)
+                {
+                    _windowPause = value;
+                    RaisePropertyChangedEvent();
+                    RaisePropertyChangedEvent(nameof(Active));
+                }
+            }
+        }
+
+        private bool _pauseOnFocus;
+        /// <summary>
+        /// Window deactiveated causes pause
+        /// </summary>
+        public bool PauseOnFocus
+        {
+            get { return _pauseOnFocus; }
+            set
+            {
+                if (_pauseOnFocus != value)
+                {
+                    _pauseOnFocus = value;
+                    RaisePropertyChangedEvent();
+                    RaisePropertyChangedEvent(nameof(Active));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Whether the emulation should be active there are several reasons why it might be paused:
+        ///  - deactivated window
+        ///  - user paused
+        ///  - debug 
+        ///  - etc
+        /// </summary>
+        public bool Active
+        {
+            get { return !UserPause && !(WindowPause & PauseOnFocus); }
+        }
+
         internal void UpdateScreen(Bitmap screenBmp)
         {
             ScreenSource = screenBmp.ToBitmapSource();
