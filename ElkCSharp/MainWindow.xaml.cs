@@ -65,7 +65,6 @@ namespace ElkCSharp
         {
             InitializeComponent();
 
-            AllocConsole();
 
             try
             {
@@ -133,11 +132,6 @@ namespace ElkCSharp
 
             var ix = (bmpCopySwitch-1) % N_BUFFERS;
             if (ix < 0) ix += N_BUFFERS;
-
-            lock(Console.Out)
-            {
-                Console.Out.Write($"|{ix}");
-            }
 
             var bmp = bmpCopy[ix];
             if (bmp != null)
@@ -229,10 +223,6 @@ namespace ElkCSharp
                                 }
                             }
                             prevmillis = mil;
-                            lock (Console.Out)
-                            {
-                                Console.Out.Write($"#{ix}");
-                            }
                         }
 
                         framectr++;
@@ -314,7 +304,6 @@ namespace ElkCSharp
                     KeyMatrix[km.Col] |= (byte)(1 << km.Row);
                 KeysChanged = true;
             }
-            lbDebugKeys.ItemsSource = curPressedKeys;
         }
        
         private void Window_Closed(object sender, EventArgs e)

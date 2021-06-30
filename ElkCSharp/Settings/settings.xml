@@ -381,6 +381,12 @@
     <elk:keydef winkey="V">
       <elk:keymatrix col="9" row="3" />
     </elk:keydef>
+
+    <!-- # to shift-3 = # -->
+    <elk:keydef winkey="OemQuotes" shift="false">
+      <elk:keymatrix col="10" row="0" />
+      <elk:keymatrix col="13" row="2" />
+    </elk:keydef>
     <elk:keydef winkey="D3" shift="false">
       <elk:keymatrix col="10" row="0" />
     </elk:keydef>
