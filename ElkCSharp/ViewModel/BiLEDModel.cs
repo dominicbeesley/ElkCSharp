@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WPFStuff;
 
 namespace ElkCSharp.ViewModel
 {
@@ -14,26 +15,20 @@ namespace ElkCSharp.ViewModel
 
         public byte Red
         {
-            get { return _red; }
-            set
-            {
-                if (value != _red)
-                {
-                    _red = value;
-                    RaisePropertyChangedEvent();
+            get => _red;
+            set {
+                if (Set(ref _red, value)) { 
                     RaisePropertyChangedEvent(nameof(BiLEDValue));
                 }
             }
         }
         public byte Green
         {
-            get { return _green; }
+            get => _green;
             set
             {
-                if (value != _green)
+                if (Set( ref _green, value))
                 {
-                    _green = value;
-                    RaisePropertyChangedEvent();
                     RaisePropertyChangedEvent(nameof(BiLEDValue));
                 }
             }

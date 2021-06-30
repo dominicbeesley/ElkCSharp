@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ElkCSharp"
+        xmlns:local="clr-namespace:ElkCSharp" xmlns:viewmodel="clr-namespace:ElkCSharp.ViewModel" d:DataContext="{d:DesignInstance Type=viewmodel:ElkModel}"
         mc:Ignorable="d"
         Title="MainWindow" Height="600" Width="800"
         KeyDown="Window_KeyDown"
@@ -22,6 +22,10 @@
                     <MenuItem Header="Rewind Tape" Command="{Binding CmdTapeRewind}"/>
                     <MenuItem Header="Eject Tape" Command="{Binding CmdTapeEject}"/>
                 </MenuItem>
+                <MenuItem Header="_Debug">
+                    <MenuItem Header="Dump RAM..." Command="{Binding CmdDumpRAM}" />
+                    <MenuItem Header="Load RAM..." Command="{Binding CmdLoadRAM}" />
+                </MenuItem>
                 <MenuItem Header="_Speed">
                     <MenuItem Header="Fast" IsCheckable="True" IsChecked="{Binding GoFast, Mode=TwoWay}" />
                     <MenuItem Header="Fast tape" IsCheckable="True" IsChecked="{Binding GoFastTape, Mode=TwoWay}" />
@@ -30,7 +34,13 @@
                     <MenuItem Header="Pause on focus" IsCheckable="True" IsChecked="{Binding PauseOnFocus, Mode=TwoWay}" ToolTip="Pause when window loses focus" />
                 </MenuItem>
                 <MenuItem Header="_Hardware">
-                    <MenuItem Header="_Keyboard" ItemsSource="{Binding KeyboardMenu}" />
+                    <MenuItem Header="_Keyboard" ItemsSource="{Binding Settings.KeyMappings}">
+                        <MenuItem.ItemTemplate>
+                            <DataTemplate>
+                                <MenuItem Header="{Binding Name}" IsCheckable="True" IsChecked="{Binding Current, Mode=TwoWay}" />
+                            </DataTemplate>
+                        </MenuItem.ItemTemplate>
+                    </MenuItem>
                 </MenuItem>
             </Menu>
         </StackPanel>
@@ -38,6 +48,18 @@
             <local:ucLED DataContext="{Binding CapsLockLED }" />
             <local:ucLED DataContext="{Binding MotorLED }" />
             <local:ucBiLED DataContext="{Binding TapeToneBiLED }" />
+            <ListBox x:Name="lbDebugKeys">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel Orientation="Horizontal" IsItemsHost="True" Margin="0" />
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Label Content="{Binding WindowsKey}" Height="20" Margin="0"/>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
         </StackPanel>
         <Image             
             x:Name="ScreenImg" 

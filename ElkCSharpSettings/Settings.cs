@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,14 +10,13 @@ namespace ElkCSharpSettings
 {
     public class Settings
     {
-        public IList<KeyMap> KeyMappings { get; init; }
-        public IList<MachineDef> MachineDefs { get; init; }
+        public ObservableCollection<KeyMap> KeyMappings { get; init; }
+        public ObservableCollection<MachineDef> MachineDefs { get; init; }
 
-        public KeyMap CurrentKeyMap { get; set; }
         public Settings()
         {
-            KeyMappings = new List<KeyMap>();
-            MachineDefs = new List<MachineDef>();
+            KeyMappings = new ObservableCollection<KeyMap>();
+            MachineDefs = new ObservableCollection<MachineDef>();
         }
 
 

@@ -53,6 +53,7 @@ namespace ElkCSharp
 
         bool KeysChanged = false;
         byte[] KeyMatrix = new byte[14];
+        IList<KeyDef> curPressedKeys = new List<KeyDef>();
         Settings settings;
 
         /// <summary>
@@ -64,7 +65,7 @@ namespace ElkCSharp
         {
             InitializeComponent();
 
-            //AllocConsole();
+            AllocConsole();
 
             try
             {
@@ -133,6 +134,11 @@ namespace ElkCSharp
             var ix = (bmpCopySwitch-1) % N_BUFFERS;
             if (ix < 0) ix += N_BUFFERS;
 
+            lock(Console.Out)
+            {
+                Console.Out.Write($"|{ix}");
+            }
+
             var bmp = bmpCopy[ix];
             if (bmp != null)
             {
@@ -141,6 +147,12 @@ namespace ElkCSharp
                     ViewModel.UpdateScreen(bmp);
                 }
             }
+
+            ViewModel.CapsLockLED.Lit = Elk.ULA.CapsLock;
+            ViewModel.MotorLED.Lit = Elk.ULA.Motor;
+            ViewModel.TapeToneBiLED.Red = Elk.ULA.LoToneDetect > 8192 ? (byte)255 : (byte)0;
+            ViewModel.TapeToneBiLED.Green = Elk.ULA.HiToneDetect > 8192 ? (byte)255 : (byte)0;
+
         }
 
         private void dispatcherTimer_Tick(object sender, EventArgs e)
@@ -184,6 +196,15 @@ namespace ElkCSharp
 
                         bool render = !fast || mil - prevmillis > 20;
 
+                        lock(KeyMatrix)
+                        {
+                            if (KeysChanged)
+                            {
+                                Elk.UpdateKeys(KeyMatrix);
+                                KeysChanged = false;
+                            }
+                        }
+
                         lock (Elk)
                         {
                             Elk.DoTicks(40000, render);
@@ -207,29 +228,14 @@ namespace ElkCSharp
                                     bmp.UnlockBits(bmpdData);
                                 }
                             }
-
-                            Dispatcher.BeginInvoke(new Action(() =>
-                            {
-                                ViewModel.CapsLockLED.Lit = Elk.ULA.CapsLock;
-                                ViewModel.MotorLED.Lit = Elk.ULA.Motor;
-                                ViewModel.TapeToneBiLED.Red = Elk.ULA.LoToneDetect > 8192 ? (byte)255 : (byte)0;
-                                ViewModel.TapeToneBiLED.Green = Elk.ULA.HiToneDetect > 8192 ? (byte)255 : (byte)0;
-
-                                framectr++;
-
-                                if (KeysChanged)
-                                {
-                                    Elk.UpdateKeys(KeyMatrix);
-                                    KeysChanged = false;
-                                }
-
-                            }));
                             prevmillis = mil;
+                            lock (Console.Out)
+                            {
+                                Console.Out.Write($"#{ix}");
+                            }
                         }
-                        else
-                        {
-                            framectr++;
-                        }
+
+                        framectr++;
 
                         if (tt > 1000 || tt < -1000)
                         {
@@ -264,33 +270,53 @@ namespace ElkCSharp
             }
             else
             {
-                KeyDef keydef;
-                if (FindKeyDef(e.Key, out keydef))
-                {
-                    foreach (var km in keydef.KeyMatrices)
-                        KeyMatrix[km.Col] |= (byte)(1 << km.Row);
-                    KeysChanged = true;
-                }
+                if (e.IsRepeat)
+                    return;
+
+                var curmap = ViewModel.Settings.KeyMappings.Where(o => o.Current).FirstOrDefault() ?? settings.KeyMappings.First();
+
+                var sel = curmap.Keys.Where(
+                    o =>
+                    o.WindowsKey == e.Key && 
+                    (o.Shift == TriState.Any || o.Shift == (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift)?TriState.True:TriState.False)) &&
+                    (o.Ctrl == TriState.Any || o.Ctrl == (Keyboard.Modifiers.HasFlag(ModifierKeys.Control) ? TriState.True : TriState.False))
+                    );
+
+                curPressedKeys = curPressedKeys.Concat(sel).Distinct().ToList();
+
+                UpdateKeyMatrix();
             }
         }
 
         private void Window_KeyUp(object sender, KeyEventArgs e)
         {
-            KeyDef keydef;
-            if (FindKeyDef(e.Key, out keydef))
+            var curmap = ViewModel.Settings.KeyMappings.Where(o => o.Current).FirstOrDefault() ?? settings.KeyMappings.First();
+
+            curPressedKeys = curPressedKeys.Where(o =>
+                o.WindowsKey != e.Key &&
+               (o.Shift == TriState.Any || o.Shift == (Keyboard.Modifiers.HasFlag(ModifierKeys.Shift) ? TriState.True : TriState.False)) &&
+               (o.Ctrl == TriState.Any || o.Ctrl == (Keyboard.Modifiers.HasFlag(ModifierKeys.Control) ? TriState.True : TriState.False))
+            ).ToList();
+            UpdateKeyMatrix();
+
+        }
+
+        private void UpdateKeyMatrix()
+        {
+            lock (KeyMatrix)
             {
-                foreach (var km in keydef.KeyMatrices)
-                    KeyMatrix[km.Col] &= (byte)((1 << km.Row) ^ 0xF);
+                for (int i = 0; i < KeyMatrix.Length; i++)
+                {
+                    KeyMatrix[i] = 0;
+                }
+
+                foreach (var km in curPressedKeys.SelectMany(o => o.KeyMatrices))
+                    KeyMatrix[km.Col] |= (byte)(1 << km.Row);
                 KeysChanged = true;
             }
+            lbDebugKeys.ItemsSource = curPressedKeys;
         }
-
-        private bool FindKeyDef(Key k, out KeyDef keydef)
-        {
-            keydef = settings.KeyMappings.FirstOrDefault()?.Keys.Where(kd => kd.WindowsKey == k).FirstOrDefault() ?? KeyDef.Empty;
-            return keydef != KeyDef.Empty;
-        }
-
+       
         private void Window_Closed(object sender, EventArgs e)
         {
             emuTaskCancel.Cancel();

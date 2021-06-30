@@ -16,18 +16,19 @@ namespace ElkCSharpSettings
 
             foreach (XmlElement elkm in elSettings.SelectNodes("elk:keymap", ns))
             {
-                ret.KeyMappings.Add(LoadKeyMap(elkm, ns));
+                ret.KeyMappings.Add(LoadKeyMap(ret, elkm, ns));
             }
 
             foreach (XmlElement elkmac in elSettings.SelectNodes("elk:machinedef", ns))
             {
-                ret.MachineDefs.Add(LoadMachineDef(elkmac, ns));
+                ret.MachineDefs.Add(LoadMachineDef(ret, elkmac, ns));
             }
 
             var km = elSettings.GetAttribute("keymap");
-            ret.CurrentKeyMap = ret.KeyMappings.Where(k => k.Name == km).FirstOrDefault() ?? ret.KeyMappings.FirstOrDefault();
-            if (ret.CurrentKeyMap == null)
+            var c = ret.KeyMappings.Where(k => k.Name == km).FirstOrDefault() ?? ret.KeyMappings.FirstOrDefault();
+            if (c == null)
                 throw new SettingsLoadException(elSettings, "There is no keymap with a name that matches the keymap attribute", null);
+            c.SetCurrent();
             return ret;
         }
 
@@ -43,7 +44,7 @@ namespace ElkCSharpSettings
             return LoadSettings(doc.DocumentElement, SetingsNamespaces.GetNamspaceManager());
         }
 
-        internal static MachineDef LoadMachineDef(XmlElement elkmac, XmlNamespaceManager ns)
+        internal static MachineDef LoadMachineDef(Settings settings, XmlElement elkmac, XmlNamespaceManager ns)
         {
             var ret = new MachineDef() { Name = elkmac.GetAttribute("name") };
             try
@@ -86,9 +87,9 @@ namespace ElkCSharpSettings
             return ret;
         }
 
-        internal static KeyMap LoadKeyMap(XmlElement el, XmlNamespaceManager ns)
+        internal static KeyMap LoadKeyMap(Settings settings, XmlElement el, XmlNamespaceManager ns)
         {
-            var ret = new KeyMap() { Name = el.GetAttribute("name"), Description = el.GetAttribute("description") };
+            var ret = new KeyMap(settings) { Name = el.GetAttribute("name"), Description = el.GetAttribute("description") };
             try
             {
                 foreach (XmlElement elkey in el.SelectNodes("elk:keydef", ns))
@@ -102,6 +103,33 @@ namespace ElkCSharpSettings
                     catch (Exception)
                     {
                         throw new SettingsLoadException(elkey, $"Bad key value \"{winkey}\"");
+                    }
+
+                    TriState shift;
+                    var ss = elkey.GetAttribute("shift");
+                    try
+                    {
+                        if (string.IsNullOrEmpty(ss))
+                            shift = TriState.Any;
+                        else
+                            shift = Enum.Parse<TriState>(ss, true);
+                    } catch (Exception ex)
+                    {
+                        throw new SettingsLoadException(elkey, $"Bad shift value \"{ss}\"", ex);
+                    }
+
+                    TriState ctrl;
+                    var cs = elkey.GetAttribute("ctrl");
+                    try
+                    {
+                        if (string.IsNullOrEmpty(cs))
+                            ctrl = TriState.Any;
+                        else
+                            ctrl = Enum.Parse<TriState>(cs, true);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new SettingsLoadException(elkey, $"Bad ctrl value \"{cs}\"", ex);
                     }
 
                     List<KeyMatrix> kms = new List<KeyMatrix>();
@@ -138,7 +166,7 @@ namespace ElkCSharpSettings
                     }
 
 
-                    ret.Keys.Add(new KeyDef() { WindowsKey = (Key)k, KeyMatrices = kms.ToArray() });
+                    ret.Keys.Add(new KeyDef() { WindowsKey = (Key)k, Shift = shift, Ctrl = ctrl, KeyMatrices = kms.ToArray() });
                 }
             }
             catch (Exception ex)

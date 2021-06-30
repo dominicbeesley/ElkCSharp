@@ -12,6 +12,7 @@ using Microsoft.Win32;
 using WPFStuff;
 using ElkCSharpSettings;
 using System.Collections.ObjectModel;
+using System.IO;
 
 namespace ElkCSharp.ViewModel
 {
@@ -22,6 +23,8 @@ namespace ElkCSharp.ViewModel
 
         public ICommand CmdTapeRewind { get; }
         public ICommand CmdTapeEject { get; }
+        public ICommand CmdDumpRAM { get; }
+        public ICommand CmdLoadRAM { get; }
 
         Elk _elk;
 
@@ -31,16 +34,10 @@ namespace ElkCSharp.ViewModel
 
         public Settings Settings { get; init; }
 
-
-        public ObservableCollection<System.Windows.Controls.MenuItem> KeyboardMenu
-        {
-            get; init;
-        }
-
-
         public ElkModel(Elk elk, Settings settings)
         {
             _elk = elk;
+            Settings = settings;
 
             CmdHardReset = new RelayCommand(
                 o =>
@@ -110,6 +107,51 @@ namespace ElkCSharp.ViewModel
                 "Eject Tape",
                 Command_Exception
                 );
+            CmdDumpRAM = new RelayCommand(
+                o => DoCmdDumpRAM(),
+                o => true,
+                "Dump RAM",
+                Command_Exception
+                );
+            CmdLoadRAM = new RelayCommand(
+                o => DoCmdLoadRAM(),
+                o => true,
+                "Load RAM",
+                Command_Exception
+                );
+
+
+        }
+
+        public void DoCmdDumpRAM()
+        {
+            var dlg = new SaveFileDialog();
+            dlg.Filter = "Binary Files|*.bin|All Files|*.*";
+            if (dlg.ShowDialog() ?? false)
+            {
+                lock (_elk)
+                {
+                    File.WriteAllBytes(dlg.FileName, _elk.RAM);
+                }
+            }
+
+        }
+
+        public void DoCmdLoadRAM()
+        {
+            var dlg = new OpenFileDialog();
+            dlg.Filter = "Binary Files|*.bin|All Files|*.*";
+            if (dlg.ShowDialog() ?? false)
+            {
+                lock (_elk)
+                {
+                    using (var fs = new FileStream(dlg.FileName, FileMode.Open, FileAccess.Read))
+                    {
+                        fs.Read(_elk.RAM, 0, 0x8000);
+                        _elk.ULA.SyncRAM(_elk.RAM);
+                    }
+                }
+            }
 
         }
 

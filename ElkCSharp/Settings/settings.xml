@@ -197,4 +197,243 @@
       <elk:keymatrix col="13" row="3" />
     </elk:keydef>
   </elk:keymap>
+  <elk:keymap name="#logical-uk" description="Logical UK keyboard">
+    <!-- | next to Z to shift right-->
+    <elk:keydef winkey="Oem5" shift="True">
+      <elk:keymatrix col="0" row="0" />
+      <elk:keymatrix col="13" row="3" />
+    </elk:keydef>
+    <!-- \ next to Z to ctrl right-->
+    <elk:keydef winkey="Oem5" shift="False">
+      <elk:keymatrix col="0" row="0" />
+      <elk:keymatrix col="13" row="2" />
+    </elk:keydef>
+    <elk:keydef winkey="Right">
+      <elk:keymatrix col="0" row="0" />
+    </elk:keydef>
+    <!-- non shifted [ to shift copy == [-->
+    <elk:keydef winkey="OemOpenBrackets" shift="false">
+      <elk:keymatrix col="0" row="1" />
+      <elk:keymatrix col="13" row="3" />
+    </elk:keydef>
+    <!-- non shifted ] to ctrl copy == ]-->
+    <elk:keydef winkey="Oem6" shift="false">
+      <elk:keymatrix col="0" row="1" />
+      <elk:keymatrix col="13" row="2" />
+    </elk:keydef>
+    <elk:keydef winkey="End">
+      <elk:keymatrix col="0" row="1" />
+    </elk:keydef>
+    <elk:keydef winkey="None">
+      <elk:keymatrix col="0" row="2" />
+    </elk:keydef>
+    <elk:keydef winkey="Space">
+      <elk:keymatrix col="0" row="3" />
+    </elk:keydef>
+
+
+    <!-- shift-6 to shift left == ^ -->
+    <elk:keydef winkey="D6" shift="true">
+      <elk:keymatrix col="1" row="0" />
+      <elk:keymatrix col="13" row="3" />
+    </elk:keydef>
+    <!-- shift-# to ctrl left == ~ -->
+    <elk:keydef winkey="OemQuotes" shift="true">
+      <elk:keymatrix col="1" row="0" />
+      <elk:keymatrix col="13" row="2" />
+    </elk:keydef>
+    <elk:keydef winkey="Left">
+      <elk:keymatrix col="1" row="0" />
+    </elk:keydef>
+    <!-- shift-minus to shift down == _ -->
+    <elk:keydef winkey="OemMinus" shift="true">
+      <elk:keymatrix col="1" row="1" />
+      <elk:keymatrix col="13" row="3" />
+    </elk:keydef>
+    <!-- shift-] to shift ctrl == } -->
+    <elk:keydef winkey="Oem6" shift="true">
+      <elk:keymatrix col="1" row="1" />
+      <elk:keymatrix col="13" row="2" />
+    </elk:keydef>
+    <elk:keydef winkey="Down">
+      <elk:keymatrix col="1" row="1" />
+    </elk:keydef>
+    <elk:keydef winkey="Return">
+      <elk:keymatrix col="1" row="2" />
+    </elk:keydef>
+    <elk:keydef winkey="Delete">
+      <elk:keymatrix col="1" row="3" />
+    </elk:keydef>
+    <elk:keydef winkey="Back">
+      <elk:keymatrix col="1" row="3" />
+    </elk:keydef>
+    
+    
+    <elk:keydef winkey="Subtract">
+      <elk:keymatrix col="2" row="0" />
+    </elk:keydef>
+    <elk:keydef winkey="OemMinus" shift="false">
+      <elk:keymatrix col="2" row="0" />
+    </elk:keydef>
+    <!-- shift-3 to shift up == £ -->
+    <elk:keydef winkey="D3" shift="true">
+      <elk:keymatrix col="2" row="1" />
+      <elk:keymatrix col="13" row="3" />
+    </elk:keydef>
+    <!-- shift [ to ctrl up == {-->
+    <elk:keydef winkey="OemOpenBrackets" shift="true">
+      <elk:keymatrix col="2" row="1" />
+      <elk:keymatrix col="13" row="2" />
+    </elk:keydef>
+    <elk:keydef winkey="Up">
+      <elk:keymatrix col="2" row="1" />
+    </elk:keydef>
+    <elk:keydef winkey="Oem3">
+      <elk:keymatrix col="2" row="2" />
+    </elk:keydef>
+    <elk:keydef winkey="Oem7">
+      <elk:keymatrix col="2" row="2" />
+    </elk:keydef>
+    <elk:keydef winkey="None">
+      <elk:keymatrix col="2" row="3" />
+    </elk:keydef>
+    <elk:keydef winkey="D0">
+      <elk:keymatrix col="3" row="0" />
+    </elk:keydef>
+    <elk:keydef winkey="P">
+      <elk:keymatrix col="3" row="1" />
+    </elk:keydef>
+    <elk:keydef winkey="Oem1">
+      <elk:keymatrix col="3" row="2" />
+    </elk:keydef>
+    <elk:keydef winkey="Oem2">
+      <elk:keymatrix col="3" row="3" />
+    </elk:keydef>
+    <elk:keydef winkey="D9">
+      <elk:keymatrix col="4" row="0" />
+    </elk:keydef>
+    <elk:keydef winkey="O">
+      <elk:keymatrix col="4" row="1" />
+    </elk:keydef>
+    <elk:keydef winkey="L">
+      <elk:keymatrix col="4" row="2" />
+    </elk:keydef>
+    <elk:keydef winkey="OemPeriod">
+      <elk:keymatrix col="4" row="3" />
+    </elk:keydef>
+    <elk:keydef winkey="D8">
+      <elk:keymatrix col="5" row="0" />
+    </elk:keydef>
+    <elk:keydef winkey="I">
+      <elk:keymatrix col="5" row="1" />
+    </elk:keydef>
+    <elk:keydef winkey="K">
+      <elk:keymatrix col="5" row="2" />
+    </elk:keydef>
+    <elk:keydef winkey="OemComma">
+      <elk:keymatrix col="5" row="3" />
+    </elk:keydef>
+    <elk:keydef winkey="D7">
+      <elk:keymatrix col="6" row="0" />
+    </elk:keydef>
+    <elk:keydef winkey="U">
+      <elk:keymatrix col="6" row="1" />
+    </elk:keydef>
+    <elk:keydef winkey="J">
+      <elk:keymatrix col="6" row="2" />
+    </elk:keydef>
+    <elk:keydef winkey="M">
+      <elk:keymatrix col="6" row="3" />
+    </elk:keydef>
+    <elk:keydef winkey="D6" shift="false">
+      <elk:keymatrix col="7" row="0" />
+    </elk:keydef>
+    <elk:keydef winkey="Y">
+      <elk:keymatrix col="7" row="1" />
+    </elk:keydef>
+    <elk:keydef winkey="H">
+      <elk:keymatrix col="7" row="2" />
+    </elk:keydef>
+    <elk:keydef winkey="N">
+      <elk:keymatrix col="7" row="3" />
+    </elk:keydef>
+    <elk:keydef winkey="D5">
+      <elk:keymatrix col="8" row="0" />
+    </elk:keydef>
+    <elk:keydef winkey="T">
+      <elk:keymatrix col="8" row="1" />
+    </elk:keydef>
+    <elk:keydef winkey="G">
+      <elk:keymatrix col="8" row="2" />
+    </elk:keydef>
+    <elk:keydef winkey="B">
+      <elk:keymatrix col="8" row="3" />
+    </elk:keydef>
+    <elk:keydef winkey="D4">
+      <elk:keymatrix col="9" row="0" />
+    </elk:keydef>
+    <elk:keydef winkey="R">
+      <elk:keymatrix col="9" row="1" />
+    </elk:keydef>
+    <elk:keydef winkey="F">
+      <elk:keymatrix col="9" row="2" />
+    </elk:keydef>
+    <elk:keydef winkey="V">
+      <elk:keymatrix col="9" row="3" />
+    </elk:keydef>
+    <elk:keydef winkey="D3" shift="false">
+      <elk:keymatrix col="10" row="0" />
+    </elk:keydef>
+    <elk:keydef winkey="E">
+      <elk:keymatrix col="10" row="1" />
+    </elk:keydef>
+    <elk:keydef winkey="D">
+      <elk:keymatrix col="10" row="2" />
+    </elk:keydef>
+    <elk:keydef winkey="C">
+      <elk:keymatrix col="10" row="3" />
+    </elk:keydef>
+    <elk:keydef winkey="D2">
+      <elk:keymatrix col="11" row="0" />
+    </elk:keydef>
+    <elk:keydef winkey="W">
+      <elk:keymatrix col="11" row="1" />
+    </elk:keydef>
+    <elk:keydef winkey="S">
+      <elk:keymatrix col="11" row="2" />
+    </elk:keydef>
+    <elk:keydef winkey="X">
+      <elk:keymatrix col="11" row="3" />
+    </elk:keydef>
+    <elk:keydef winkey="D1">
+      <elk:keymatrix col="12" row="0" />
+    </elk:keydef>
+    <elk:keydef winkey="Q">
+      <elk:keymatrix col="12" row="1" />
+    </elk:keydef>
+    <elk:keydef winkey="A">
+      <elk:keymatrix col="12" row="2" />
+    </elk:keydef>
+    <elk:keydef winkey="Z">
+      <elk:keymatrix col="12" row="3" />
+    </elk:keydef>
+    <elk:keydef winkey="Escape">
+      <elk:keymatrix col="13" row="0" />
+    </elk:keydef>
+    <elk:keydef winkey="CapsLock">
+      <elk:keymatrix col="13" row="1" />
+    </elk:keydef>
+    <elk:keydef winkey="LeftCtrl">
+      <elk:keymatrix col="13" row="2" />
+    </elk:keydef>
+    <elk:keydef winkey="RightCtrl">
+      <elk:keymatrix col="13" row="2" />
+    </elk:keydef>
+    <elk:keydef winkey="LeftShift">
+      <elk:keymatrix col="13" row="3" />
+    </elk:keydef>
+    <elk:keydef winkey="RightShift">
+      <elk:keymatrix col="13" row="3" />
+    </elk:keydef>
+  </elk:keymap>
 </elk:settings>

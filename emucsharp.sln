@@ -49,7 +49,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WPFStuff", "WPFStuff\WPFStu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Utility", "Utility\Utility.csproj", "{121DB17F-8438-45C4-A58C-1E859140E059}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElkCSharpSettings", "ElkCSharpSettings\ElkCSharpSettings.csproj", "{91C3D94A-3215-4AA9-BB62-2279FFACC3D8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ElkCSharpSettings", "ElkCSharpSettings\ElkCSharpSettings.csproj", "{91C3D94A-3215-4AA9-BB62-2279FFACC3D8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KeyNames", "KeyNames\KeyNames.csproj", "{0ED74962-0705-4F9C-B1C3-3CA786B9886E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -97,6 +99,10 @@ Global
 		{91C3D94A-3215-4AA9-BB62-2279FFACC3D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{91C3D94A-3215-4AA9-BB62-2279FFACC3D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{91C3D94A-3215-4AA9-BB62-2279FFACC3D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0ED74962-0705-4F9C-B1C3-3CA786B9886E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0ED74962-0705-4F9C-B1C3-3CA786B9886E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0ED74962-0705-4F9C-B1C3-3CA786B9886E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0ED74962-0705-4F9C-B1C3-3CA786B9886E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -106,6 +112,7 @@ Global
 		{56068E1B-C29A-4863-9C98-F39103542929} = {64E6F592-E350-4A39-BE54-4FAB2CF14197}
 		{EBAAC8DD-4B6C-4F5D-83F4-2B852C9E0F80} = {64E6F592-E350-4A39-BE54-4FAB2CF14197}
 		{5B64B4D3-31E6-4CD9-91DE-0EAB8176884E} = {B4569CBD-D7AB-4887-8F8A-71CBC5F52F18}
+		{0ED74962-0705-4F9C-B1C3-3CA786B9886E} = {B4569CBD-D7AB-4887-8F8A-71CBC5F52F18}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {81005CD8-F00E-4356-84F1-AA4BD48092E4}
