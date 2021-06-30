@@ -10,6 +10,7 @@ namespace ElkCSharpSettings
     {
         public int Row { get; init; }
         public int Col { get; init; }
+        public bool On { get; init; }
 
     }
 }

@@ -162,7 +162,16 @@ namespace ElkCSharpSettings
                             throw new SettingsLoadException(elkm, $"Bad key row \"{rowstr}\"");
                         }
 
-                        kms.Add(new KeyMatrix() { Col = col, Row = row });
+                        bool on;
+                        var ons = elkm.GetAttribute("force")?.ToLower();
+                        if (String.IsNullOrEmpty(ons) || ons == "on")
+                            on = true;
+                        else if (ons == "off")
+                            on = false;
+                        else
+                            throw new SettingsLoadException(elkm, $"Bad force \"{ons}\"");
+
+                        kms.Add(new KeyMatrix() { Col = col, Row = row, On = on });
                     }
 
 

@@ -312,8 +312,10 @@ namespace ElkCSharp
                     KeyMatrix[i] = 0;
                 }
 
-                foreach (var km in curPressedKeys.SelectMany(o => o.KeyMatrices))
+                foreach (var km in curPressedKeys.SelectMany(o => o.KeyMatrices).Where(o => o.On))
                     KeyMatrix[km.Col] |= (byte)(1 << km.Row);
+                foreach (var km in curPressedKeys.SelectMany(o => o.KeyMatrices).Where(o => !o.On))
+                    KeyMatrix[km.Col] &= (byte)((1 << km.Row) ^ 0xFF);
                 KeysChanged = true;
             }
         }
