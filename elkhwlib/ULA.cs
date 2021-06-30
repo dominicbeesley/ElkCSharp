@@ -221,7 +221,7 @@ namespace ElkHWLib
 
         Int32 ToPalette32(byte b)
         {
-            return ((b & 1) != 0 ? 0xFF : 0) + ((b & 2) != 0 ? 0xFF00 : 0) + ((b & 4) != 0 ? 0xFF0000 : 0);
+            return ((b & 1) != 0 ? 0xFF0000 : 0) + ((b & 2) != 0 ? 0xFF00 : 0) + ((b & 4) != 0 ? 0xFF : 0);
         }
 
         protected void UpdateInterrupts()
