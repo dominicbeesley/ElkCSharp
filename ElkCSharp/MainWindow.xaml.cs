@@ -144,7 +144,7 @@ namespace ElkCSharp
             {
                 lock (bmp)
                 {
-                    ViewModel.UpdateScreen(bmp);
+                    ScreenImg.Source = bmp.ToBitmapSource();
                 }
             }
 
@@ -189,7 +189,7 @@ namespace ElkCSharp
                                             mymillis = mil;
                                         }
                     */
-                    Thread.Sleep(0);
+                    Thread.Sleep((fast)?0:1);
                     long tt = mil - mymillis;
                     if (!pause && (fast | tt > 20))
                     {

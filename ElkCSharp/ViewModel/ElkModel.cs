@@ -155,16 +155,6 @@ namespace ElkCSharp.ViewModel
 
         }
 
-        BitmapSource _screenSource = null;
-        public BitmapSource ScreenSource
-        {
-            get { return _screenSource; }
-            private set
-            {
-                _screenSource = value;
-                RaisePropertyChangedEvent();
-            }
-        }
 
         public LEDModel CapsLockLED { get { return _capsLockLED; } }
         public LEDModel MotorLED { get { return _motorLED; } }
@@ -263,10 +253,6 @@ namespace ElkCSharp.ViewModel
             get { return !UserPause && !(WindowPause & PauseOnFocus); }
         }
 
-        internal void UpdateScreen(Bitmap screenBmp)
-        {
-            ScreenSource = screenBmp.ToBitmapSource();
-        }
 
         public void Command_Exception(object sender, ExceptionEventArgs args)
         {
