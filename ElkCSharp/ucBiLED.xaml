@@ -25,19 +25,20 @@
         </Border>
         <Border                
                     Grid.Column="1" 
-                    CornerRadius="2"
+                    CornerRadius="20"
                     BorderBrush="{StaticResource Retro_Brush_Label}"
                     BorderThickness="1"
+                    Background="Black"
                     >
-            <Rectangle 
+            <Ellipse 
                 DataContext="{Binding Path=BiLEDValue, NotifyOnTargetUpdated=True}" 
                 Fill="{Binding Converter={ StaticResource hilo2rg }}"
                 Margin="2,2,2,2" 
-                RadiusX="1" 
-                RadiusY="1"
+                Width="16" 
+                Height="16"
                 Opacity="1"
                 >
-            </Rectangle>
+            </Ellipse>
         </Border>
     </Grid>
 </UserControl>
