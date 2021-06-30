@@ -33,9 +33,12 @@ namespace ElkCSharp.ViewModel
         BiLEDModel _tapeToneBiLED = new BiLEDModel() { Name = "Tape Tone" };
 
         public Settings Settings { get; init; }
+        public WriteableBitmap ScreenSource { get; init; }
 
         public ElkModel(Elk elk, Settings settings)
         {
+            ScreenSource = new WriteableBitmap(640, 512, 96, 96, System.Windows.Media.PixelFormats.Bgr32, null);
+
             _elk = elk;
             Settings = settings;
 

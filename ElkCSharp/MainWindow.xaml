@@ -68,7 +68,7 @@
             Margin="0,0,0,0" 
             VerticalAlignment="Top" 
             Width="640" 
-            Stretch="Fill" 
+            Stretch="None" 
             UseLayoutRounding="false" 
             RenderOptions.BitmapScalingMode="NearestNeighbor"           
             Source="{Binding ScreenSource }"            

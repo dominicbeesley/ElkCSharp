@@ -38,6 +38,9 @@ namespace ElkCSharp
         [return: MarshalAs(UnmanagedType.Bool)]
         static extern bool AllocConsole();
 
+        [DllImport("kernel32.dll")]
+        static extern void RtlMoveMemory(IntPtr dest, IntPtr src, uint len);
+
         protected Elk Elk { get; init; }
         protected ElkModel ViewModel { get; init; }
 
@@ -48,8 +51,9 @@ namespace ElkCSharp
         CancellationTokenSource emuTaskCancel = new CancellationTokenSource();
 
         private const int N_BUFFERS = 4;
-        Bitmap[] bmpCopy;
+        Int32[][] bmpCopy;
         volatile UInt32 bmpCopySwitch;
+        Int32[] palette;
 
         bool KeysChanged = false;
         byte[] KeyMatrix = new byte[14];
@@ -68,27 +72,16 @@ namespace ElkCSharp
 
             try
             {
+
                 var myDir = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
                 var settingsDir = System.IO.Path.Join(myDir, "Settings");
                 settings = SettingsFactory.LoadSettings(System.IO.Path.Combine(settingsDir, "settings.xml"));
 
-                bmpCopy = new Bitmap[N_BUFFERS];
+                bmpCopy = new Int32[N_BUFFERS][];
                 for (int i = 0; i < N_BUFFERS; i++)
                 {
-                    bmpCopy[i] = new Bitmap(640, 256, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
+                    bmpCopy[i] = new Int32[640 * 256];
                 }
-
-                ColorPalette pal = bmpCopy[0].Palette;
-                // this is the _physical_ palette, the logical to physical mapping is done in the rasterizer
-                for (int i = 0; i < 256; i++)
-                {
-                    pal.Entries[i] = System.Drawing.Color.FromArgb(
-                        ((i & 1) != 0) ? 255 : 0,
-                        ((i & 2) != 0) ? 255 : 0,
-                        ((i & 4) != 0) ? 255 : 0
-                        );
-                }
-                bmpCopy.ToList().ForEach(o => o.Palette = pal);
 
 
                 Elk = new Elk();
@@ -126,7 +119,6 @@ namespace ElkCSharp
         }
 
 
-        
         private void CompositionTarget_Rendering(object sender, EventArgs e)
         {
 
@@ -138,7 +130,36 @@ namespace ElkCSharp
             {
                 lock (bmp)
                 {
-                    ScreenImg.Source = bmp.ToBitmapSource();
+
+                    unsafe
+                    {
+
+                        var w = ViewModel.ScreenSource;
+                        w.Lock();
+                        byte* ptrD =(byte *) w.BackBuffer;
+                        try
+                        {
+                            fixed (Int32* ptrS0 = &bmp[0])
+                            {
+                                byte* ptrS = (byte *)ptrS0;
+                                int off = 0;
+                                for (int i = 0; i < 512; i++)
+                                {
+                                    RtlMoveMemory((IntPtr)ptrD, (IntPtr)ptrS, 640 * 4);
+                                    if ((i & 1) != 0)
+                                        ptrS += 640*4;
+                                    ptrD += w.BackBufferStride;
+                                }
+                            }
+
+
+                            w.AddDirtyRect(new Int32Rect(0, 0, 640, 512));
+                        }
+                        finally
+                        {
+                            w.Unlock();
+                        }
+                    }
                 }
             }
 
@@ -209,18 +230,9 @@ namespace ElkCSharp
                         {
 
                             var ix = Interlocked.Increment(ref bmpCopySwitch) % N_BUFFERS;
-                            var bmp = bmpCopy[ix];
-                            lock (bmp)
+                            lock (bmpCopy[ix])
                             {
-                                var bmpdData = bmp.LockBits(new System.Drawing.Rectangle(0, 0, 640, 256), ImageLockMode.WriteOnly, System.Drawing.Imaging.PixelFormat.Format8bppIndexed);
-                                try
-                                {
-                                    System.Runtime.InteropServices.Marshal.Copy(Elk.ULA.ScreenData, 0, bmpdData.Scan0, 640 * 256);
-                                }
-                                finally
-                                {
-                                    bmp.UnlockBits(bmpdData);
-                                }
+                                Array.Copy(Elk.ULA.ScreenData, bmpCopy[ix], 640 * 256);
                             }
                             prevmillis = mil;
                         }
@@ -310,10 +322,6 @@ namespace ElkCSharp
         {
             emuTaskCancel.Cancel();
             emuThread?.Join(1000);
-
-            bmpCopy?.ToList()?.ForEach(o => o?.Dispose());
-            bmpCopy = null;
-
         }
 
         private void Window_Deactivated(object sender, EventArgs e)
