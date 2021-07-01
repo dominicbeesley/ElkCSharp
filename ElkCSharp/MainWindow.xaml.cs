@@ -142,7 +142,6 @@ namespace ElkCSharp
                             fixed (Int32* ptrS0 = &bmp[0])
                             {
                                 byte* ptrS = (byte *)ptrS0;
-                                int off = 0;
                                 for (int i = 0; i < 512; i++)
                                 {
                                     RtlMoveMemory((IntPtr)ptrD, (IntPtr)ptrS, 640 * 4);
