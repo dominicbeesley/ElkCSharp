@@ -1,0 +1,30 @@
+﻿<UserControl x:Class="ElkCSharp.ucFloppy"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ElkCSharp"
+             mc:Ignorable="d" 
+             d:DesignHeight="24" d:DesignWidth="120"
+             xmlns:model="clr-namespace:ElkCSharp.ViewModel"
+             xmlns:sampledata="clr-namespace:ElkCSharp.ViewModel.Sample"
+             d:DataContext="{ x:Static sampledata:DesignTimeSampleData.DiscDriveModel }"
+             >
+    <Border 
+        BorderBrush="{StaticResource Retro_Brush_Label}" 
+        Background="{StaticResource Retro_Brush_BG}" 
+        BorderThickness="3"
+        CornerRadius="2"
+        >
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*" />
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="1*" />
+        </Grid.ColumnDefinitions>
+            <Label Content="{Binding DriveNumber}" Grid.Column="0" Margin="0" Padding="0"/>
+            <Label Content="{Binding TrackNumber}" Grid.Column="1" Margin="0" Padding="0"/>
+            <local:ucLEDSimple Grid.Column="2" Lit="{Binding MotorOn}" />
+        </Grid>
+    </Border>
+</UserControl>

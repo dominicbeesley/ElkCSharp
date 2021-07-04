@@ -198,7 +198,7 @@ namespace cpulib_65xx {
 				NextFn(this);
 
 				if (_rnw)
-					SysCpu.Read(_addr, out _dat);
+					SysCpu.Read(_addr, ref _dat);
 				else
 					SysCpu.Write(_addr, _dat);
 

@@ -53,7 +53,6 @@ namespace ElkCSharp
         private const int N_BUFFERS = 4;
         Int32[][] bmpCopy;
         volatile UInt32 bmpCopySwitch;
-        Int32[] palette;
 
         bool KeysChanged = false;
         byte[] KeyMatrix = new byte[14];
@@ -68,6 +67,10 @@ namespace ElkCSharp
         public MainWindow()
         {
             InitializeComponent();
+
+#if DEBUG
+            AllocConsole();
+#endif
 
 
             try
@@ -87,6 +90,7 @@ namespace ElkCSharp
                 Elk = new Elk();
                 //elk.DebugCycles = true;
                 //elk.Debug = true;                
+
 
                 settings.MachineDefs.First().RomDefs.ToList().ForEach(rd =>
                 {
@@ -166,6 +170,10 @@ namespace ElkCSharp
             ViewModel.MotorLED.Lit = Elk.ULA.Motor;
             ViewModel.TapeToneBiLED.Red = Elk.ULA.LoToneDetect > 8192 ? (byte)255 : (byte)0;
             ViewModel.TapeToneBiLED.Green = Elk.ULA.HiToneDetect > 8192 ? (byte)255 : (byte)0;
+            ViewModel.FloppyDrive0.MotorOn = Elk.FloppyDrive0.Active;
+            ViewModel.FloppyDrive0.TrackNumber = Elk.FloppyDrive0.Track;
+            ViewModel.FloppyDrive1.MotorOn = Elk.FloppyDrive1.Active;
+            ViewModel.FloppyDrive1.TrackNumber = Elk.FloppyDrive1.Track;
 
         }
 

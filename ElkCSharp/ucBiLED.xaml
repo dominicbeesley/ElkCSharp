@@ -19,7 +19,7 @@
             <ColumnDefinition Width="96" />
             <ColumnDefinition Width="24" />
         </Grid.ColumnDefinitions>
-        <Border Grid.Column="0" BorderBrush="AliceBlue" BorderThickness="2" Height="24">
+        <Border Grid.Column="0"  Height="24">
             <TextBlock  Text="{Binding Name}" Name="tbLabel" VerticalAlignment="Center"
                 Style="{StaticResource Retro_TextBlock_LED_Label}" />
         </Border>

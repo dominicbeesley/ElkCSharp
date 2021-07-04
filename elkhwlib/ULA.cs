@@ -247,7 +247,7 @@ namespace ElkHWLib
         /// <returns>true if data returned, if false the emulation should leave the CPU's data bus set to its previous value</returns>
         /// <remarks>Note: reading registers has side-effects (i.e. clearing ISR), for displaying register values in a debugger another method should be used</remarks>
         /// 
-        public bool ReadReg(ushort addr, out byte dat)
+        public bool ReadReg(ushort addr, ref byte dat)
         {
             switch (addr & 0xF)
             {
@@ -262,7 +262,6 @@ namespace ElkHWLib
                     return true;
 
                 default:
-                    dat = 0xFF;
                     return false;
             }
         }

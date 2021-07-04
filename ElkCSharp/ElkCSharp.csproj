@@ -27,9 +27,15 @@
     <Compile Update="ucBiLED.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="ucLEDSimple.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Roms\ADFS100.rom">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Roms\B_BASIC200.rom">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -43,6 +49,10 @@
 
   <ItemGroup>
     <Page Update="ucBiLED.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="ucLEDSimple.xaml">
       <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>

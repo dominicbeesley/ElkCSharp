@@ -100,15 +100,15 @@ namespace cpulib_65xx
 
 		public string Disassemble(ushort addr)
         {
-			byte op;
+			byte op = 0xFF;
 
-			SysCpu.Read(addr, out op, true);
+			SysCpu.Read(addr, ref op, true);
 
 			var opd = OpCodes[op];
 
 			byte peek(ushort addr) {
-				byte ret;
-				SysCpu.Read(addr, out ret, true);
+				byte ret = 0xFF;
+				SysCpu.Read(addr, ref ret, true);
 				return ret;
             };
 

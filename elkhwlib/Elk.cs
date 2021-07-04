@@ -45,6 +45,11 @@ namespace ElkHWLib
         TextWriter _debugStream = null;
         private bool disposedValue;
 
+        IElkHWPlugin[] hardwarePlugins;
+
+        public FloppyDrive FloppyDrive0 { get; init; }
+        public FloppyDrive FloppyDrive1 { get; init; }
+
         public Elk()
         {
             ULA = new ULA();
@@ -65,6 +70,14 @@ namespace ElkHWLib
                 Roms[i] = new byte[0x4000];
             }
 
+            FloppyDrive0 = new FloppyDrive();
+            FloppyDrive1 = new FloppyDrive();
+
+            hardwarePlugins = new IElkHWPlugin[]
+            {
+                    new AcornPlus3(this)
+            };
+
         }
 
         public void Reset(bool hard) { 
@@ -75,38 +88,58 @@ namespace ElkHWLib
 
         }
 
-        public void Read(ushort addr, out byte dat, bool peek = false)
+        public bool Read(ushort addr, ref byte dat, bool peek = false)
         {
             if ((addr & 0xC000) == 0xC000)
             {
                 if (addr >= 0xFC00 && addr < 0xFEFF)
                 {
+                    bool ret = false;
                     if ((addr & 0xFF00) == 0xFE00)
                     {
-                        if (!ULA.ReadReg(addr, out dat))
-                        {
-                            dat = CPU.DAT;
-                        }
-                    } else
-                    {
-                        // read of "empty" hardware returns previous DAT!?
-                        dat = CPU.DAT;                  
+                        ret = ULA.ReadReg(addr, ref dat);
                     }
-                } else 
+                    else
+                    {
+                        foreach (var hw in hardwarePlugins)
+                        {
+                            if ((addr & hw.AddrMask) == hw.AddrBase)
+                                if (hw.Read(addr, ref dat, peek))
+                                {
+                                    ret = true;
+                                    break;
+                                }
+                        }
+                    }
+
+                    //force to FF if no read in HW area not sure if this is right or not
+                    //but is required for DFS/ADFS see https://stardot.org.uk/forums/viewtopic.php?f=3&t=22031&hilit=electron+adfs+dominicbeesley
+                    if (!ret)
+                        dat = 0xFF;
+
+                    return ret;
+                }
+                else
+                {
                     dat = Roms[ROMNO_MOS][addr & 0x3FFF];
+                    return true;
+                }
             } 
             else if ((addr & 0x8000) != 0)
             {
                 if (!ULA.ROM_External)
                 {
                     if ((ULA.ROM_IntBank & 2) != 0)
+                    {
                         dat = Roms[ROMNO_BASIC][addr & 0x3FFF];
+                        return true;
+                    }
                     else
                     {
                         //keyboard read
                         ushort m = 1;
                         byte ret = 0;
-                        for (int i = 0; i <14; i++)
+                        for (int i = 0; i < 14; i++)
                         {
                             if ((addr & m) == 0)
                             {
@@ -116,16 +149,19 @@ namespace ElkHWLib
                             m <<= 1;
                         }
                         dat = ret;
+                        return true;
                     }
                 } else
                 {
 
                     dat = Roms[ULA.ROM_ExtBank][addr & 0x3FFF];
+                    return true;
                 }
             } 
             else
             {
-                dat = Ram[addr & 0x7FFF];   
+                dat = Ram[addr & 0x7FFF];
+                return true;
             }
         }
 
@@ -176,6 +212,9 @@ namespace ElkHWLib
                         }
                     }
                 }
+
+                foreach (var hw in hardwarePlugins)
+                    hw.Tick();
             }
         }
 
@@ -189,6 +228,15 @@ namespace ElkHWLib
             {
                 Ram[addr] = dat;
                 ULA.RamWrite(addr, dat);
+            }
+            else if ((addr & 0xFF00) == 0xFC00 || (addr & 0xFF00) == 0xFD00)
+            {
+                foreach (var hw in hardwarePlugins)
+                {
+                    if ((addr & hw.AddrMask) == hw.AddrBase)
+                        if (hw.Write(addr, dat))
+                            return;
+                }
             }
         }
 

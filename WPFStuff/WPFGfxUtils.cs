@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Imaging;
 
-namespace ElkCSharp
+namespace WPFStuff
 {
     public static class WPFGfxUtils
     {

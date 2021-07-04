@@ -9,15 +9,19 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using ElkHWLib;
 using Microsoft.Win32;
-using WPFStuff;
+using Utility;
 using ElkCSharpSettings;
 using System.Collections.ObjectModel;
 using System.IO;
+using WPFStuff;
 
 namespace ElkCSharp.ViewModel
 {
     public class ElkModel : ObservableObject
     {
+        public FloppyDriveModel FloppyDrive0 { get; init; }
+        public FloppyDriveModel FloppyDrive1 { get; init; }
+
         public ICommand CmdHardReset { get; }
         public ICommand CmdTapeLoad { get; }
 
@@ -123,7 +127,8 @@ namespace ElkCSharp.ViewModel
                 Command_Exception
                 );
 
-
+            FloppyDrive0 = new FloppyDriveModel(0);
+            FloppyDrive1 = new FloppyDriveModel(1);
         }
 
         public void DoCmdDumpRAM()
@@ -267,5 +272,6 @@ namespace ElkCSharp.ViewModel
                 );
 
         }
+
     }
 }

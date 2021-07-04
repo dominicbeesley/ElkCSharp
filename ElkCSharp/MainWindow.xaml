@@ -44,10 +44,12 @@
                 </MenuItem>
             </Menu>
         </StackPanel>
-        <StackPanel DockPanel.Dock="Bottom" FlowDirection="LeftToRight" Orientation="Horizontal">
+        <StackPanel DockPanel.Dock="Bottom" FlowDirection="LeftToRight" Orientation="Horizontal" Height="24">
             <local:ucLED DataContext="{Binding CapsLockLED }" />
             <local:ucLED DataContext="{Binding MotorLED }" />
             <local:ucBiLED DataContext="{Binding TapeToneBiLED }" />
+            <local:ucFloppy DataContext="{Binding FloppyDrive0 }" />
+            <local:ucFloppy DataContext="{Binding FloppyDrive1 }" />
             <!--ListBox x:Name="lbDebugKeys">
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>

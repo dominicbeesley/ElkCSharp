@@ -7,12 +7,55 @@
 		<elk:romset>
       <elk:romdef number="0" writeenable="true" />
       <elk:romdef number="1" writeenable="true" />
+      <elk:romdef number="2" load="roms/ADFS100.rom" />
 			<elk:romdef number="10" load="roms/B_BASIC200.rom" />
 			<elk:romdef number="16" load="roms/ELK100.mos" />
 		</elk:romset>
     
   </elk:machinedef>
 	<elk:keymap name="#phys" description="Physical Mapping">
+
+    <elk:keydef winkey="F10">
+      <elk:keymatrix col="3" row="0" />
+      <elk:keymatrix col="13" row="1" />
+    </elk:keydef>
+    <elk:keydef winkey="F9">
+      <elk:keymatrix col="4" row="0" />
+      <elk:keymatrix col="13" row="1" />
+    </elk:keydef>
+    <elk:keydef winkey="F8">
+      <elk:keymatrix col="5" row="0" />
+      <elk:keymatrix col="13" row="1" />
+    </elk:keydef>
+    <elk:keydef winkey="F7">
+      <elk:keymatrix col="6" row="0" />
+      <elk:keymatrix col="13" row="1" />
+    </elk:keydef>
+    <elk:keydef winkey="F6">
+      <elk:keymatrix col="7" row="0" />
+      <elk:keymatrix col="13" row="1" />
+    </elk:keydef>
+    <elk:keydef winkey="F5">
+      <elk:keymatrix col="8" row="0" />
+      <elk:keymatrix col="13" row="1" />
+    </elk:keydef>
+    <elk:keydef winkey="F4">
+      <elk:keymatrix col="9" row="0" />
+      <elk:keymatrix col="13" row="1" />
+    </elk:keydef>
+    <elk:keydef winkey="F3">
+      <elk:keymatrix col="10" row="0" />
+      <elk:keymatrix col="13" row="1" />
+    </elk:keydef>
+    <elk:keydef winkey="F2">
+      <elk:keymatrix col="11" row="0" />
+      <elk:keymatrix col="13" row="1" />
+    </elk:keydef>
+    <elk:keydef winkey="F1">
+      <elk:keymatrix col="12" row="0" />
+      <elk:keymatrix col="13" row="1" />
+    </elk:keydef>
+
     <elk:keydef winkey="Right">
       <elk:keymatrix col="0" row="0" />
     </elk:keydef>

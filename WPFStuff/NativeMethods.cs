@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ElkCSharp
+namespace WPFStuff
 {
     internal static class NativeMethods
     {
