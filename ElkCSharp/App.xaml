@@ -11,12 +11,22 @@
             <Color x:Key="Retro_Color_BG">#E0E0D0</Color>
             <Color x:Key="Retro_Color_FG_Flash">#FFFF00</Color>
             <Color x:Key="Retro_Color_FG_Higlight">#FF0000</Color>
+            <Color x:Key="VFD_Color_BG">#001018</Color>
+            <Color x:Key="VFD_Color_FG">#00E090</Color>
             <SolidColorBrush x:Key="Retro_Brush_FG" Color="{StaticResource Retro_Color_FG}"></SolidColorBrush>
             <SolidColorBrush x:Key="Retro_Brush_FG_Highlight" Color="{StaticResource Retro_Color_FG_Higlight}"></SolidColorBrush>
             <SolidColorBrush x:Key="Retro_Brush_BG" Color="{StaticResource Retro_Color_BG}"></SolidColorBrush>
             <SolidColorBrush x:Key="Retro_Brush_LED" Color="{StaticResource Retro_Color_LED}"></SolidColorBrush>
             <SolidColorBrush x:Key="Retro_Brush_Label" Color="{StaticResource Retro_Color_Label}"></SolidColorBrush>
+            <SolidColorBrush x:Key="VFD_Brush_BG" Color="{StaticResource VFD_Color_BG}"></SolidColorBrush>
+            <SolidColorBrush x:Key="VFD_Brush_FG" Color="{StaticResource VFD_Color_FG}"></SolidColorBrush>
 
+            <Style TargetType="TextBlock" x:Key="VFD">
+                <Setter Property="Background" Value="{StaticResource VFD_Brush_BG}" />
+                <Setter Property="Foreground" Value="{StaticResource VFD_Brush_FG}" />
+                <Setter Property="FontFamily" Value="Lucida Console" />
+            </Style>
+            
             <Style TargetType="Button" x:Key="Retro_Button_Borderless">
                 <Setter Property="Background" Value="{StaticResource Retro_Brush_BG}" />
                 <Setter Property="Foreground" Value="{StaticResource Retro_Brush_FG}" />

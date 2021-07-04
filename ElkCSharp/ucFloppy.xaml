@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ElkCSharp"
              mc:Ignorable="d" 
-             d:DesignHeight="24" d:DesignWidth="120"
+             d:DesignHeight="24"
              xmlns:model="clr-namespace:ElkCSharp.ViewModel"
              xmlns:sampledata="clr-namespace:ElkCSharp.ViewModel.Sample"
              d:DataContext="{ x:Static sampledata:DesignTimeSampleData.DiscDriveModel }"
@@ -22,8 +22,10 @@
             <ColumnDefinition Width="2*" />
             <ColumnDefinition Width="1*" />
         </Grid.ColumnDefinitions>
-            <Label Content="{Binding DriveNumber}" Grid.Column="0" Margin="0" Padding="0"/>
-            <Label Content="{Binding TrackNumber}" Grid.Column="1" Margin="0" Padding="0"/>
+            <TextBlock Text="{Binding DriveNumber, StringFormat=:{0:X}}" Grid.Column="0" Margin="0" Padding="0"/>
+            <Border Background="{StaticResource VFD_Brush_BG}" Grid.Column="1" MinWidth="32" >
+                <TextBlock Text="{Binding TrackNumber, StringFormat={}{0:X2}}" Margin="0" Padding="0" Style="{StaticResource VFD}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            </Border>
             <local:ucLEDSimple Grid.Column="2" Lit="{Binding MotorOn}" />
         </Grid>
     </Border>
