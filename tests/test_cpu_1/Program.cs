@@ -14,9 +14,10 @@ namespace test_cpu_1
 
         m6502_device cpu;
 
-        public void Read(ushort addr, out byte dat, bool peek=false)
+        public bool Read(ushort addr, ref byte dat, bool peek=false)
         {
             dat = store[addr];
+			return true;
         }
 
 		public void Write(ushort addr, byte dat)

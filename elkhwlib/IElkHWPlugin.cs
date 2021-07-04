@@ -44,5 +44,7 @@ namespace ElkHWLib
         /// </summary>
         public ushort AddrBase { get; }
 
+        public void Reset(bool hard);
+
     }
 }

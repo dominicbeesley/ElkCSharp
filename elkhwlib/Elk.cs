@@ -55,7 +55,6 @@ namespace ElkHWLib
             ULA = new ULA();
             CPU = new m6502_device(this);
 
-            Reset(true);
 
             ULA.IRQChange += (o, e) => {
                 CPU.execute_set_input(cpu_device.cpu_65xx_inputlines.INPUT_LINE_IRQ0, ULA.IRQ ? cpu_device.cpu_65xx_inputstate.ASSERT_LINE : cpu_device.cpu_65xx_inputstate.CLEAR_LINE);
@@ -78,6 +77,7 @@ namespace ElkHWLib
                     new AcornPlus3(this)
             };
 
+            Reset(true);
         }
 
         public void Reset(bool hard) { 
@@ -85,7 +85,12 @@ namespace ElkHWLib
             CPU.start();
             CPU.reset();
             ULA.Reset(hard);
-
+            foreach (var h in hardwarePlugins)
+            {
+                h.Reset(hard);
+            }
+            FloppyDrive0.Reset(hard);
+            FloppyDrive1.Reset(hard);
         }
 
         public bool Read(ushort addr, ref byte dat, bool peek = false)

@@ -84,7 +84,8 @@ namespace ElkHWLib
             set
             {
                 _mr = value;
-                if (_mr) Reset();
+                if (_mr) 
+                    IntReset();
             }
         }
 
@@ -245,8 +246,15 @@ namespace ElkHWLib
         public event EventHandler DRQ_Changed;
         public event EventHandler INTRQ_Changed;
 
-        protected void Reset()
+        public void Reset(bool hard)
         {
+            if (hard)
+            {
+                IntReset();
+            }
+        }
+
+        protected void IntReset() { 
             MO = false;
             DRQ = false;
             INTRQ = false;
@@ -345,7 +353,7 @@ namespace ElkHWLib
                     INTRQ = false;
                     DRQ = false;
                     SetStatusBit(STATUS_S4_NOTFOUND, false);
-                    if ((Command & COMMAND_C3_H) != 0)
+                    if ((Command & COMMAND_C3_H) == 0)
                     {
                         MO = true;
                         if (SpinUpDownCounter < 0)

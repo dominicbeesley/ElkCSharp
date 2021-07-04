@@ -15,7 +15,7 @@ namespace test_cpu_dorman
 
 		m6502_device cpu;
 
-		public void Read(ushort addr, out byte dat, bool peek=false)
+		public bool Read(ushort addr, ref byte dat, bool peek=false)
 		{
 			if (addr == 0xF004)
 			{
@@ -35,6 +35,7 @@ namespace test_cpu_dorman
 
 			if (verby & !peek)
 				Console.WriteLine($"  ${addr:X4} ==> ${dat:X2}");
+			return true;
 		}
 
 		public void Write(ushort addr, byte dat)

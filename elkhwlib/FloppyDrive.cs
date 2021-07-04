@@ -21,17 +21,28 @@ namespace ElkHWLib
         /// </summary>
         public bool SideAnB { get; set; }
 
-        public int Track { get; }
+        public int Track { get; private set; }
         public void Step(bool InNOut)
         {
-            var t = Track + ((InNOut) ? -1 : 1);
-            if (t < 0)
-                t = 0;
-            else if (t >= 90)
-                t = 89;
+            if (Sel)
+            {
+                var t = Track + ((InNOut) ? 1 : -1);
+                if (t < 0)
+                    t = 0;
+                else if (t >= 90)
+                    t = 89;
+                Track = t;
+            }
         }
         public bool Track0 { get => Sel && Track == 0; }
 
-        public bool Active { get => Sel; }
+        public bool Active { get => Sel && MotorOn; }
+
+        public void Reset(bool hard) { 
+            if (hard)
+            {
+                Track = new Random().Next(80);
+            }        
+        }
     }
 }

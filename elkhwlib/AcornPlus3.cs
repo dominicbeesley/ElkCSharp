@@ -72,6 +72,22 @@ namespace ElkHWLib
         {
             _elk = emulatorRoot;
             _wd1770 = new Wd1770();
+            _wd1770.STEP_Changed += (o, e) =>
+            {
+                if (_wd1770.STEP)
+                    foreach (var dr in new[] { _elk.FloppyDrive0, _elk.FloppyDrive1 })
+                        dr.Step(_wd1770.DIRC);
+            };
+            _wd1770.MO_Changed += (o, e) =>
+            {
+                foreach (var dr in new[] { _elk.FloppyDrive0, _elk.FloppyDrive1 })
+                    dr.MotorOn = _wd1770.MO;
+            };
+        }
+
+        public void Reset(bool hard)
+        {
+            _wd1770.Reset(hard);
         }
     }
 }
