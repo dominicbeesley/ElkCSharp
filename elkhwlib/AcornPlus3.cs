@@ -50,6 +50,8 @@ namespace ElkHWLib
         public void Tick()
         {
             _wd1770.Tick();
+            _elk.FloppyDrive0.Tick();
+            _elk.FloppyDrive1.Tick();
         }
 
         public bool Write(ushort addr, byte dat)
@@ -62,7 +64,9 @@ namespace ElkHWLib
                 _elk.FloppyDrive1.Sel = (dat & 2) != 0;
                 _wd1770.DDEN = (dat & 0x08) == 0;
                 _wd1770.MR = (dat & 0x20) == 0;
-            } else {
+                Wd1770InputsUpdate();
+            }
+            else {
                 _wd1770.Write(addr, dat);
             }
             return true;
@@ -83,11 +87,34 @@ namespace ElkHWLib
                 foreach (var dr in new[] { _elk.FloppyDrive0, _elk.FloppyDrive1 })
                     dr.MotorOn = _wd1770.MO;
             };
+            foreach (var dr in new [] { emulatorRoot.FloppyDrive0, emulatorRoot.FloppyDrive1})
+            {
+                dr.IndexPulse_Changed += (o, e) =>
+                {
+                    Wd1770InputsUpdate();
+                };
+                dr.Track_Changed += (o, e) =>
+                {
+                    Wd1770InputsUpdate();
+                };
+            }
+        }
+
+
+        void Wd1770InputsUpdate()
+        {
+            _wd1770.IP =
+                (_elk.FloppyDrive0.IndexPulse & _elk.FloppyDrive0.Sel) |
+                (_elk.FloppyDrive1.IndexPulse & _elk.FloppyDrive1.Sel);
+            _wd1770.TR00 =
+                (_elk.FloppyDrive0.Track0 & _elk.FloppyDrive0.Sel) |
+                (_elk.FloppyDrive1.Track0 & _elk.FloppyDrive1.Sel);
         }
 
         public void Reset(bool hard)
         {
             _wd1770.Reset(hard);
+            Write(0, 0); // reset latch
         }
     }
 }
