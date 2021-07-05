@@ -18,16 +18,7 @@ namespace ElkCSharp.ViewModel.Sample
 
             BiLED = new BiLEDModel() { Name = "BiLed", Green = 100, Red = 200 };
 
-            DiscDriveModel = new FloppyDriveModel(1);
-
-            Task.Run(async delegate
-            {
-                await Task.Delay(1000);
-                LED.Lit = !LED.Lit;
-                DiscDriveModel.MotorOn = !DiscDriveModel.MotorOn;
-                DiscDriveModel.TrackNumber = (DiscDriveModel.TrackNumber + 1) % 80;
-            });
-
+            DiscDriveModel = new FloppyDriveModel(1, null);
 
         }
 

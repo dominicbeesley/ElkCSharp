@@ -8,19 +8,62 @@ namespace ElkHWLib
 {
     public class FloppyDrive
     {
+        private bool _motorOn;
         /// <summary>
         /// The drive Motor is on
         /// </summary>
-        public bool MotorOn { get; set; }
+        public bool MotorOn
+        {
+            get => _motorOn;
+            set
+            {
+                if (_motorOn != value)
+                {
+                    _motorOn = value;
+                    MotorOn_Changed?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
+
+        public event EventHandler MotorOn_Changed;
+
+        private bool _sel;
         /// <summary>
         /// Drive 0 is selected
         /// </summary>
-        public bool Sel { get; set; }
+        public bool Sel
+        {
+            get => _sel;
+            set
+            {
+                if (_sel != value)
+                {
+                    _sel = value;
+                    Sel_Changed?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
 
+        public event EventHandler Sel_Changed;
+
+        private bool _sideAnB;
         /// <summary>
         /// Side A is selected (else side B)
         /// </summary>
-        public bool SideAnB { get; set; }
+        public bool SideAnB
+        {
+            get => _sideAnB;
+            set
+            {
+                if (_sideAnB != value)
+                {
+                    _sideAnB = value;
+                    SideAnB_Changed?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
+
+        public event EventHandler SideAnB_Changed;
 
         private int _track;
         public int Track
@@ -50,10 +93,6 @@ namespace ElkHWLib
                 Track = t;
             }
         }
-        public bool Track0 { get => Sel && Track == 0; }
-
-
-        public bool Active { get => Sel && MotorOn; }
 
         public void Reset(bool hard) { 
             if (hard)

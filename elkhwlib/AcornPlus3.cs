@@ -107,8 +107,8 @@ namespace ElkHWLib
                 (_elk.FloppyDrive0.IndexPulse & _elk.FloppyDrive0.Sel) |
                 (_elk.FloppyDrive1.IndexPulse & _elk.FloppyDrive1.Sel);
             _wd1770.TR00 =
-                (_elk.FloppyDrive0.Track0 & _elk.FloppyDrive0.Sel) |
-                (_elk.FloppyDrive1.Track0 & _elk.FloppyDrive1.Sel);
+                (_elk.FloppyDrive0.Track == 0 & _elk.FloppyDrive0.Sel) |
+                (_elk.FloppyDrive1.Track == 0 & _elk.FloppyDrive1.Sel);
         }
 
         public void Reset(bool hard)

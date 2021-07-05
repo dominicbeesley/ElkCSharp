@@ -127,8 +127,9 @@ namespace ElkCSharp.ViewModel
                 Command_Exception
                 );
 
-            FloppyDrive0 = new FloppyDriveModel(0);
-            FloppyDrive1 = new FloppyDriveModel(1);
+            FloppyDrive0 = new FloppyDriveModel(0, elk.FloppyDrive0);
+            FloppyDrive1 = new FloppyDriveModel(1, elk.FloppyDrive1);
+
         }
 
         public void DoCmdDumpRAM()
