@@ -95,6 +95,9 @@
     <elk:keydef winkey="Oem3">
       <elk:keymatrix col="2" row="2" />
     </elk:keydef>
+    <elk:keydef winkey="OemQuotes">
+      <elk:keymatrix col="2" row="2" />
+    </elk:keydef>
     <elk:keydef winkey="None">
       <elk:keymatrix col="2" row="3" />
     </elk:keydef>
