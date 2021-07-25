@@ -7,7 +7,7 @@
 		<elk:romset>
       <elk:romdef number="0" writeenable="true" />
       <elk:romdef number="1" writeenable="true" />
-      <elk:romdef number="2" load="roms/ADFS100.rom" />
+      <!--elk:romdef number="2" load="roms/ADFS100.rom" /-->
 			<elk:romdef number="10" load="roms/B_BASIC200.rom" />
 			<elk:romdef number="16" load="roms/ELK100.mos" />
 		</elk:romset>
@@ -540,15 +540,25 @@
 
   <elk:keymap name="#logical-us" description="Logical US keyboard">
     <!-- | next to Z to shift right-->
-    <elk:keydef winkey="OemBackslash" shift="True">
+    <elk:keydef winkey="Oem5" shift="True">
       <elk:keymatrix col="0" row="0" />
       <elk:keymatrix col="13" row="3" />
     </elk:keydef>
     <!-- \ next to Z to ctrl right-->
-    <elk:keydef winkey="OemBackslash" shift="False">
+    <elk:keydef winkey="Oem5" shift="False">
       <elk:keymatrix col="0" row="0" />
       <elk:keymatrix col="13" row="2" />
     </elk:keydef>
+    <!-- | next to retun to shift right-->
+    <elk:keydef winkey="OemQuotes" shift="True">
+      <elk:keymatrix col="0" row="0" />
+      <elk:keymatrix col="13" row="3" />
+    </elk:keydef>
+    <!-- \ next to return to ctrl right-->
+    <elk:keydef winkey="OemQuotes" shift="False">
+      <elk:keymatrix col="0" row="0" />
+      <elk:keymatrix col="13" row="2" />
+    </elk:keydef>oe
     <elk:keydef winkey="Right">
       <elk:keymatrix col="0" row="0" />
     </elk:keydef>
@@ -579,7 +589,7 @@
       <elk:keymatrix col="13" row="3" />
     </elk:keydef>
     <!-- shift-~ to ctrl left == ~ -->
-    <elk:keydef winkey="Oem3" shift="true">
+    <elk:keydef winkey="Oem8" shift="true">
       <elk:keymatrix col="1" row="0" />
       <elk:keymatrix col="13" row="2" />
     </elk:keydef>
@@ -716,7 +726,7 @@
 
 
     <!-- ' to shift-7 = '-->
-    <elk:keydef winkey="OemQuotes" shift="false">
+    <elk:keydef winkey="Oem3" shift="false">
       <elk:keymatrix col="6" row="0" />
       <elk:keymatrix col="13" row="3" />
     </elk:keydef>
@@ -790,7 +800,7 @@
     </elk:keydef>
     
     <!-- shift-' to shift-2 = "-->
-    <elk:keydef winkey="OemQuotes" shift="true">
+    <elk:keydef winkey="Oem3" shift="true">
       <elk:keymatrix col="11" row="0" />
       <elk:keymatrix col="13" row="3" />
     </elk:keydef>
